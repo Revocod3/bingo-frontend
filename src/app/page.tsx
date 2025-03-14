@@ -1,5 +1,3 @@
-
-import { useBingoStore } from '@/lib/stores/bingo';
 import { BingoCard } from '../components/BingoCard';
 import { GameControls } from '../components/GameControls';
 
