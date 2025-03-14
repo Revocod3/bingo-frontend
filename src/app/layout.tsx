@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={poppins.variable}>
       <body 
-        className="bg-gradient-to-r from-[#1E1B4B] to-[#3B0764] text-white font-poppins"
+        className="bg-gradient-to-r from-[#1E1B4B] to-[#3B0764] text-white font-poppins -mt-[70px]"
         suppressHydrationWarning
       >
         <Header />
