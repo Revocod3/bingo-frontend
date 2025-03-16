@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import Header from '@/components/Header';
+
 import '../styles/globals.css';
+import { QueryProvider } from '../providers/QueryProvider';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -26,8 +28,10 @@ export default function RootLayout({
         className="bg-gradient-to-r from-[#1E1B4B] to-[#3B0764] text-white font-poppins -mt-[70px]"
         suppressHydrationWarning
       >
-        <Header />
-        {children}
+        <QueryProvider>
+          <Header />
+          {children}
+        </QueryProvider>
       </body>
     </html>
   );
