@@ -17,6 +17,7 @@ import Link from "next/link"
 import { useLogin } from "@/hooks/api/useAuth"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { FaGoogle, FaFacebook } from "react-icons/fa"
+import { ApiError } from "@/lib/api/types"
 
 export function LoginForm({
   className,
@@ -26,7 +27,7 @@ export function LoginForm({
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
-  
+
   const loginMutation = useLogin()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,8 +37,9 @@ export function LoginForm({
     try {
       await loginMutation.mutateAsync({ email, password })
       router.push('/dashboard')
-    } catch (err: any) {
-      const errorMessage = err.response?.data?.detail || "Credenciales inválidas. Por favor, verifica tu email y contraseña."
+    } catch (err: unknown) {
+      const apiError = err as ApiError
+      const errorMessage = apiError.response?.data?.detail || "Credenciales inválidas. Por favor, verifica tu email y contraseña."
       setError(errorMessage)
     }
   }
@@ -57,7 +59,7 @@ export function LoginForm({
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
-          
+
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -79,17 +81,17 @@ export function LoginForm({
                     ¿Olvidaste tu contraseña?
                   </Link>
                 </div>
-                <Input 
-                  id="password" 
-                  type="password" 
-                  className="w-full" 
-                  required 
+                <Input
+                  id="password"
+                  type="password"
+                  className="w-full"
+                  required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
               <div className="space-y-2 pt-2">
-                <Button 
+                <Button
                   type="submit"
                   className="w-full font-medium bg-[#7C3AED] hover:bg-[#6D28D9] text-white cursor-pointer"
                   disabled={loginMutation.isPending}
@@ -105,17 +107,17 @@ export function LoginForm({
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                  <Button 
+                  <Button
                     type="button"
-                    variant="outline" 
+                    variant="outline"
                     className="w-full border-[#7C3AED] text-[#8B5CF6] hover:bg-[#2D2658] hover:text-white cursor-pointer"
                   >
                     <FaGoogle className="mr-2" />
                     Google
                   </Button>
-                  <Button 
+                  <Button
                     type="button"
-                    variant="outline" 
+                    variant="outline"
                     className="w-full border-[#7C3AED] text-[#8B5CF6] hover:bg-[#2D2658] hover:text-white cursor-pointer"
                   >
                     <FaFacebook className="mr-2" />

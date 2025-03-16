@@ -53,7 +53,7 @@ export interface BingoCard {
   id: number;
   event: number;
   user: number;
-  numbers: Record<string, any>;
+  numbers: Record<string, BingoNumber>;
   is_winner: boolean;
   hash: string;
 }
@@ -63,9 +63,21 @@ export interface CreateBingoCardRequest {
 }
 
 // Number types
-export interface Number {
+export interface BingoNumber {
   id: number;
   event: number;
   value: number;
   called_at: string;
+}
+
+// Error handling types
+export interface ApiError {
+  response?: {
+    data?: {
+      detail?: string;
+      [key: string]: unknown;
+    };
+    status?: number;
+  };
+  message?: string;
 }

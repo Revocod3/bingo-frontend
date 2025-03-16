@@ -14,8 +14,8 @@ export function useDrawNumber() {
   
   return useMutation({
     mutationFn: numberService.drawNumber,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['numbers', data.event] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['numbers'] });
     }
   });
 }

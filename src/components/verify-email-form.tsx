@@ -16,18 +16,19 @@ import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { useVerifyEmail, useResendVerification } from "@/hooks/api/useAuth"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { ApiError } from "@/lib/api/types"
 
 // Client component to safely use the useSearchParams hook
 function EmailFromParams({ setEmail }: { setEmail: (email: string) => void }) {
   const searchParams = useSearchParams()
-  
+
   useEffect(() => {
     const emailParam = searchParams.get('email')
     if (emailParam) {
       setEmail(emailParam)
     }
   }, [searchParams, setEmail])
-  
+
   return null
 }
 
@@ -40,7 +41,7 @@ export function VerifyEmailForm({
   const [verificationCode, setVerificationCode] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
-  
+
   const verifyEmailMutation = useVerifyEmail()
   const resendVerificationMutation = useResendVerification()
 
@@ -55,8 +56,9 @@ export function VerifyEmailForm({
       setTimeout(() => {
         router.push('/auth/login')
       }, 2000)
-    } catch (err: any) {
-      const errorMessage = err.response?.data?.detail || "Error al verificar el email. Por favor, verifica el código."
+    } catch (err: unknown) {
+      const apiError = err as ApiError
+      const errorMessage = apiError.response?.data?.detail || "Error al verificar el email. Por favor, verifica el código."
       setError(errorMessage)
     }
   }
@@ -66,15 +68,16 @@ export function VerifyEmailForm({
       setError("Por favor, introduce tu email")
       return
     }
-    
+
     setError(null)
     setSuccess(null)
-    
+
     try {
       await resendVerificationMutation.mutateAsync({ email })
       setSuccess("Se ha enviado un nuevo código a tu email.")
-    } catch (err: any) {
-      const errorMessage = err.response?.data?.detail || "Error al reenviar el código. Inténtalo de nuevo."
+    } catch (err: unknown) {
+      const apiError = err as ApiError
+      const errorMessage = apiError.response?.data?.detail || "Error al reenviar el código. Inténtalo de nuevo."
       setError(errorMessage)
     }
   }
@@ -99,13 +102,13 @@ export function VerifyEmailForm({
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
-          
+
           {success && (
             <Alert className="mb-4 bg-green-50 text-green-800 border-green-200">
               <AlertDescription>{success}</AlertDescription>
             </Alert>
           )}
-          
+
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -123,11 +126,11 @@ export function VerifyEmailForm({
               </div>
               <div className="space-y-2">
                 <Label htmlFor="verificationCode" className="text-sm font-medium">Código de verificación</Label>
-                <Input 
-                  id="verificationCode" 
-                  type="text" 
-                  className="w-full" 
-                  required 
+                <Input
+                  id="verificationCode"
+                  type="text"
+                  className="w-full"
+                  required
                   value={verificationCode}
                   onChange={(e) => setVerificationCode(e.target.value)}
                   maxLength={6}
@@ -135,14 +138,14 @@ export function VerifyEmailForm({
                 />
               </div>
               <div className="space-y-2 pt-2">
-                <Button 
+                <Button
                   type="submit"
                   className="w-full font-medium bg-[#7C3AED] hover:bg-[#6D28D9] text-white cursor-pointer"
                   disabled={verifyEmailMutation.isPending}
                 >
                   {verifyEmailMutation.isPending ? 'Verificando...' : 'Verificar email'}
                 </Button>
-                <Button 
+                <Button
                   type="button"
                   variant="outline"
                   className="w-full mt-2 font-medium text-[#8B5CF6] hover:bg-[#2D2658] hover:text-white cursor-pointer"

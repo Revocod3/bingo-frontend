@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
@@ -25,7 +26,7 @@ const Hero: React.FC = () => {
                         </Link>
                     </div>
                 </div>
-                <img src="/hero-img.svg" alt="Hero Image" className="max-w-full w-3/4 sm:w-2/3 md:w-1/2 lg:w-auto h-auto" />
+                <Image src="/hero-img.svg" alt="Hero Image" className="max-w-full w-3/4 sm:w-2/3 md:w-1/2 lg:w-auto h-auto" />
             </div>
         </section>
     );

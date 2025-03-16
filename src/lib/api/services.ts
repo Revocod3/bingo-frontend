@@ -10,7 +10,6 @@ import {
   CreateEventRequest,
   BingoCard,
   CreateBingoCardRequest,
-  Number,
 } from './types';
 
 // Auth services
@@ -135,13 +134,13 @@ export const bingoCardService = {
 
 // Number services
 export const numberService = {
-  getNumbersByEvent: async (eventId: number): Promise<Number[]> => {
-    const response = await apiClient.get<Number[]>(`/api/numbers/by_event/?event_id=${eventId}`);
+  getNumbersByEvent: async (eventId: number): Promise<number[]> => {
+    const response = await apiClient.get<number[]>(`/api/numbers/by_event/?event_id=${eventId}`);
     return response.data;
   },
   
-  drawNumber: async (): Promise<Number> => {
-    const response = await apiClient.get<Number>('/api/numbers/draw/');
+  drawNumber: async (): Promise<number> => {
+    const response = await apiClient.get<number>('/api/numbers/draw/');
     return response.data;
   }
 };

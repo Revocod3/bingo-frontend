@@ -17,6 +17,7 @@ import Link from "next/link"
 import { useRegister } from "@/hooks/api/useAuth"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { FaGoogle, FaFacebook } from "react-icons/fa"
+import { ApiError } from "@/lib/api/types"
 
 export function RegisterForm({
   className,
@@ -29,7 +30,7 @@ export function RegisterForm({
   const [confirmPassword, setConfirmPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
-  
+
   // Split full name into first and last name
   const getNames = () => {
     const names = fullName.trim().split(' ')
@@ -68,8 +69,9 @@ export function RegisterForm({
       setTimeout(() => {
         router.push(`/verify-email?email=${encodeURIComponent(email)}`)
       }, 2000)
-    } catch (err: any) {
-      const errorData = err.response?.data
+    } catch (err: unknown) {
+      const apiError = err as ApiError
+      const errorData = apiError.response?.data
       if (errorData) {
         // Handle validation errors from API
         if (typeof errorData === 'object') {
@@ -101,7 +103,7 @@ export function RegisterForm({
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
-          
+
           {success && (
             <Alert className="mb-4 bg-green-50 text-green-800 border-green-200">
               <AlertDescription>
@@ -109,7 +111,7 @@ export function RegisterForm({
               </AlertDescription>
             </Alert>
           )}
-          
+
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -138,28 +140,28 @@ export function RegisterForm({
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-sm font-medium">Contraseña</Label>
-                <Input 
-                  id="password" 
-                  type="password" 
-                  className="w-full" 
-                  required 
+                <Input
+                  id="password"
+                  type="password"
+                  className="w-full"
+                  required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword" className="text-sm font-medium">Confirmar contraseña</Label>
-                <Input 
-                  id="confirmPassword" 
-                  type="password" 
-                  className="w-full" 
-                  required 
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  className="w-full"
+                  required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
               </div>
               <div className="space-y-2 pt-2">
-                <Button 
+                <Button
                   type="submit"
                   className="w-full font-medium bg-[#7C3AED] hover:bg-[#6D28D9] text-white cursor-pointer"
                   disabled={registerMutation.isPending}
@@ -175,17 +177,17 @@ export function RegisterForm({
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                  <Button 
+                  <Button
                     type="button"
-                    variant="outline" 
+                    variant="outline"
                     className="w-full border-[#7C3AED] text-[#8B5CF6] hover:bg-[#2D2658] hover:text-white cursor-pointer"
                   >
                     <FaGoogle className="mr-2" />
                     Google
                   </Button>
-                  <Button 
+                  <Button
                     type="button"
-                    variant="outline" 
+                    variant="outline"
                     className="w-full border-[#7C3AED] text-[#8B5CF6] hover:bg-[#2D2658] hover:text-white cursor-pointer"
                   >
                     <FaFacebook className="mr-2" />

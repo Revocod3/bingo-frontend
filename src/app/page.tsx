@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Hero from "../sections/Hero";
 
 export default function Home() {
