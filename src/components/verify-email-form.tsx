@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
@@ -17,24 +17,29 @@ import Link from "next/link"
 import { useVerifyEmail, useResendVerification } from "@/hooks/api/useAuth"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 
-export function VerifyEmailForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+// Client component to safely use the useSearchParams hook
+function EmailFromParams({ setEmail }: { setEmail: (email: string) => void }) {
   const searchParams = useSearchParams()
-  const router = useRouter()
-  const [email, setEmail] = useState("")
-  const [verificationCode, setVerificationCode] = useState("")
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
   
-  // Get email from URL parameters if available
   useEffect(() => {
     const emailParam = searchParams.get('email')
     if (emailParam) {
       setEmail(emailParam)
     }
-  }, [searchParams])
+  }, [searchParams, setEmail])
+  
+  return null
+}
+
+export function VerifyEmailForm({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  const router = useRouter()
+  const [email, setEmail] = useState("")
+  const [verificationCode, setVerificationCode] = useState("")
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
   
   const verifyEmailMutation = useVerifyEmail()
   const resendVerificationMutation = useResendVerification()
@@ -76,6 +81,11 @@ export function VerifyEmailForm({
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>
+      {/* Wrap the component using useSearchParams in Suspense */}
+      <Suspense fallback={null}>
+        <EmailFromParams setEmail={setEmail} />
+      </Suspense>
+
       <Card className="border shadow-sm">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-semibold">Verifica tu email</CardTitle>
@@ -103,7 +113,7 @@ export function VerifyEmailForm({
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="email@ejemplo.com"
                   className="w-full"
                   required
                   disabled
