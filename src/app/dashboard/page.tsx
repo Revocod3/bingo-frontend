@@ -21,7 +21,7 @@ export default function DashboardPage() {
 
   // Filter for active events (those that haven't ended)
   const activeEvents = events?.filter((event: Event) => 
-    new Date(event.start) < new Date()
+    new Date(event.start_date) < new Date()
   ) || [];
 
   // Get user's cards grouped by event
@@ -99,7 +99,7 @@ export default function DashboardPage() {
                     <CardHeader>
                       <CardTitle>{event.name}</CardTitle>
                       <CardDescription>
-                        {new Date(event.start).toLocaleDateString()}
+                        {new Date(event.start_date).toLocaleDateString()}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
