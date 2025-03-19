@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import { useEvent } from '@/hooks/api/useEvents';
 import { useBingoCards } from '@/hooks/api/useBingoCards';
 import { useCurrentUser } from '@/hooks/api/useUsers';
@@ -9,9 +10,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import TestCoinBadge from '@/components/TestCoinBadge';
 import PurchaseCardsModal from '@/components/PurchaseCardsModal';
+import { FaArrowLeft } from 'react-icons/fa';
 
 export default function EventDetailPage() {
-  const { eventId } = useParams();
+  const params = useParams<{ eventId: string }>();
+  const eventId = params?.eventId || '';
   const eventIdNumber = Number(eventId);
   
   const { data: event, isLoading: eventLoading } = useEvent(eventIdNumber);
@@ -53,13 +56,27 @@ export default function EventDetailPage() {
         </div>
         
         <div className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-4">
+          <Link href="/dashboard" passHref>
+            <Button variant="outline" className="gap-2">
+              <FaArrowLeft size={14} /> Dashboard
+            </Button>
+          </Link>
+          
           {user && <TestCoinBadge />}
+          
+          {eventCards.length > 0 && (
+            <Link href={`/events/${eventId}/play`} passHref>
+              <Button className="bg-green-600 hover:bg-green-700 text-white">
+                Jugar Ahora
+              </Button>
+            </Link>
+          )}
           
           <Button 
             onClick={() => setIsPurchaseModalOpen(true)}
             className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white"
           >
-            Purchase Cards
+            Comprar Cartones
           </Button>
         </div>
       </div>
@@ -69,7 +86,7 @@ export default function EventDetailPage() {
         
         {eventCards.length === 0 ? (
           <div className="bg-gray-100 dark:bg-gray-800 p-8 rounded-lg text-center">
-            <p className="text-xl font-medium mb-4">No tienes cartones para este evento</p>
+            <p className="text-xl font-medium mb-4 text-gray-700">No tienes cartones para este evento</p>
             <p className="text-gray-500">Compra tus primeros cartones para participar</p>
             <Button 
               onClick={() => setIsPurchaseModalOpen(true)}

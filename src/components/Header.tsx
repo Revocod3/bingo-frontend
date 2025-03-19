@@ -9,8 +9,8 @@ export default function Header() {
   const pathname = usePathname();
   
   // Check if current route is an auth page
-  const isAuthPage = () => {
-    return pathname === '/auth/login' || pathname === '/auth/register';
+  const isHome = () => {
+    return pathname === '/'
   };
   
   // Navigation links array
@@ -60,7 +60,7 @@ export default function Header() {
           </div>
           
           {/* Desktop Navigation */}
-          {!isAuthPage() && (
+          {isHome() && (
             <div className="hidden md:flex md:items-center">
               <nav className="flex space-x-4">
                 {navigationLinks.map((link, index) => (
@@ -79,7 +79,7 @@ export default function Header() {
           <div className="hidden md:flex md:items-center">
             {/* Contact and CTA */}
             <div className="flex items-center space-x-4">
-              {!isAuthPage() && (
+              {isHome() && (
                 <Link href="/contact" className="text-white hover:text-gray-200 transition-colors">
                   Contacto
                 </Link>
@@ -95,7 +95,7 @@ export default function Header() {
         </div>
         
         {/* Mobile Menu (Expanded) */}
-        {isMenuOpen && !isAuthPage() && (
+        {isMenuOpen && isHome() && (
           <div className="md:hidden py-2 space-y-2">
             {navigationLinks.map((link, index) => (
               <Link 

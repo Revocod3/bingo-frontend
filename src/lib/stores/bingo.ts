@@ -1,22 +1,29 @@
 import { create } from 'zustand';
 
 type BingoState = {
-  cartones: number[][];
+  cards: number[][];
   currentNumber: number | null;
   calledNumbers: number[];
   isPlaying: boolean;
-  initializeGame: (cartones: number[][]) => void;
+  activeCardIndex: number;
+  initializeGame: (cards: number[][]) => void;
   callNumber: () => void;
   resetGame: () => void;
+  setActiveCardIndex: (index: number) => void;
 };
 
 export const useBingoStore = create<BingoState>((set) => ({
-  cartones: [],
+  cards: [],
   currentNumber: null,
   calledNumbers: [],
   isPlaying: false,
+  activeCardIndex: 0,
   
-  initializeGame: (cartones) => set({ cartones, isPlaying: true }),
+  initializeGame: (cards) => set({ 
+    cards, 
+    isPlaying: true,
+    calledNumbers: [] 
+  }),
   
   callNumber: () => {
     const availableNumbers = Array.from({ length: 75 }, (_, i) => i + 1)
@@ -32,9 +39,12 @@ export const useBingoStore = create<BingoState>((set) => ({
   },
   
   resetGame: () => set({
-    cartones: [],
+    cards: [],
     currentNumber: null,
     calledNumbers: [],
-    isPlaying: false
-  })
+    isPlaying: false,
+    activeCardIndex: 0
+  }),
+  
+  setActiveCardIndex: (index) => set({ activeCardIndex: index }),
 }));
