@@ -144,3 +144,11 @@ export const numberService = {
     return response.data;
   }
 };
+
+// Test coin services
+export const testCoinService = {
+  getBalance: async (): Promise<{ balance: number; last_updated: string }> => {
+    const response = await apiClient.get<{ balance: number; last_updated: string }>('/api/test-coins/my_balance/');
+    return response.data;
+  }
+};
