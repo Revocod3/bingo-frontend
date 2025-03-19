@@ -15,29 +15,31 @@ interface CardCarouselProps {
 const CardCarousel = ({ cards, eventId }: CardCarouselProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
-  const { currentNumber } = useBingoStore();
-  
+  const { currentNumber, calledNumbers } = useBingoStore();
+
   // Get card numbers from the BingoCardType
   const getCardNumbers = (card: BingoCardType): number[] => {
     // This depends on your actual data structure
     // Assuming the card.numbers is an object with values or a direct array
     if (!card.numbers) return Array(25).fill(0);
-    
+
     if (Array.isArray(card.numbers)) {
       return card.numbers;
     }
-    
+
     // If numbers is an object with positions as keys
-    return Object.values(card.numbers).map(n => typeof n === 'object' ? n.value : n);
+    return Object.values(card.numbers)
+      .flatMap(n => typeof n === 'object' && n !== null ? Object.values(n) : [n])
+      .map(Number);
   };
 
   const scrollToCard = (index: number) => {
     if (carouselRef.current && cards[index]) {
       setActiveIndex(index);
-      
+
       const container = carouselRef.current;
       const cardElement = container.children[index] as HTMLElement;
-      
+
       if (cardElement) {
         const scrollPosition = cardElement.offsetLeft - (container.offsetWidth / 2) + (cardElement.offsetWidth / 2);
         container.scrollTo({ left: scrollPosition, behavior: 'smooth' });
@@ -61,6 +63,7 @@ const CardCarousel = ({ cards, eventId }: CardCarouselProps) => {
   useEffect(() => {
     if (!currentNumber) return;
 
+    // Find a card that contains the current number
     const cardWithCurrentIndex = cards.findIndex(card => {
       const numbers = getCardNumbers(card);
       return numbers.includes(currentNumber);
@@ -70,6 +73,23 @@ const CardCarousel = ({ cards, eventId }: CardCarouselProps) => {
       scrollToCard(cardWithCurrentIndex);
     }
   }, [currentNumber, cards, activeIndex]);
+
+  // Check for potential winning cards when numbers are called
+  useEffect(() => {
+    if (calledNumbers.length < 5) return; // Need at least 5 numbers for a win
+
+    cards.forEach((card, idx) => {
+      const numbers = getCardNumbers(card);
+
+      // Simple check for potential win (this is just visual feedback, real validation happens server-side)
+      const matchedCount = numbers.filter(num => calledNumbers.includes(num)).length;
+
+      // If many matches found, highlight this card as a potential winner
+      if (matchedCount >= 20 && idx !== activeIndex) { // Arbitrary threshold, real bingo rules would be more complex
+        scrollToCard(idx);
+      }
+    });
+  }, [calledNumbers, cards, activeIndex]);
 
   if (cards.length === 0) {
     return (
@@ -87,7 +107,7 @@ const CardCarousel = ({ cards, eventId }: CardCarouselProps) => {
           Carton {activeIndex + 1} de {cards.length}
         </span>
       </div>
-      
+
       {/* Carousel navigation */}
       <div className="flex items-center">
         <Button
@@ -99,19 +119,19 @@ const CardCarousel = ({ cards, eventId }: CardCarouselProps) => {
         >
           <ChevronLeftIcon className="w-5 h-5" />
         </Button>
-        
-        <div 
-          className="flex-1 overflow-x-auto hide-scrollbar scroll-smooth" 
+
+        <div
+          className="flex-1 overflow-x-auto hide-scrollbar scroll-smooth"
           ref={carouselRef}
         >
           <div className="flex gap-4 p-2 snap-x">
             {cards.map((card, index) => (
-              <div 
-                key={card.id} 
+              <div
+                key={card.id}
                 className="min-w-[300px] snap-center"
                 onClick={() => scrollToCard(index)}
               >
-                <BingoCard 
+                <BingoCard
                   cardId={card.id}
                   numbers={getCardNumbers(card)}
                   active={index === activeIndex}
@@ -120,7 +140,7 @@ const CardCarousel = ({ cards, eventId }: CardCarouselProps) => {
             ))}
           </div>
         </div>
-        
+
         <Button
           variant="outline"
           size="icon"
