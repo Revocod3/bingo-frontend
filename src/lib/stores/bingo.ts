@@ -103,14 +103,10 @@ export const useBingoStore = create<BingoState>((set, get) => ({
   
   // New methods
   connectToGame: (eventId, token) => {
-    websocketService.connect(token, {
+    websocketService.connect(eventId, token, {
       onOpen: () => {
-        // Join specific game room
-        websocketService.send({
-          type: 'JOIN_GAME',
-          payload: { eventId }
-        });
-        
+        // No need to send JOIN_GAME separately, the connection to event-specific
+        // endpoint already identifies the game
         set({ isConnected: true, eventId });
       },
       onClose: () => {

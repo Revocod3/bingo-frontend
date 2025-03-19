@@ -114,7 +114,7 @@ export const BingoCard = memo(function BingoCard({
             key={`${cardId}-${index}`}
             className={`
               aspect-square flex items-center justify-center rounded-md border text-center font-medium relative overflow-hidden cursor-pointer
-              ${isCenter ? 'bg-[#2D2658] text-white' :
+              ${isCenter ? 'bg-green-200 text-white' :
                 isSelected ? 'bg-[#DDD6FE] border-[#7C3AED]' :
                   'bg-white border-gray-300 hover:bg-gray-50'}
               ${isNewCall ? 'animate-pulse' : ''}
@@ -122,7 +122,7 @@ export const BingoCard = memo(function BingoCard({
             `}
             onClick={() => toggleCell(index)}
           >
-            <span className="text-lg font-medium">{isCenter ? 'FREE' : num}</span>
+            <span className="text-lg font-medium text-gray-700">{isCenter ? 'FREE' : num}</span>
             {isSelected && !isCenter && (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="absolute inset-0 bg-[#7C3AED] opacity-20"></div>

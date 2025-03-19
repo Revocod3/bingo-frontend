@@ -1,3 +1,5 @@
+import config from '../../api/config';
+
 export type WebSocketMessage = {
   type: string;
   payload: any;
@@ -20,23 +22,22 @@ class WebSocketService {
   
   constructor() {
     if (typeof window === 'undefined') return;
-    this.url = process.env.NEXT_PUBLIC_WS_URL || 
-      (window.location.protocol === 'https:' 
-        ? `wss://${window.location.host}/ws` 
-        : `ws://${window.location.host}/ws`);
+    // Use the API URL but replace http/https with ws/wss if needed
+    this.url = config.wsUrl || config.apiUrl.replace(/^http/, 'ws');
   }
   
-  public connect(token: string, options: WebSocketOptions = {}) {
+  public connect(eventId: number, token: string, options: WebSocketOptions = {}) {
     if (typeof window === 'undefined') return false;
     
     this.options = options;
     
     try {
-      this.socket = new WebSocket(`${this.url}?token=${token}`);
+      // Connect to the specific event WebSocket endpoint
+      this.socket = new WebSocket(`${this.url}/ws/event/${eventId}/?token=${token}`);
       
       this.socket.onopen = () => {
         this.reconnectAttempts = 0;
-        console.log('WebSocket connection established');
+        console.log(`WebSocket connection established for event ${eventId}`);
         this.options.onOpen?.();
       };
       
@@ -75,7 +76,7 @@ class WebSocketService {
         console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`);
         // We need to get the token again, this is just a placeholder
         const token = localStorage.getItem('authToken') || '';
-        this.connect(token, this.options);
+        this.connect(0, token, this.options); // Pass a default eventId of 0
       }, this.reconnectInterval);
     }
   }

@@ -90,6 +90,7 @@ export const eventService = {
   },
   
   createEvent: async (data: CreateEventRequest): Promise<Event> => {
+    // Ensure we're using start_date instead of start
     const response = await apiClient.post<Event>('/api/events/', data);
     return response.data;
   },
