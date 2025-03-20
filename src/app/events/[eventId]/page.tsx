@@ -16,16 +16,16 @@ export default function EventDetailPage() {
   const params = useParams<{ eventId: string }>();
   const eventId = params?.eventId || '';
   const eventIdNumber = Number(eventId);
-  
+
   const { data: event, isLoading: eventLoading } = useEvent(eventIdNumber);
   const { data: user } = useCurrentUser();
   const { data: cards } = useBingoCards();
-  
+
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
-  
+
   // Filter cards for the current event
   const eventCards = cards?.filter(card => card.event === eventIdNumber) || [];
-  
+
   if (eventLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -33,7 +33,7 @@ export default function EventDetailPage() {
       </div>
     );
   }
-  
+
   if (!event) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -51,19 +51,19 @@ export default function EventDetailPage() {
         <div>
           <h1 className="text-3xl font-bold">{event.name}</h1>
           <p className="text-gray-500 mt-2">
-            {new Date(event.start).toLocaleString()}
+            {new Date(event.start_date).toLocaleString()}
           </p>
         </div>
-        
+
         <div className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-4">
           <Link href="/dashboard" passHref>
             <Button variant="outline" className="gap-2">
               <FaArrowLeft size={14} /> Dashboard
             </Button>
           </Link>
-          
+
           {user && <TestCoinBadge />}
-          
+
           {eventCards.length > 0 && (
             <Link href={`/events/${eventId}/play`} passHref>
               <Button className="bg-green-600 hover:bg-green-700 text-white">
@@ -71,8 +71,8 @@ export default function EventDetailPage() {
               </Button>
             </Link>
           )}
-          
-          <Button 
+
+          <Button
             onClick={() => setIsPurchaseModalOpen(true)}
             className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white"
           >
@@ -80,19 +80,19 @@ export default function EventDetailPage() {
           </Button>
         </div>
       </div>
-      
+
       <div className="my-8">
         <h2 className="text-2xl font-bold mb-4">Tus cartones</h2>
-        
+
         {eventCards.length === 0 ? (
           <div className="bg-gray-100 dark:bg-gray-800 p-8 rounded-lg text-center">
             <p className="text-xl font-medium mb-4 text-gray-700">No tienes cartones para este evento</p>
             <p className="text-gray-500">Compra tus primeros cartones para participar</p>
-            <Button 
+            <Button
               onClick={() => setIsPurchaseModalOpen(true)}
               className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white"
             >
-                Comprar cartones
+              Comprar cartones
             </Button>
           </div>
         ) : (
@@ -113,11 +113,11 @@ export default function EventDetailPage() {
           </div>
         )}
       </div>
-      
+
       {/* Purchase Modal */}
-      <PurchaseCardsModal 
-        eventId={eventIdNumber} 
-        isOpen={isPurchaseModalOpen} 
+      <PurchaseCardsModal
+        eventId={eventIdNumber}
+        isOpen={isPurchaseModalOpen}
         onClose={() => setIsPurchaseModalOpen(false)}
       />
     </div>
