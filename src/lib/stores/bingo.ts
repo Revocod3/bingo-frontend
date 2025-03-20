@@ -126,14 +126,14 @@ export const useBingoStore = create<BingoState>((set, get) => ({
   handleWebSocketMessage: (message) => {
     switch (message.type) {
       case 'NUMBER_CALLED':
-        get().addCalledNumber(
-          message.payload.number,
-          message.payload.calledAt
-        );
+        {
+          const { number, calledAt } = message.payload as { number: number; calledAt: string };
+          get().addCalledNumber(number, calledAt);
+        }
         break;
         
       case 'WINNER_DECLARED':
-        get().markWinner(message.payload);
+        get().markWinner(message.payload as WinnerInfo);
         break;
         
       case 'GAME_RESET':
@@ -146,15 +146,24 @@ export const useBingoStore = create<BingoState>((set, get) => ({
         break;
         
       case 'GAME_STATE':
-        // Handle initial game state
-        set({
-          calledNumbers: message.payload.calledNumbers || [],
-          currentNumber: message.payload.currentNumber || null,
-          isPlaying: message.payload.isPlaying || false,
-          isWinner: !!message.payload.winnerInfo,
-          winnerInfo: message.payload.winnerInfo || null,
-          lastCalledAt: message.payload.lastCalledAt || null
-        });
+        {
+          // Handle initial game state
+          const payload = message.payload as {
+            calledNumbers?: number[];
+            currentNumber?: number | null;
+            isPlaying?: boolean;
+            winnerInfo?: WinnerInfo | null;
+            lastCalledAt?: string | null;
+          };
+          set({
+            calledNumbers: payload.calledNumbers || [],
+            currentNumber: payload.currentNumber || null,
+            isPlaying: payload.isPlaying || false,
+            isWinner: !!payload.winnerInfo,
+            winnerInfo: payload.winnerInfo || null,
+            lastCalledAt: payload.lastCalledAt || null
+          });
+        }
         break;
         
       default:
