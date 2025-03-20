@@ -10,14 +10,6 @@ interface BingoCardProps {
   active?: boolean;
 }
 
-const getBingoColumn = (number: number): string => {
-  if (number <= 15) return 'B';
-  if (number <= 30) return 'I';
-  if (number <= 45) return 'N';
-  if (number <= 60) return 'G';
-  return 'O';
-};
-
 export const BingoCard = memo(function BingoCard({
   cardId,
   numbers,
@@ -104,7 +96,6 @@ export const BingoCard = memo(function BingoCard({
       ))}
 
       {numbers.map((num, index) => {
-        const isCalled = calledNumbers.includes(num);
         const isNewCall = isNewlyCalled(num);
         const isSelected = selectedCells[index];
         const isCenter = index === 12; // Center spot (free space)

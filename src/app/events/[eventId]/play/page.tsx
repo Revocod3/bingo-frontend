@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useEvent } from '@/hooks/api/useEvents';
@@ -27,7 +27,6 @@ export default function GamePlayPage() {
     resetGame,
     isPlaying,
     calledNumbers,
-    currentNumber,
     initializeGame,
     connectToGame,
     disconnectFromGame,

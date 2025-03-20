@@ -2,7 +2,7 @@ import config from '../../api/config';
 
 export type WebSocketMessage = {
   type: string;
-  payload: any;
+  payload: Record<string, any>;
 };
 
 type WebSocketOptions = {

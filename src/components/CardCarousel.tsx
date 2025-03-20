@@ -12,7 +12,7 @@ interface CardCarouselProps {
   eventId: number;
 }
 
-const CardCarousel = ({ cards, eventId }: CardCarouselProps) => {
+const CardCarousel = ({ cards }: CardCarouselProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
   const { currentNumber, calledNumbers } = useBingoStore();

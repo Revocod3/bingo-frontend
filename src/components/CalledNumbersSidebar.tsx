@@ -37,7 +37,7 @@ const CalledNumbersSidebar = () => {
                 locale: es
             });
         } catch (error) {
-            return '';
+            return String(error);
         }
     };
 

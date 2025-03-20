@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TestCoinBadge from '@/components/TestCoinBadge';
 import BingoCard from '@/components/BingoCard';
 import { FaGamepad, FaCalendarAlt, FaTrophy } from 'react-icons/fa';
-import { Event } from '@/src/lib/api/types';
+import { BingoCard as BingoCardType, Event } from '@/src/lib/api/types';
 export default function DashboardPage() {
   const { data: events, isLoading: eventsLoading } = useEvents();
   const { data: cards } = useBingoCards();
@@ -20,7 +20,7 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState('active');
 
   // Filter for active events (those that haven't ended)
-  const activeEvents = events?.filter((event: Event) => 
+  const activeEvents = events?.filter((event: Event) =>
     new Date(event.start_date) < new Date()
   ) || [];
 
@@ -42,13 +42,13 @@ export default function DashboardPage() {
   }
 
   // Get card numbers from the BingoCardType (simplified version of the function in CardCarousel)
-  const getCardNumbers = (card: any): number[] => {
+  const getCardNumbers = (card: BingoCardType): number[] => {
     if (!card.numbers) return Array(25).fill(0);
-    
+
     if (Array.isArray(card.numbers)) {
       return card.numbers;
     }
-    
+
     return Object.values(card.numbers)
       .flatMap(n => typeof n === 'object' && n !== null ? Object.values(n) : [n])
       .map(Number);
@@ -63,7 +63,7 @@ export default function DashboardPage() {
             Gestiona tus juegos y cartones
           </p>
         </div>
-        
+
         <div className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-4">
           {user && <TestCoinBadge />}
         </div>
@@ -81,10 +81,10 @@ export default function DashboardPage() {
             <FaTrophy /> Historial
           </TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="active" className="space-y-4">
           <h2 className="text-2xl font-bold mb-4">Juegos Activos</h2>
-          
+
           {activeEvents.length === 0 ? (
             <div className="bg-gray-100 dark:bg-gray-800 p-8 rounded-lg text-center">
               <p className="text-xl font-medium mb-4 text-gray-700">No hay juegos activos actualmente</p>
@@ -132,10 +132,10 @@ export default function DashboardPage() {
             </div>
           )}
         </TabsContent>
-        
+
         <TabsContent value="cards" className="space-y-4">
           <h2 className="text-2xl font-bold mb-4">Mis Cartones</h2>
-          
+
           {!cards || cards.length === 0 ? (
             <div className="bg-gray-100 dark:bg-gray-800 p-8 rounded-lg text-center">
               <p className="text-xl font-medium mb-4 text-gray-700">No tienes cartones</p>
@@ -152,7 +152,7 @@ export default function DashboardPage() {
                         Carton #{card.id.toString().substring(0, 8)} - {eventName}
                       </span>
                     </div>
-                    <BingoCard 
+                    <BingoCard
                       cardId={card.id}
                       numbers={getCardNumbers(card)}
                       active={false}
@@ -163,10 +163,10 @@ export default function DashboardPage() {
             </div>
           )}
         </TabsContent>
-        
+
         <TabsContent value="history" className="space-y-4">
           <h2 className="text-2xl font-bold mb-4">Historial de Juegos</h2>
-          
+
           <div className="bg-gray-100 dark:bg-gray-800 p-8 rounded-lg text-center">
             <p className="text-xl font-medium mb-4 text-gray-700">Historial no disponible</p>
             <p className="text-gray-500">Tu historial de juegos aparecerá aquí</p>
