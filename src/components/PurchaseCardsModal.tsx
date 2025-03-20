@@ -69,12 +69,20 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
       } else {
         setErrorMessage(result.message || "Failed to purchase cards");
       }
-    } catch (error: Error | any) {
-      setErrorMessage(
-        error.response?.data?.message ||
-        error.message ||
-        "Failed to purchase cards. Please try again."
-      );
+    } catch (error: unknown) {
+      let errorMessage = "Failed to purchase cards. Please try again.";
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (error && typeof error === 'object') {
+        // Type the error object more specifically
+        const possibleApiError = error as { response?: { data?: { message?: string } } };
+        if (possibleApiError.response?.data?.message) {
+          errorMessage = possibleApiError.response.data.message;
+        }
+      }
+
+      setErrorMessage(errorMessage);
     }
   };
 

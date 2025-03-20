@@ -9,7 +9,7 @@ type WebSocketOptions = {
   autoReconnect?: boolean;
 };
 
-export function useWebSocket(token?: string, options: WebSocketOptions = {}) {
+export function useWebSocket(token?: string, options: WebSocketOptions = {}, eventId: number = 0) {
   const [isConnected, setIsConnected] = useState(false);
   const optionsRef = useRef(options);
   
@@ -24,7 +24,7 @@ export function useWebSocket(token?: string, options: WebSocketOptions = {}) {
     
     const effectiveToken = newToken || token || '';
     
-    return websocketService.connect(effectiveToken, {
+    return websocketService.connect(eventId, effectiveToken, {
       onOpen: () => {
         setIsConnected(true);
         optionsRef.current.onOpen?.();
@@ -60,11 +60,11 @@ export function useWebSocket(token?: string, options: WebSocketOptions = {}) {
     }
     
     return () => {
-      if (options.autoReconnect !== true) {
+      if (optionsRef.current.autoReconnect !== true) {
         disconnect();
       }
     };
-  }, [connect, disconnect, token, options.autoReconnect]);
+  }, [connect, disconnect, token, options.autoReconnect, eventId]);
   
   return {
     isConnected,
