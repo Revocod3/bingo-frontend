@@ -9,7 +9,7 @@ import { useNumbersByEvent } from '@/hooks/api/useNumbers';
 import { useBingoStore } from '@/lib/stores/bingo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import CardCarousel from '@/components/CardCarousel';
+// import CardCarousel from '@/components/CardCarousel';
 import { WinModal } from '@/components/WinModal';
 import CalledNumbersSidebar from '@/components/CalledNumbersSidebar';
 import { FaDice, FaUndo, FaArrowLeft } from 'react-icons/fa';

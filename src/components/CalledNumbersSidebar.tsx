@@ -11,7 +11,7 @@ interface NumberObject {
     value: number;
     called_at: string;
     drawn: boolean;
-    event: any; // Replace with proper type if known
+    event: string;
 }
 
 // Helper function to get number value regardless of format
