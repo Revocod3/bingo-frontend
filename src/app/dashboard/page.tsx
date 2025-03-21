@@ -26,12 +26,13 @@ export default function DashboardPage() {
 
   // Get user's cards grouped by event
   const cardsByEvent = cards?.reduce((acc, card) => {
-    if (!acc[card.event]) {
-      acc[card.event] = [];
+    const eventId = String(card.event);
+    if (!acc[eventId]) {
+      acc[eventId] = [];
     }
-    acc[card.event].push(card);
+    acc[eventId].push(card);
     return acc;
-  }, {} as Record<number, typeof cards>) || {};
+  }, {} as Record<string, typeof cards>) || {};
 
   if (eventsLoading) {
     return (
@@ -93,9 +94,10 @@ export default function DashboardPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {activeEvents.map(event => {
-                const eventCards = cardsByEvent[event.id] || [];
+                const eventId = String(event.id);
+                const eventCards = cardsByEvent[eventId] || [];
                 return (
-                  <Card key={event.id} className="border shadow-md hover:shadow-lg transition-shadow">
+                  <Card key={eventId} className="border shadow-md hover:shadow-lg transition-shadow">
                     <CardHeader>
                       <CardTitle>{event.name}</CardTitle>
                       <CardDescription>
@@ -113,13 +115,13 @@ export default function DashboardPage() {
                       </div>
                       <div className="flex flex-col gap-2">
                         {eventCards.length > 0 ? (
-                          <Link href={`/events/${event.id}/play`} passHref>
+                          <Link href={`/events/${eventId}/play`} passHref>
                             <Button className="w-full bg-green-600 hover:bg-green-700">
                               Jugar Ahora
                             </Button>
                           </Link>
                         ) : null}
-                        <Link href={`/events/${event.id}`} passHref>
+                        <Link href={`/events/${eventId}`} passHref>
                           <Button variant="outline" className="w-full">
                             Ver Detalles
                           </Button>
@@ -144,7 +146,8 @@ export default function DashboardPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {cards.map(card => {
-                const eventName = events?.find(e => e.id === card.event)?.name || 'Evento';
+                const eventId = String(card.event);
+                const eventName = events?.find(e => String(e.id) === eventId)?.name || 'Evento';
                 return (
                   <div key={card.id}>
                     <div className="mb-2 text-center">
