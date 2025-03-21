@@ -50,3 +50,21 @@ export function useMarkNumber() {
     }
   });
 }
+
+export function useClaimBingo() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: ({ cardId, pattern }: { cardId: string | number; pattern: string }) => 
+      bingoCardService.claimBingo({ cardId: Number(cardId), pattern }),
+    onSuccess: () => {
+      // Refresh cards data after successful claim
+      queryClient.invalidateQueries({ queryKey: ['bingoCards'] });
+    },
+    onError: (error: any) => {
+      // Log detailed error information
+      console.error('Claim Bingo mutation error:', error);
+      console.error('Response data:', error.response?.data);
+    }
+  });
+}

@@ -17,6 +17,8 @@ import BingoPatternsDisplay from '@/src/components/BingoPatternsDisplay';
 import BingoCard from '@/components/BingoCard';
 import { getCardNumbers } from '@/src/lib/utils';
 import { NumberCallNotification } from '@/components/NumberCallNotification';
+import { useClaimBingo } from '@/hooks/api/useBingoCards';
+import { toast } from 'sonner';
 
 export default function GamePlayPage() {
   const params = useParams<{ eventId: string }>();
@@ -31,6 +33,16 @@ export default function GamePlayPage() {
   const [previousNumber, setPreviousNumber] = useState<number | null>(null);
   // Auto-refresh interval reference
   const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [selectedPattern, setSelectedPattern] = useState<string>('bingo');
+  
+  // Add this array of available patterns
+  const availablePatterns = [
+    { id: 'bingo', name: 'Bingo (Línea completa)' },
+    { id: 'blackout', name: 'Blackout (Cartón completo)' },
+    { id: 'corners', name: 'Esquinas (4 esquinas)' },
+    { id: 'x', name: 'X (Diagonal X)' },
+    { id: 'cross', name: 'Cruz (Cruz central)' }
+  ];
 
   // Use ReactQuery with refetchInterval for real-time updates (more aggressive polling)
   useEffect(() => {
@@ -120,38 +132,44 @@ export default function GamePlayPage() {
     setShowClaimModal(true);
   };
 
+  // Add this hook
+  const claimBingoMutation = useClaimBingo();
+  const [claimSubmitting, setClaimSubmitting] = useState(false); // Add loading state
+  
   // Submit bingo claim
   const submitBingoClaim = async (cardId: number) => {
     try {
-      // API call to submit bingo claim
-      const response = await fetch(`/api/bingo/claim`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        },
-        body: JSON.stringify({
-          eventId,
-          cardId,
-          numbers: calledNumbers.map(n => n)
-        })
+      setClaimSubmitting(true);
+      
+      // Log the card details before submission for debugging
+      const cardToSubmit = eventCards.find(card => card.id === cardId);
+      console.log('Attempting to claim bingo with card:', cardToSubmit);
+      console.log('Called numbers:', calledNumbers);
+      
+      const result = await claimBingoMutation.mutateAsync({ 
+        cardId, 
+        pattern: selectedPattern 
       });
-
-      const data = await response.json();
-
-      // Handle response (show success or error)
-      if (response.ok) {
-        // Show success message
-        alert('¡Bingo reclamado con éxito!');
+      
+      if (result.success) {
+        toast.success(result.message || '¡Bingo reclamado con éxito!');
+        setShowClaimModal(false);
       } else {
-        // Show error
-        alert(`Error: ${data.message || 'No se pudo reclamar el bingo'}`);
+        // More specific error message
+        const errorMsg = result.message || 'No se pudo validar el bingo';
+        toast.error(errorMsg);
+        console.error('Bingo claim rejected:', result);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error claiming bingo:', error);
-      alert('Error al reclamar bingo. Por favor intenta nuevamente.');
+      
+      // More detailed error handling
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Error al reclamar bingo. Por favor intenta nuevamente.';
+      toast.error(errorMessage);
     } finally {
-      setShowClaimModal(false);
+      setClaimSubmitting(false);
     }
   };
 
@@ -372,15 +390,27 @@ export default function GamePlayPage() {
         </div>
       )}
 
-      {/* Bingo Claim Modal */}
       <Dialog open={showClaimModal} onOpenChange={setShowClaimModal}>
         <DialogContent className="sm:max-w-[425px] text-gray-700">
           <DialogHeader>
             <DialogTitle>Confirmar Bingo</DialogTitle>
           </DialogHeader>
           <div className="py-4">
-            <p className="mb-4">Selecciona el cartón con el que has obtenido bingo:</p>
-            <div className="space-y-2">
+            <p className="mb-2">Selecciona el patrón que has completado:</p>
+            <div className="space-y-2 mb-4 max-h-40 overflow-y-auto">
+              {availablePatterns.map(pattern => (
+                <div
+                  key={pattern.id}
+                  className={`p-2 border rounded-md cursor-pointer ${selectedPattern === pattern.id ? 'border-blue-500 bg-blue-50' : ''}`}
+                  onClick={() => setSelectedPattern(pattern.id)}
+                >
+                  {pattern.name}
+                </div>
+              ))}
+            </div>
+            
+            <p className="mb-2 mt-4">Selecciona el cartón con el que has obtenido bingo:</p>
+            <div className="space-y-2 max-h-40 overflow-y-auto">
               {eventCards.map(card => (
                 <div
                   key={card.id}
@@ -395,9 +425,15 @@ export default function GamePlayPage() {
               <Button
                 className="bg-green-600 hover:bg-green-700"
                 onClick={() => submitBingoClaim(selectedCard!)}
-                disabled={!selectedCard}
+                disabled={!selectedCard || !selectedPattern || claimSubmitting}
               >
-                Confirmar Bingo
+                {claimSubmitting ? (
+                  <>
+                    <span className="animate-spin mr-2">⏳</span> Verificando
+                  </>
+                ) : (
+                  'Confirmar Bingo'
+                )}
               </Button>
             </div>
           </div>

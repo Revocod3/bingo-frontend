@@ -131,6 +131,14 @@ export const bingoCardService = {
   markNumber: async (cardId: number, number: number): Promise<{ status: string }> => {
     const response = await apiClient.post<{ status: string }>(`/api/cards/${cardId}/mark_number/`, { number });
     return response.data;
+  },
+
+  claimBingo: async ({ cardId, pattern = 'bingo' }: { cardId: number; pattern?: string }) => {
+    const response = await apiClient.post('/api/cards/claim/', { 
+      card_id: cardId,
+      pattern
+    });
+    return response.data;
   }
 };
 
