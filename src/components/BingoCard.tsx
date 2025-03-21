@@ -113,7 +113,7 @@ export const BingoCard = memo(function BingoCard({
             `}
             onClick={() => toggleCell(index)}
           >
-            <span className="text-lg font-medium text-gray-700">{isCenter ? 'FREE' : num}</span>
+            <span className="text-lg font-medium text-gray-700">{isCenter ? 'FREE' : 0}</span>
             {isSelected && !isCenter && (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="absolute inset-0 bg-[#7C3AED] opacity-20"></div>

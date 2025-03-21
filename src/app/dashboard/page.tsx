@@ -18,11 +18,11 @@ export default function DashboardPage() {
   const { data: events, isLoading: eventsLoading } = useEvents();
   const { data: cards } = useBingoCards();
   const { data: user } = useCurrentUser();
-  const [activeTab, setActiveTab] = useState('active');
+  const [activeTab, setActiveTab] = useState('events');
 
   // Filter for active events (those that haven't ended)
   const activeEvents = events?.filter((event: Event) =>
-    new Date(event.start_date) < new Date()
+    !event.end_date || new Date(event.end_date) > new Date()
   ) || [];
 
   // Get user's cards grouped by event
@@ -56,8 +56,6 @@ export default function DashboardPage() {
       .map(Number);
   };
 
-  console.log('user', user);
-
   return (
     <div className="container mx-auto pt-24 pb-8 px-4">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
@@ -70,7 +68,6 @@ export default function DashboardPage() {
 
         <div className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-4">
           {user && <TestCoinBadge />}
-          { }
           {user && user.is_staff && (
             <Link href="/admin" passHref>
               <Button className="bg-gray-700 hover:bg-gray-800 text-white flex items-center gap-2">
@@ -81,10 +78,10 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <Tabs defaultValue="active" value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+      <Tabs defaultValue="events" value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
-          <TabsTrigger value="active" className="flex items-center gap-2">
-            <FaGamepad /> Juegos Activos
+          <TabsTrigger value="events" className="flex items-center gap-2">
+            <FaGamepad /> Eventos Activos
           </TabsTrigger>
           <TabsTrigger value="cards" className="flex items-center gap-2">
             <FaCalendarAlt /> Mis Cartones
@@ -94,12 +91,12 @@ export default function DashboardPage() {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="active" className="space-y-4">
-          <h2 className="text-2xl font-bold mb-4">Juegos Activos</h2>
+        <TabsContent value="events" className="space-y-4">
+          <h2 className="text-2xl font-bold mb-4">Eventos Activos</h2>
 
           {activeEvents.length === 0 ? (
             <div className="bg-gray-100 dark:bg-gray-800 p-8 rounded-lg text-center">
-              <p className="text-xl font-medium mb-4 text-gray-700">No hay juegos activos actualmente</p>
+              <p className="text-xl font-medium mb-4 text-gray-700">No hay eventos activos actualmente</p>
               <p className="text-gray-500">Vuelve más tarde para ver nuevos eventos</p>
             </div>
           ) : (
@@ -118,7 +115,7 @@ export default function DashboardPage() {
                     <CardContent className="space-y-4">
                       <div className="flex justify-between text-sm">
                         <span>Premio:</span>
-                        <span className="font-bold">${event.prize.toFixed(2)}</span>
+                        <span className="font-bold">${event.prize}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Tus cartones:</span>
