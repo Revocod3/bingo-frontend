@@ -19,20 +19,35 @@ class WebSocketService {
   private reconnectAttempts = 0;
   private options: WebSocketOptions = {};
   private url: string = '';
+  private currentEventId: string = '';
+  private currentToken: string = '';
   
   constructor() {
     if (typeof window === 'undefined') return;
     // Use the API URL but replace http/https with ws/wss if needed
     this.url = config.wsUrl || config.apiUrl.replace(/^http/, 'ws');
+    console.log('WebSocket URL:', this.url);
   }
   
   public connect(eventId: string, token: string, options: WebSocketOptions = {}) {
     if (typeof window === 'undefined') return false;
     
+    // Validate eventId - don't connect if it's empty
+    if (!eventId || eventId === 'undefined') {
+      console.error('Cannot connect to WebSocket: Invalid event ID');
+      return false;
+    }
+    
     this.options = options;
+    this.currentEventId = eventId;
+    this.currentToken = token;
     
     try {
+      // First disconnect any existing connection
+      this.disconnect();
+      
       // Connect to the specific event WebSocket endpoint
+      console.log(`Connecting to WebSocket for event ${eventId}`);
       this.socket = new WebSocket(`${this.url}/ws/event/${eventId}/?token=${token}`);
       
       this.socket.onopen = () => {
@@ -70,13 +85,11 @@ class WebSocketService {
   }
   
   private attemptReconnect() {
-    if (this.reconnectAttempts < this.maxReconnectAttempts) {
+    if (this.reconnectAttempts < this.maxReconnectAttempts && this.currentEventId) {
       this.reconnectAttempts++;
       setTimeout(() => {
         console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`);
-        // We need to get the token again, this is just a placeholder
-        const token = localStorage.getItem('authToken') || '';
-        this.connect('', token, this.options); // Pass a default eventId of 0
+        this.connect(this.currentEventId, this.currentToken, this.options);
       }, this.reconnectInterval);
     }
   }
@@ -102,6 +115,6 @@ class WebSocketService {
 }
 
 // Create singleton instance
-export const websocketService = new WebSocketService();
+const websocketService = new WebSocketService();
 
 export default websocketService;

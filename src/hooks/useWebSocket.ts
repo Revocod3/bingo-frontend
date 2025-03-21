@@ -12,19 +12,30 @@ type WebSocketOptions = {
 export function useWebSocket(token?: string, options: WebSocketOptions = {}, eventId: string = '') {
   const [isConnected, setIsConnected] = useState(false);
   const optionsRef = useRef(options);
+  const eventIdRef = useRef(eventId);
   
-  // Update ref when options change
+  // Update refs when options or eventId change
   useEffect(() => {
     optionsRef.current = options;
   }, [options]);
+  
+  useEffect(() => {
+    eventIdRef.current = eventId;
+  }, [eventId]);
   
   // Connect to WebSocket
   const connect = useCallback((newToken?: string) => {
     if (!newToken && !token) return false;
     
+    // Make sure we don't try to connect with an empty eventId
+    if (!eventIdRef.current) {
+      console.error('Cannot connect WebSocket: No event ID provided');
+      return false;
+    }
+    
     const effectiveToken = newToken || token || '';
     
-    return websocketService.connect(eventId, effectiveToken, {
+    return websocketService.connect(eventIdRef.current, effectiveToken, {
       onOpen: () => {
         setIsConnected(true);
         optionsRef.current.onOpen?.();
@@ -53,9 +64,9 @@ export function useWebSocket(token?: string, options: WebSocketOptions = {}, eve
     return websocketService.send(message);
   }, []);
   
-  // Connect automatically if token is provided
+  // Connect automatically if token and eventId are provided
   useEffect(() => {
-    if (token) {
+    if (token && eventId) {
       connect();
     }
     
@@ -64,7 +75,7 @@ export function useWebSocket(token?: string, options: WebSocketOptions = {}, eve
         disconnect();
       }
     };
-  }, [connect, disconnect, token, options.autoReconnect, eventId]);
+  }, [connect, disconnect, token, eventId, options.autoReconnect]);
   
   return {
     isConnected,
