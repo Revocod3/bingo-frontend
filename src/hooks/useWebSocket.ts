@@ -9,7 +9,7 @@ type WebSocketOptions = {
   autoReconnect?: boolean;
 };
 
-export function useWebSocket(token?: string, options: WebSocketOptions = {}, eventId: number = 0) {
+export function useWebSocket(token?: string, options: WebSocketOptions = {}, eventId: string = '') {
   const [isConnected, setIsConnected] = useState(false);
   const optionsRef = useRef(options);
   
