@@ -11,8 +11,9 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TestCoinBadge from '@/components/TestCoinBadge';
 import BingoCard from '@/components/BingoCard';
-import { FaGamepad, FaCalendarAlt, FaTrophy } from 'react-icons/fa';
+import { FaGamepad, FaCalendarAlt, FaTrophy, FaCogs } from 'react-icons/fa';
 import { BingoCard as BingoCardType, Event } from '@/src/lib/api/types';
+
 export default function DashboardPage() {
   const { data: events, isLoading: eventsLoading } = useEvents();
   const { data: cards } = useBingoCards();
@@ -55,6 +56,8 @@ export default function DashboardPage() {
       .map(Number);
   };
 
+  console.log('user', user);
+
   return (
     <div className="container mx-auto pt-24 pb-8 px-4">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
@@ -67,6 +70,14 @@ export default function DashboardPage() {
 
         <div className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-4">
           {user && <TestCoinBadge />}
+          { }
+          {user && user.is_staff && (
+            <Link href="/admin" passHref>
+              <Button className="bg-gray-700 hover:bg-gray-800 text-white flex items-center gap-2">
+                <FaCogs /> Panel Admin
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
 

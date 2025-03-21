@@ -32,6 +32,11 @@ export interface User {
   first_name: string;
   last_name: string;
   is_email_verified: boolean;
+  is_staff: boolean;
+  is_superuser: boolean;
+  uuid: string;
+  last_login?: string;
+  date_joined?: string;
 }
 
 // Event types
@@ -50,9 +55,10 @@ export interface Event {
 export interface CreateEventRequest {
   name: string;
   prize: number;
-  start_date: string; 
   description?: string;
   end_date?: string;
+  start: string | number | Date;
+  end?: string | number | Date;
 }
 
 // BingoCard types
@@ -144,4 +150,32 @@ export interface WebSocketChatMessage {
 
 export interface WebSocketError {
   message: string;
+}
+
+// Admin types
+export interface UserAdminUpdate {
+  first_name?: string;
+  last_name?: string;
+  email?: string;
+  is_staff?: boolean;
+  is_active?: boolean;
+}
+
+export interface UserAdminCreate extends UserAdminUpdate {
+  email: string;
+  password: string;
+}
+
+export interface AdminEventStats {
+  total_events: number;
+  active_events: number;
+  total_cards_sold: number;
+  total_revenue: number;
+}
+
+export interface AdminUserStats {
+  total_users: number;
+  active_users: number;
+  new_users_today: number;
+  new_users_this_week: number;
 }
