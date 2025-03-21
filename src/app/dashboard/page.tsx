@@ -13,6 +13,7 @@ import TestCoinBadge from '@/components/TestCoinBadge';
 import BingoCard from '@/components/BingoCard';
 import { FaGamepad, FaCalendarAlt, FaTrophy, FaCogs } from 'react-icons/fa';
 import { BingoCard as BingoCardType, Event } from '@/src/lib/api/types';
+import { getCardNumbers } from '@/src/lib/utils';
 
 export default function DashboardPage() {
   const { data: events, isLoading: eventsLoading } = useEvents();
@@ -42,19 +43,6 @@ export default function DashboardPage() {
       </div>
     );
   }
-
-  // Get card numbers from the BingoCardType (simplified version of the function in CardCarousel)
-  const getCardNumbers = (card: BingoCardType): number[] => {
-    if (!card.numbers) return Array(25).fill(0);
-
-    if (Array.isArray(card.numbers)) {
-      return card.numbers;
-    }
-
-    return Object.values(card.numbers)
-      .flatMap(n => typeof n === 'object' && n !== null ? Object.values(n) : [n])
-      .map(Number);
-  };
 
   return (
     <div className="container mx-auto pt-24 pb-8 px-4">
@@ -109,7 +97,7 @@ export default function DashboardPage() {
                     <CardHeader>
                       <CardTitle>{event.name}</CardTitle>
                       <CardDescription>
-                        {new Date(event.start_date).toLocaleDateString()}
+                        {event.start ? new Date(event.start).toLocaleDateString() : 'Fecha desconocida'}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">

@@ -14,6 +14,8 @@ import { FaArrowLeft, FaTrophy } from 'react-icons/fa';
 import { useQueryClient } from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import BingoPatternsDisplay from '@/src/components/BingoPatternsDisplay';
+import BingoCard from '@/components/BingoCard';
+import { getCardNumbers } from '@/src/lib/utils';
 
 export default function GamePlayPage() {
   const params = useParams<{ eventId: string }>();
@@ -40,35 +42,16 @@ export default function GamePlayPage() {
     isPlaying,
     calledNumbers,
     initializeGame,
-    connectToGame,
-    disconnectFromGame,
     isConnected
   } = useBingoStore();
 
   // State for bingo claim modal
   const [showClaimModal, setShowClaimModal] = useState(false);
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<'info' | 'cards'>('info');
 
   // Filter cards for the current event
   const eventCards = cards?.filter(card => card.event === eventId) || [];
-
-  // Connect to WebSocket when page loads
-  useEffect(() => {
-    // Get the token from local storage
-    const token = localStorage.getItem('authToken');
-
-    if (token && eventId && !isConnected) {
-      connectToGame(eventId, token);
-
-      // Initialize game with initial data
-      initializeGame([]);
-    }
-
-    // Disconnect when component unmounts
-    return () => {
-      disconnectFromGame();
-    };
-  }, [eventId, connectToGame, disconnectFromGame, isConnected, initializeGame]);
 
   // Initialize game with called numbers from API if available
   useEffect(() => {
@@ -161,10 +144,10 @@ export default function GamePlayPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="flex justify-between items-center mb-6">
+    <div className="container mx-auto pt-[92px] px-4">
+      <div className="flex justify-between items-center mb-2">
         <h1 className="text-3xl font-bold">{event.name}</h1>
-        <div className="flex gap-2">
+        <div className="flex gap-2 text-gray-500">
           <Link href={`/events/${eventId}`} passHref>
             <Button variant="outline" size="sm" className="gap-1">
               <FaArrowLeft size={14} /> Evento
@@ -178,58 +161,122 @@ export default function GamePlayPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-        {/* Claim Bingo Button */}
-        <Button
-          onClick={handleClaimBingo}
-          className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 text-lg gap-2"
-          disabled={!isPlaying || calledNumbers.length < 5}
+      {/* Tab header */}
+      <div className="flex border-b mb-4">
+        <button
+          className={`px-4 py-2 cursor-pointer ${activeTab === 'info' ? 'border-b-2 font-bold' : 'text-gray-500'}`}
+          onClick={() => setActiveTab('info')}
         >
-          <FaTrophy size={20} /> ¡CANTAR BINGO!
-        </Button>
-
-        {/* Bingo Patterns Display */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>Patrones de ganancia</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <BingoPatternsDisplay />
-          </CardContent>
-        </Card>
-
-
-        {/* Game Info */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Información del evento</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2">
-              <li className="flex justify-between">
-                <span>Premio:</span>
-                <span className="font-bold">${event.prize}</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Tus cartones:</span>
-                <span className="font-bold">{eventCards.length}</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Números llamados:</span>
-                <span className="font-bold">{calledNumbers.length}/75</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Estado:</span>
-                <span className={`font-bold ${isConnected ? 'text-green-500' : 'text-red-500'}`}>
-                  {isConnected ? 'Conectado' : 'Desconectado'}
-                </span>
-              </li>
-            </ul>
-          </CardContent>
-        </Card>
-
+          Información
+        </button>
+        <button
+          className={`px-4 py-2 cursor-pointer ${activeTab === 'cards' ? 'border-b-2 font-bold' : 'text-gray-500'}`}
+          onClick={() => setActiveTab('cards')}
+        >
+          Tus Cartones
+        </button>
       </div>
+
+      {activeTab === 'info' && (
+        <>
+          <div className="flex flex-col">
+            {/* Bingo Patterns Display */}
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>Patrones de ganancia</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <BingoPatternsDisplay />
+              </CardContent>
+            </Card>
+
+            {/* Game Info */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Información del evento</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  <li className="flex justify-between">
+                    <span>Premio:</span>
+                    <span className="font-bold">${event.prize}</span>
+                  </li>
+                  <li className="flex justify-between">
+                    <span>Tus cartones:</span>
+                    <span className="font-bold">{eventCards.length}</span>
+                  </li>
+                  <li className="flex justify-between">
+                    <span>Números llamados:</span>
+                    <span className="font-bold">{calledNumbers.length}/75</span>
+                  </li>
+                  <li className="flex justify-between">
+                    <span>Estado:</span>
+                    <span className={`font-bold ${isConnected ? 'text-green-500' : 'text-red-500'}`}>
+                      {isConnected ? 'Conectado' : 'Desconectado'}
+                    </span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+          {/* Section to display all called numbers */}
+          <div className="mt-6 p-4 bg-white rounded-lg shadow-sm border border-pink-100">
+            <h2 className="text-xl font-bold mb-2 text-pink-600">Todos los Números Llamados</h2>
+            <div className="flex flex-wrap gap-2">
+              {calledNumbers.length > 0
+                ? calledNumbers.map((num, index) => (
+                  <span key={index} className="px-3 py-1 bg-gradient-to-r from-purple-200 to-pink-200 rounded-full shadow">
+                    {num}
+                  </span>
+                ))
+                : <span className="text-gray-500 italic">Aún no se han llamado números</span>
+              }
+            </div>
+          </div>
+        </>
+      )}
+
+      {activeTab === 'cards' && (
+        <div>
+          {/* New section for last called number and Claim Bingo Button */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-2">
+            <div className="flex flex-row gap-4 items-center justify-center items-center">
+              <h2 className="text-xl font-bold mb-2">Último Número</h2>
+              {calledNumbers.length > 0 ? (
+                <div className="relative">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 
+                                shadow-lg flex items-center justify-center transform transition-all 
+                                duration-300 hover:scale-105 animate-pulse-once">
+                    <span className="text-white text-3xl font-bold">{calledNumbers[calledNumbers.length - 1]}</span>
+                  </div>
+                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-5 h-5 rounded-full bg-gray-200"></div>
+                </div>
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center shadow-md">
+                  <span className="text-gray-500 text-xl font-bold">N/A</span>
+                </div>
+              )}
+            </div>
+            <Button
+              onClick={handleClaimBingo}
+              className="mt-4 sm:mt-0 bg-green-600 hover:bg-green-700 text-white font-bold py-4 text-lg gap-2"
+              disabled={!isPlaying || calledNumbers.length < 5}
+            >
+              <FaTrophy size={20} /> ¡CANTAR BINGO!
+            </Button>
+          </div>
+
+          <h2 className="text-2xl font-bold mb-4">Tus Cartones</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {eventCards.map(card => (
+              <div key={card.id} className="p-2 bg-gray-50 rounded shadow">
+                <BingoCard cardId={card.id} numbers={getCardNumbers(card)} active={false} />
+                <p className="mt-2 text-right mr-2 font-thin text-xs text-gray-500">Cartón #{card.id}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Bingo Claim Modal */}
       <Dialog open={showClaimModal} onOpenChange={setShowClaimModal}>
