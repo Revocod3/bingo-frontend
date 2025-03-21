@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useEvent } from '@/hooks/api/useEvents';
@@ -9,21 +9,34 @@ import { useNumbersByEvent } from '@/hooks/api/useNumbers';
 import { useBingoStore } from '@/lib/stores/bingo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-// import CardCarousel from '@/components/CardCarousel';
 import { WinModal } from '@/components/WinModal';
-import CalledNumbersSidebar from '@/components/CalledNumbersSidebar';
-import { FaDice, FaUndo, FaArrowLeft } from 'react-icons/fa';
+import { FaArrowLeft, FaTrophy } from 'react-icons/fa';
+import { useQueryClient } from '@tanstack/react-query';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import BingoPatternsDisplay from '@/src/components/BingoPatternsDisplay';
 
 export default function GamePlayPage() {
   const params = useParams<{ eventId: string }>();
   const eventId = params?.eventId || '';
   const { data: event, isLoading: eventLoading } = useEvent(eventId);
   const { data: cards, isLoading: cardsLoading } = useBingoCards();
-  const { data: initialCalledNumbers } = useNumbersByEvent(eventId);
+  const { data: calledNumbersData, isLoading: numbersLoading } = useNumbersByEvent(eventId);
+  const queryClient = useQueryClient();
+
+  // Use ReactQuery with refetchInterval for real-time updates
+  useEffect(() => {
+    // Set up polling to check for new numbers every 5 seconds
+    const intervalId = setInterval(() => {
+      queryClient.invalidateQueries({ queryKey: ['numbers', eventId] });
+    }, 5000);
+
+    // Cleanup interval on unmount
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [eventId, queryClient]);
 
   const {
-    callNumber,
-    resetGame,
     isPlaying,
     calledNumbers,
     initializeGame,
@@ -31,6 +44,10 @@ export default function GamePlayPage() {
     disconnectFromGame,
     isConnected
   } = useBingoStore();
+
+  // State for bingo claim modal
+  const [showClaimModal, setShowClaimModal] = useState(false);
+  const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
   // Filter cards for the current event
   const eventCards = cards?.filter(card => card.event === eventId) || [];
@@ -55,16 +72,58 @@ export default function GamePlayPage() {
 
   // Initialize game with called numbers from API if available
   useEffect(() => {
-    if (initialCalledNumbers?.length && !calledNumbers.length && !isConnected) {
+    if (calledNumbersData?.length && !calledNumbers.length) {
       initializeGame([]);
-      // Add all called numbers (mock implementation, would be replaced by WebSocket)
-      initialCalledNumbers.forEach(num => {
-        useBingoStore.getState().addCalledNumber(num, new Date().toISOString());
+      // Add all called numbers from API
+      calledNumbersData.forEach((numData) => {
+        const num = numData as unknown as { number: number; called_at: string };
+        useBingoStore.getState().addCalledNumber(num.number, num.called_at);
       });
     }
-  }, [initialCalledNumbers, calledNumbers.length, isConnected, initializeGame]);
+  }, [calledNumbersData, calledNumbers.length, initializeGame]);
 
-  if (eventLoading || cardsLoading) {
+  // Handle bingo claim
+  const handleClaimBingo = () => {
+    // Open modal to confirm bingo claim
+    setShowClaimModal(true);
+  };
+
+  // Submit bingo claim
+  const submitBingoClaim = async (cardId: number) => {
+    try {
+      // API call to submit bingo claim
+      const response = await fetch(`/api/bingo/claim`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({
+          eventId,
+          cardId,
+          numbers: calledNumbers.map(n => n)
+        })
+      });
+
+      const data = await response.json();
+
+      // Handle response (show success or error)
+      if (response.ok) {
+        // Show success message
+        alert('¡Bingo reclamado con éxito!');
+      } else {
+        // Show error
+        alert(`Error: ${data.message || 'No se pudo reclamar el bingo'}`);
+      }
+    } catch (error) {
+      console.error('Error claiming bingo:', error);
+      alert('Error al reclamar bingo. Por favor intenta nuevamente.');
+    } finally {
+      setShowClaimModal(false);
+    }
+  };
+
+  if (eventLoading || cardsLoading || numbersLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#7C3AED]"></div>
@@ -120,72 +179,89 @@ export default function GamePlayPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* <div className="lg:col-span-2">
-          <CardCarousel cards={eventCards} eventId={eventId} />
-        </div> */}
 
-        <div className="space-y-6">
-          {/* Game Controls */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Controles de juego</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-4">
-                <Button
-                  onClick={() => callNumber()}
-                  className="bg-[#7C3AED] hover:bg-[#6D28D9] gap-2"
-                  disabled={!isPlaying}
-                  size="lg"
-                >
-                  <FaDice size={18} /> Llamar número
-                </Button>
+        {/* Claim Bingo Button */}
+        <Button
+          onClick={handleClaimBingo}
+          className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 text-lg gap-2"
+          disabled={!isPlaying || calledNumbers.length < 5}
+        >
+          <FaTrophy size={20} /> ¡CANTAR BINGO!
+        </Button>
 
-                <Button
-                  onClick={() => resetGame()}
-                  variant="outline"
-                  className="gap-2"
-                  size="lg"
-                >
-                  <FaUndo size={18} /> Reiniciar juego
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+        {/* Bingo Patterns Display */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>Patrones de ganancia</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <BingoPatternsDisplay />
+          </CardContent>
+        </Card>
 
-          {/* Called Numbers Display */}
-          <CalledNumbersSidebar />
 
-          {/* Game Info */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Información del evento</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2">
-                <li className="flex justify-between">
-                  <span>Premio:</span>
-                  <span className="font-bold">${event.prize}</span>
-                </li>
-                <li className="flex justify-between">
-                  <span>Tus cartones:</span>
-                  <span className="font-bold">{eventCards.length}</span>
-                </li>
-                <li className="flex justify-between">
-                  <span>Números llamados:</span>
-                  <span className="font-bold">{calledNumbers.length}/75</span>
-                </li>
-                <li className="flex justify-between">
-                  <span>Estado:</span>
-                  <span className={`font-bold ${isConnected ? 'text-green-500' : 'text-red-500'}`}>
-                    {isConnected ? 'Conectado' : 'Desconectado'}
-                  </span>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
+        {/* Game Info */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Información del evento</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2">
+              <li className="flex justify-between">
+                <span>Premio:</span>
+                <span className="font-bold">${event.prize}</span>
+              </li>
+              <li className="flex justify-between">
+                <span>Tus cartones:</span>
+                <span className="font-bold">{eventCards.length}</span>
+              </li>
+              <li className="flex justify-between">
+                <span>Números llamados:</span>
+                <span className="font-bold">{calledNumbers.length}/75</span>
+              </li>
+              <li className="flex justify-between">
+                <span>Estado:</span>
+                <span className={`font-bold ${isConnected ? 'text-green-500' : 'text-red-500'}`}>
+                  {isConnected ? 'Conectado' : 'Desconectado'}
+                </span>
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
+
       </div>
+
+      {/* Bingo Claim Modal */}
+      <Dialog open={showClaimModal} onOpenChange={setShowClaimModal}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Confirmar Bingo</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="mb-4">Selecciona el cartón con el que has obtenido bingo:</p>
+            <div className="space-y-2">
+              {eventCards.map(card => (
+                <div
+                  key={card.id}
+                  className={`p-3 border rounded-md cursor-pointer ${selectedCard === card.id ? 'border-green-500 bg-green-50' : ''}`}
+                  onClick={() => setSelectedCard(card.id)}
+                >
+                  Cartón #{card.id}
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 flex justify-end">
+              <Button
+                className="bg-green-600 hover:bg-green-700"
+                onClick={() => submitBingoClaim(selectedCard!)}
+                disabled={!selectedCard}
+              >
+                Confirmar Bingo
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Win Modal - shows automatically when isWinner is true */}
       <WinModal />
