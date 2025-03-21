@@ -23,7 +23,7 @@ export function usePurchaseCards() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ eventId, quantity }: { eventId: number; quantity: number }) => {
+    mutationFn: async ({ eventId, quantity }: { eventId: string; quantity: number }) => {
       const response = await apiClient.post('/api/cards/purchase/', {
         event_id: eventId,
         quantity,

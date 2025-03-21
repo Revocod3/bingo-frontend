@@ -84,7 +84,7 @@ export const eventService = {
     return response.data;
   },
   
-  getEvent: async (id: number): Promise<Event> => {
+  getEvent: async (id: string): Promise<Event> => {
     const response = await apiClient.get<Event>(`/api/events/${id}/`);
     return response.data;
   },
@@ -135,7 +135,7 @@ export const bingoCardService = {
 
 // Number services
 export const numberService = {
-  getNumbersByEvent: async (eventId: number): Promise<number[]> => {
+  getNumbersByEvent: async (eventId: string): Promise<number[]> => {
     const response = await apiClient.get<number[]>(`/api/numbers/by_event/?event_id=${eventId}`);
     return response.data;
   },

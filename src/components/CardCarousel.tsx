@@ -9,7 +9,7 @@ import { BingoCard as BingoCardType } from '@/lib/api/types';
 
 interface CardCarouselProps {
   cards: BingoCardType[];
-  eventId: number;
+  eventId: string;
 }
 
 const CardCarousel = ({ cards }: CardCarouselProps) => {

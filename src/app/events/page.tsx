@@ -31,11 +31,11 @@ export default function EventsPage() {
             <CardHeader>
               <CardTitle>{event.name}</CardTitle>
               <CardDescription>
-                Starts {formatDistanceToNow(new Date(event.start_date), { addSuffix: true })}
+                Starts {formatDistanceToNow(new Date(event.start || ''), { addSuffix: true })}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="mb-4">Premio: ${event.prize.toFixed(2)}</p>
+              <p className="mb-4">Premio: ${event.prize}</p>
               <Link href={`/events/${event.id}`} passHref>
                 <Button className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white">
                   Unirse al evento

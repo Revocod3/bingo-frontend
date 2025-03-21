@@ -5,11 +5,26 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-const getBingoColumn = (number: number): string => {
-    if (number <= 15) return 'B';
-    if (number <= 30) return 'I';
-    if (number <= 45) return 'N';
-    if (number <= 60) return 'G';
+// Define the shape of your number objects
+interface NumberObject {
+    id: string;
+    value: number;
+    called_at: string;
+    drawn: boolean;
+    event: any; // Replace with proper type if known
+}
+
+// Helper function to get number value regardless of format
+const getNumberValue = (num: number | NumberObject): number => {
+    return typeof num === 'number' ? num : num.value;
+};
+
+const getBingoColumn = (number: number | NumberObject): string => {
+    const value = getNumberValue(number);
+    if (value <= 15) return 'B';
+    if (value <= 30) return 'I';
+    if (value <= 45) return 'N';
+    if (value <= 60) return 'G';
     return 'O';
 };
 
@@ -17,7 +32,7 @@ const CalledNumbersSidebar = () => {
     const { calledNumbers, currentNumber, lastCalledAt } = useBingoStore();
 
     // Organize numbers by column for display
-    const numbersByColumn = calledNumbers.reduce<Record<string, number[]>>(
+    const numbersByColumn = calledNumbers.reduce<Record<string, (number | NumberObject)[]>>(
         (acc, num) => {
             const column = getBingoColumn(num);
             if (!acc[column]) acc[column] = [];
@@ -29,10 +44,15 @@ const CalledNumbersSidebar = () => {
 
     // Format the relative time since the last number was called
     const getRelativeTime = () => {
-        if (!lastCalledAt) return '';
+        // Use the currentNumber's called_at if it's an object
+        const timestamp = currentNumber && typeof currentNumber === 'object'
+            ? (currentNumber as NumberObject).called_at
+            : lastCalledAt;
+
+        if (!timestamp) return '';
 
         try {
-            return formatDistanceToNow(new Date(lastCalledAt), {
+            return formatDistanceToNow(new Date(timestamp), {
                 addSuffix: true,
                 locale: es
             });
@@ -56,7 +76,7 @@ const CalledNumbersSidebar = () => {
                 {currentNumber && (
                     <div className="mb-4 text-center">
                         <div className="text-4xl font-bold mb-1 text-[#7C3AED]">
-                            {getBingoColumn(currentNumber)}-{currentNumber}
+                            {getBingoColumn(currentNumber)}-{getNumberValue(currentNumber)}
                         </div>
                         <div className="text-xs text-muted-foreground">
                             Llamado {getRelativeTime()}
@@ -73,19 +93,26 @@ const CalledNumbersSidebar = () => {
                             </div>
                             <div className="border border-t-0 rounded-b-md p-1">
                                 <div className="grid grid-cols-1 gap-1">
-                                    {numbers.sort((a, b) => a - b).map(num => (
-                                        <div
-                                            key={num}
-                                            className={`
-                        text-center py-1 text-sm rounded-sm
-                        ${currentNumber === num
-                                                    ? 'bg-[#7C3AED]/20 font-bold'
-                                                    : 'bg-gray-100'}
-                      `}
-                                        >
-                                            {num}
-                                        </div>
-                                    ))}
+                                    {numbers
+                                        .sort((a, b) => getNumberValue(a) - getNumberValue(b))
+                                        .map(num => {
+                                            const value = getNumberValue(num);
+                                            const key = typeof num === 'object' ? num.id : value;
+
+                                            return (
+                                                <div
+                                                    key={key}
+                                                    className={`
+                                                        text-center py-1 text-sm rounded-sm
+                                                        ${currentNumber && getNumberValue(currentNumber) === value
+                                                            ? 'bg-[#7C3AED]/20 font-bold'
+                                                            : 'bg-gray-100'}
+                                                    `}
+                                                >
+                                                    {value}
+                                                </div>
+                                            );
+                                        })}
                                 </div>
                             </div>
                         </div>

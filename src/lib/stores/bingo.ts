@@ -21,7 +21,7 @@ type BingoState = {
   isWinner: boolean;
   winnerInfo: WinnerInfo | null;
   lastCalledAt: string | null;
-  eventId: number | null;
+  eventId: string | null;
   
   // Existing methods
   initializeGame: (cards: number[][]) => void;
@@ -30,7 +30,7 @@ type BingoState = {
   setActiveCardIndex: (index: number) => void;
   
   // New methods
-  connectToGame: (eventId: number, token: string) => void;
+  connectToGame: (eventId: string, token: string) => void;
   disconnectFromGame: () => void;
   handleWebSocketMessage: (message: WebSocketMessage) => void;
   markWinner: (winnerInfo: WinnerInfo) => void;

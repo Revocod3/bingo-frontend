@@ -9,7 +9,7 @@ export function useEvents() {
   });
 }
 
-export function useEvent(id: number) {
+export function useEvent(id: string) {
   return useQuery({
     queryKey: ['event', id],
     queryFn: () => eventService.getEvent(id),

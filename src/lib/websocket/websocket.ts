@@ -26,7 +26,7 @@ class WebSocketService {
     this.url = config.wsUrl || config.apiUrl.replace(/^http/, 'ws');
   }
   
-  public connect(eventId: number, token: string, options: WebSocketOptions = {}) {
+  public connect(eventId: string, token: string, options: WebSocketOptions = {}) {
     if (typeof window === 'undefined') return false;
     
     this.options = options;
@@ -76,7 +76,7 @@ class WebSocketService {
         console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`);
         // We need to get the token again, this is just a placeholder
         const token = localStorage.getItem('authToken') || '';
-        this.connect(0, token, this.options); // Pass a default eventId of 0
+        this.connect('', token, this.options); // Pass a default eventId of 0
       }, this.reconnectInterval);
     }
   }

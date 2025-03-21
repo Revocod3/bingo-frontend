@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { numberService } from '@/lib/api/services';
 
-export function useNumbersByEvent(eventId: number) {
+export function useNumbersByEvent(eventId: string) {
   return useQuery({
     queryKey: ['numbers', eventId],
     queryFn: () => numberService.getNumbersByEvent(eventId),

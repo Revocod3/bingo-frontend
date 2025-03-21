@@ -15,16 +15,15 @@ import { FaArrowLeft } from 'react-icons/fa';
 export default function EventDetailPage() {
   const params = useParams<{ eventId: string }>();
   const eventId = params?.eventId || '';
-  const eventIdNumber = Number(eventId);
 
-  const { data: event, isLoading: eventLoading } = useEvent(eventIdNumber);
+  const { data: event, isLoading: eventLoading } = useEvent(eventId);
   const { data: user } = useCurrentUser();
   const { data: cards } = useBingoCards();
 
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
 
   // Filter cards for the current event
-  const eventCards = cards?.filter(card => card.event === eventIdNumber) || [];
+  const eventCards = cards?.filter(card => card.event === eventId) || [];
 
   if (eventLoading) {
     return (
@@ -46,18 +45,18 @@ export default function EventDetailPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto py-24 px-4">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold">{event.name}</h1>
           <p className="text-gray-500 mt-2">
-            {new Date(event.start_date).toLocaleString()}
+            {event.start ? new Date(event.start).toLocaleString() : ''}
           </p>
         </div>
 
         <div className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-4">
           <Link href="/dashboard" passHref>
-            <Button variant="outline" className="gap-2">
+            <Button variant="outline" className="gap-2 text-gray-600 cursor-pointer">
               <FaArrowLeft size={14} /> Dashboard
             </Button>
           </Link>
@@ -66,7 +65,7 @@ export default function EventDetailPage() {
 
           {eventCards.length > 0 && (
             <Link href={`/events/${eventId}/play`} passHref>
-              <Button className="bg-green-600 hover:bg-green-700 text-white">
+              <Button className="bg-green-600 hover:bg-green-700 text-white cursor-pointer">
                 Jugar Ahora
               </Button>
             </Link>
@@ -74,7 +73,7 @@ export default function EventDetailPage() {
 
           <Button
             onClick={() => setIsPurchaseModalOpen(true)}
-            className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white"
+            className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white cursor-pointer"
           >
             Comprar Cartones
           </Button>
@@ -105,8 +104,8 @@ export default function EventDetailPage() {
                     {card.is_winner ? 'Ganador' : 'En juego'}
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <Button className="w-full">View Card</Button>
+                <CardContent className='cursor-pointer'>
+                  <Button className="w-full" disabled>Ver cartón</Button>
                 </CardContent>
               </Card>
             ))}
@@ -116,7 +115,7 @@ export default function EventDetailPage() {
 
       {/* Purchase Modal */}
       <PurchaseCardsModal
-        eventId={eventIdNumber}
+        eventId={eventId}
         isOpen={isPurchaseModalOpen}
         onClose={() => setIsPurchaseModalOpen(false)}
       />

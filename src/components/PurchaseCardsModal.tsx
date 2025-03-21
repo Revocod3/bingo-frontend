@@ -14,7 +14,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FaCoins, FaPlus, FaMinus } from 'react-icons/fa';
 
 interface PurchaseCardsModalProps {
-  eventId: number;
+  eventId: string;
   isOpen: boolean;
   onClose: () => void;
   costPerCard?: number; // Default cost shown in the UI
@@ -88,7 +88,7 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] text-gray-800">
         <DialogHeader>
           <DialogTitle>Compra tus cartones</DialogTitle>
           <DialogDescription>
@@ -143,11 +143,11 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
 
         <div className="border-t pt-4 mt-4">
           <div className="flex justify-between">
-            <span>Cost per card:</span>
+            <span>Costo del carton:</span>
             <span>{costPerCard} monedas de prueba</span>
           </div>
           <div className="flex justify-between font-bold text-lg mt-2">
-            <span>Total:</span>
+            <span>Total ({quantity}) :</span>
             <span>{totalCost} monedas de prueba</span>
           </div>
         </div>

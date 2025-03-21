@@ -36,10 +36,12 @@ export interface User {
 
 // Event types
 export interface Event {
+  start?: string | number | Date;
+  end?: string | number | Date;
   id: number;
   name: string;
   prize: number;
-  start_date: string;  // Changed from start to start_date
+  start_date: string; 
   description?: string;
   end_date?: string;
   creator?: number;
@@ -48,7 +50,7 @@ export interface Event {
 export interface CreateEventRequest {
   name: string;
   prize: number;
-  start_date: string;  // Changed from start to start_date
+  start_date: string; 
   description?: string;
   end_date?: string;
 }
@@ -56,7 +58,7 @@ export interface CreateEventRequest {
 // BingoCard types
 export interface BingoCard {
   id: number;
-  event: number;
+  event: string;
   user: number;
   numbers: Record<string, BingoNumber>;
   is_winner: boolean;
@@ -64,13 +66,13 @@ export interface BingoCard {
 }
 
 export interface CreateBingoCardRequest {
-  event: number;
+  event: string;
 }
 
 // Number types
 export interface BingoNumber {
   id: number;
-  event: number;
+  event: string;
   value: number;
   called_at: string;
 }

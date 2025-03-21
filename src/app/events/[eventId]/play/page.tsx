@@ -17,10 +17,9 @@ import { FaDice, FaUndo, FaArrowLeft } from 'react-icons/fa';
 export default function GamePlayPage() {
   const params = useParams<{ eventId: string }>();
   const eventId = params?.eventId || '';
-  const eventIdNumber = Number(eventId);
-  const { data: event, isLoading: eventLoading } = useEvent(eventIdNumber);
+  const { data: event, isLoading: eventLoading } = useEvent(eventId);
   const { data: cards, isLoading: cardsLoading } = useBingoCards();
-  const { data: initialCalledNumbers } = useNumbersByEvent(eventIdNumber);
+  const { data: initialCalledNumbers } = useNumbersByEvent(eventId);
 
   const {
     callNumber,
@@ -34,15 +33,15 @@ export default function GamePlayPage() {
   } = useBingoStore();
 
   // Filter cards for the current event
-  const eventCards = cards?.filter(card => card.event === eventIdNumber) || [];
+  const eventCards = cards?.filter(card => card.event === eventId) || [];
 
   // Connect to WebSocket when page loads
   useEffect(() => {
     // Get the token from local storage
     const token = localStorage.getItem('authToken');
 
-    if (token && eventIdNumber && !isConnected) {
-      connectToGame(eventIdNumber, token);
+    if (token && eventId && !isConnected) {
+      connectToGame(eventId, token);
 
       // Initialize game with initial data
       initializeGame([]);
@@ -52,7 +51,7 @@ export default function GamePlayPage() {
     return () => {
       disconnectFromGame();
     };
-  }, [eventIdNumber, connectToGame, disconnectFromGame, isConnected, initializeGame]);
+  }, [eventId, connectToGame, disconnectFromGame, isConnected, initializeGame]);
 
   // Initialize game with called numbers from API if available
   useEffect(() => {
@@ -121,9 +120,9 @@ export default function GamePlayPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <CardCarousel cards={eventCards} eventId={eventIdNumber} />
-        </div>
+        {/* <div className="lg:col-span-2">
+          <CardCarousel cards={eventCards} eventId={eventId} />
+        </div> */}
 
         <div className="space-y-6">
           {/* Game Controls */}
@@ -166,7 +165,7 @@ export default function GamePlayPage() {
               <ul className="space-y-2">
                 <li className="flex justify-between">
                   <span>Premio:</span>
-                  <span className="font-bold">${event.prize.toFixed(2)}</span>
+                  <span className="font-bold">${event.prize}</span>
                 </li>
                 <li className="flex justify-between">
                   <span>Tus cartones:</span>
