@@ -1,11 +1,14 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { numberService } from '@/lib/api/services';
+import { numberService } from '@/src/lib/api/services';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
 
 export function useNumbersByEvent(eventId: string) {
   return useQuery({
     queryKey: ['numbers', eventId],
     queryFn: () => numberService.getNumbersByEvent(eventId),
-    enabled: !!eventId
+    enabled: !!eventId,
+    refetchInterval: 5000, // Refrescar cada 5 segundos
+    refetchIntervalInBackground: true // Refrescar incluso cuando la página no está activa
   });
 }
 
