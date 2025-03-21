@@ -119,9 +119,9 @@ export default function EventManagementPanel() {
                             </div>
                         </CardContent>
                         <CardFooter className="flex justify-between gap-2">
-                            <Link href={`/events/${event.id}`} passHref style={{ flexGrow: 1 }}>
+                            <Link href={`/admin/events/${event.id}/moderate`} passHref style={{ flexGrow: 1 }}>
                                 <Button variant="outline" className="w-full">
-                                    <FaEye className="mr-2" /> Ver
+                                    <FaEye className="mr-2" /> Moderar
                                 </Button>
                             </Link>
                             <Link href={`/admin/events/${event.id}/edit`} passHref style={{ flexGrow: 1 }}>

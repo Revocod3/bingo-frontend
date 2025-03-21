@@ -10,6 +10,7 @@ import {
   CreateEventRequest,
   BingoCard,
   CreateBingoCardRequest,
+  BingoNumber,
 } from './types';
 
 // Auth services
@@ -135,15 +136,39 @@ export const bingoCardService = {
 
 // Number services
 export const numberService = {
-  getNumbersByEvent: async (eventId: string): Promise<number[]> => {
-    const response = await apiClient.get<number[]>(`/api/numbers/by_event/?event_id=${eventId}`);
+  getNumbersByEvent: async (eventId: string): Promise<BingoNumber[]> => {
+    // Usando el endpoint correcto según views.py -> by_event action
+    const response = await apiClient.get<BingoNumber[]>(`/api/numbers/by_event/?event_id=${eventId}`);
     return response.data;
   },
   
-  drawNumber: async (): Promise<number> => {
-    const response = await apiClient.get<number>('/api/numbers/draw/');
+  drawNumber: async (): Promise<BingoNumber> => {
+    const response = await apiClient.get<BingoNumber>('/api/numbers/draw/');
     return response.data;
-  }
+  },
+  
+  // Corrige la implementación para usar el endpoint correcto
+  postByEvent: async (eventId: string, number: number): Promise<BingoNumber> => {
+    // Según el backend, deberíamos crear un número en el NumberViewSet
+    const response = await apiClient.post<BingoNumber>(`/api/numbers/`, {
+      event_id: eventId,
+      event: eventId,
+      value: number
+    });
+    return response.data;
+  },
+  
+  // Nuevo método para eliminar el último número llamado en un evento
+  deleteLastNumberByEvent: async (eventId: string): Promise<void> => {
+    const response = await apiClient.delete(`/api/numbers/delete_last/?event_id=${eventId}`);
+    return response.data;
+  },
+  
+  // Nuevo método para resetear todos los números de un evento
+  resetNumbersByEvent: async (eventId: string): Promise<void> => {
+    const response = await apiClient.delete(`/api/numbers/reset_event/?event_id=${eventId}`);
+    return response.data;
+  },
 };
 
 // Test coin services
