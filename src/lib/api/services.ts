@@ -133,10 +133,20 @@ export const bingoCardService = {
     return response.data;
   },
 
-  claimBingo: async ({ cardId, pattern = 'bingo' }: { cardId: number; pattern?: string }) => {
-    const response = await apiClient.post('/api/cards/claim/', { 
-      card_id: cardId,
-      pattern
+  claimBingo: async ({ cardId }: { cardId: number | string }): Promise<any> => {
+    // Ensure cardId is valid and properly formatted
+    if (cardId === null || cardId === undefined) {
+      throw new Error('Card ID is required');
+    }
+    
+    // Convert to number and validate
+    const numericCardId = Number(cardId);
+    if (isNaN(numericCardId)) {
+      throw new Error('Invalid card ID format');
+    }
+    
+    const response = await apiClient.post('/api/cards/claim/', {
+      card_id: numericCardId
     });
     return response.data;
   }

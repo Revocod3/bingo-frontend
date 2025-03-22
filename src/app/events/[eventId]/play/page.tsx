@@ -33,7 +33,6 @@ export default function GamePlayPage() {
   const [previousNumber, setPreviousNumber] = useState<number | null>(null);
   // Auto-refresh interval reference
   const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const [selectedPattern, setSelectedPattern] = useState<string>('bingo');
   
   // Add this array of available patterns
   const availablePatterns = [
@@ -147,8 +146,7 @@ export default function GamePlayPage() {
       console.log('Called numbers:', calledNumbers);
       
       const result = await claimBingoMutation.mutateAsync({ 
-        cardId, 
-        pattern: selectedPattern 
+        cardId
       });
       
       if (result.success) {
@@ -396,19 +394,6 @@ export default function GamePlayPage() {
             <DialogTitle>Confirmar Bingo</DialogTitle>
           </DialogHeader>
           <div className="py-4">
-            <p className="mb-2">Selecciona el patrón que has completado:</p>
-            <div className="space-y-2 mb-4 max-h-40 overflow-y-auto">
-              {availablePatterns.map(pattern => (
-                <div
-                  key={pattern.id}
-                  className={`p-2 border rounded-md cursor-pointer ${selectedPattern === pattern.id ? 'border-blue-500 bg-blue-50' : ''}`}
-                  onClick={() => setSelectedPattern(pattern.id)}
-                >
-                  {pattern.name}
-                </div>
-              ))}
-            </div>
-            
             <p className="mb-2 mt-4">Selecciona el cartón con el que has obtenido bingo:</p>
             <div className="space-y-2 max-h-40 overflow-y-auto">
               {eventCards.map(card => (
@@ -425,7 +410,7 @@ export default function GamePlayPage() {
               <Button
                 className="bg-green-600 hover:bg-green-700"
                 onClick={() => submitBingoClaim(selectedCard!)}
-                disabled={!selectedCard || !selectedPattern || claimSubmitting}
+                disabled={!selectedCard || claimSubmitting}
               >
                 {claimSubmitting ? (
                   <>

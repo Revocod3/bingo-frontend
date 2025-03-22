@@ -55,8 +55,12 @@ export function useClaimBingo() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: ({ cardId, pattern }: { cardId: string | number; pattern: string }) => 
-      bingoCardService.claimBingo({ cardId: Number(cardId), pattern }),
+    mutationFn: ({ cardId }: { cardId: string | number }) => {
+      if (!cardId) {
+        throw new Error('Card ID is required');
+      }
+      return bingoCardService.claimBingo({ cardId });
+    },
     onSuccess: () => {
       // Refresh cards data after successful claim
       queryClient.invalidateQueries({ queryKey: ['bingoCards'] });
