@@ -85,7 +85,7 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => {
+    <Dialog open={isOpen} onOpenChange={() => {
       // Only allow closing if not in the middle of a purchase
       if (!purchaseCardsMutation.isPending) {
         onClose();
