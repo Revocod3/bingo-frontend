@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { bingoCardService } from '@/lib/api/services';
+import { ApiError } from '@/src/lib/api/types';
 
 
 export function useBingoCards() {
@@ -65,10 +66,16 @@ export function useClaimBingo() {
       // Refresh cards data after successful claim
       queryClient.invalidateQueries({ queryKey: ['bingoCards'] });
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       // Log detailed error information
-      console.error('Claim Bingo mutation error:', error);
-      console.error('Response data:', error.response?.data);
+      console.error('Error claiming bingo:', error);
+
+      // Cast to ApiError type to access properties safely
+      const apiError = error as ApiError;
+      // More detailed error handling
+      const errorMessage = apiError.response?.data?.message ||
+        apiError.message ||
+        'Error al reclamar bingo. Por favor intenta nuevamente.';
     }
   });
 }

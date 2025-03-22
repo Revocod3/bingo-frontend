@@ -11,6 +11,7 @@ import {
   BingoCard,
   CreateBingoCardRequest,
   BingoNumber,
+  BingoClaimResponse,
 } from './types';
 
 // Auth services
@@ -133,7 +134,7 @@ export const bingoCardService = {
     return response.data;
   },
 
-  claimBingo: async ({ cardId }: { cardId: number | string }): Promise<any> => {
+  claimBingo: async ({ cardId }: { cardId: number | string }): Promise<BingoClaimResponse> => {
     // Ensure cardId is valid and properly formatted
     if (cardId === null || cardId === undefined) {
       throw new Error('Card ID is required');

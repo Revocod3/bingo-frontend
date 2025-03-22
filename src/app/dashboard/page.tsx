@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TestCoinBadge from '@/components/TestCoinBadge';
 import BingoCard from '@/components/BingoCard';
 import { FaGamepad, FaCalendarAlt, FaTrophy, FaCogs } from 'react-icons/fa';
-import { BingoCard as BingoCardType, Event } from '@/src/lib/api/types';
+import { Event } from '@/src/lib/api/types';
 import { getCardNumbers } from '@/src/lib/utils';
 
 export default function DashboardPage() {

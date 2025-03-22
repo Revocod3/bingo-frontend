@@ -1,4 +1,5 @@
 import apiClient from '../client';
+import { BingoCard } from '../types';
 
 export const bingoCardService = {
   getBingoCards: async () => {
@@ -11,7 +12,7 @@ export const bingoCardService = {
     return response.data;
   },
   
-  createBingoCard: async (data: any) => {
+  createBingoCard: async (data: BingoCard) => {
     const response = await apiClient.post('/api/cards/', data);
     return response.data;
   },

@@ -20,6 +20,23 @@ import { NumberCallNotification } from '@/components/NumberCallNotification';
 import { useClaimBingo } from '@/hooks/api/useBingoCards';
 import { toast } from 'sonner';
 
+// Define interfaces for type safety
+interface CalledNumberData {
+  value?: number;
+  number?: number;
+  called_at?: string;
+  created_at?: string;
+}
+
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+  message?: string;
+}
+
 export default function GamePlayPage() {
   const params = useParams<{ eventId: string }>();
   const eventId = params?.eventId || '';
@@ -33,15 +50,6 @@ export default function GamePlayPage() {
   const [previousNumber, setPreviousNumber] = useState<number | null>(null);
   // Auto-refresh interval reference
   const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  
-  // Add this array of available patterns
-  const availablePatterns = [
-    { id: 'bingo', name: 'Bingo (Línea completa)' },
-    { id: 'blackout', name: 'Blackout (Cartón completo)' },
-    { id: 'corners', name: 'Esquinas (4 esquinas)' },
-    { id: 'x', name: 'X (Diagonal X)' },
-    { id: 'cross', name: 'Cruz (Cruz central)' }
-  ];
 
   // Use ReactQuery with refetchInterval for real-time updates (more aggressive polling)
   useEffect(() => {
@@ -49,7 +57,7 @@ export default function GamePlayPage() {
     if (refreshIntervalRef.current) {
       clearInterval(refreshIntervalRef.current);
     }
-    
+
     // Set up polling to check for new numbers more frequently (every 3 seconds)
     refreshIntervalRef.current = setInterval(() => {
       queryClient.invalidateQueries({ queryKey: ['numbers', eventId] });
@@ -83,44 +91,47 @@ export default function GamePlayPage() {
   // Process called numbers from API to ensure proper synchronization
   useEffect(() => {
     if (!calledNumbersData || !calledNumbersData.length) return;
-    
+
     // Extract the values of numbers from API response
-    const apiNumbers = calledNumbersData.map((num: any) => num.value || num.number);
-    
+    const apiNumbers = calledNumbersData.map((num: CalledNumberData) => num.value || num.number);
+
     // Sort called numbers by timestamp if available
-    const sortedCalledNumbers = [...calledNumbersData].sort((a: any, b: any) => {
+    const sortedCalledNumbers = [...calledNumbersData].sort((a: CalledNumberData, b: CalledNumberData) => {
       // Try to sort by called_at timestamp or creation timestamp
       const aTime = a.called_at || a.created_at || 0;
       const bTime = b.called_at || b.created_at || 0;
-      
+
       if (aTime && bTime) {
         return new Date(bTime).getTime() - new Date(aTime).getTime();
       }
       return 0;
     });
-    
+
     // Get the most recent number
     if (sortedCalledNumbers.length > 0) {
-      const newLastCalledNumber = sortedCalledNumbers[0].value || (sortedCalledNumbers[0] as any).number;
-      
+      const firstNumber = sortedCalledNumbers[0];
+      const newLastCalledNumber = firstNumber?.value ?? null;
+
       // Only update if it's a new number
-      if (newLastCalledNumber !== lastCalledNumber) {
+      if (newLastCalledNumber !== null && newLastCalledNumber !== lastCalledNumber) {
         setPreviousNumber(lastCalledNumber);
         setLastCalledNumber(newLastCalledNumber);
       }
     }
-    
+
     // Initialize game with all numbers from API
     // This replaces the previous less reliable approach
     if (apiNumbers.length > 0) {
       // First initialize with an empty array (reset)
       initializeGame([]);
-      
+
       // Then add each number to the store with proper timestamps
-      calledNumbersData.forEach((numData: any) => {
+      calledNumbersData.forEach((numData: CalledNumberData) => {
         const numValue = numData.value || numData.number;
         const calledAt = numData.called_at || numData.created_at || new Date().toISOString();
-        addCalledNumber(numValue, calledAt);
+        if (numValue) {
+          addCalledNumber(numValue, calledAt);
+        }
       });
     }
   }, [calledNumbersData, initializeGame, addCalledNumber, lastCalledNumber]);
@@ -134,21 +145,21 @@ export default function GamePlayPage() {
   // Add this hook
   const claimBingoMutation = useClaimBingo();
   const [claimSubmitting, setClaimSubmitting] = useState(false); // Add loading state
-  
+
   // Submit bingo claim
   const submitBingoClaim = async (cardId: number) => {
     try {
       setClaimSubmitting(true);
-      
+
       // Log the card details before submission for debugging
       const cardToSubmit = eventCards.find(card => card.id === cardId);
       console.log('Attempting to claim bingo with card:', cardToSubmit);
       console.log('Called numbers:', calledNumbers);
-      
-      const result = await claimBingoMutation.mutateAsync({ 
+
+      const result = await claimBingoMutation.mutateAsync({
         cardId
       });
-      
+
       if (result.success) {
         toast.success(result.message || '¡Bingo reclamado con éxito!');
         setShowClaimModal(false);
@@ -158,13 +169,15 @@ export default function GamePlayPage() {
         toast.error(errorMsg);
         console.error('Bingo claim rejected:', result);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error claiming bingo:', error);
-      
+
+      // Cast to ApiError type to access properties safely
+      const apiError = error as ApiError;
       // More detailed error handling
-      const errorMessage = error.response?.data?.message || 
-                          error.message || 
-                          'Error al reclamar bingo. Por favor intenta nuevamente.';
+      const errorMessage = apiError.response?.data?.message ||
+        apiError.message ||
+        'Error al reclamar bingo. Por favor intenta nuevamente.';
       toast.error(errorMessage);
     } finally {
       setClaimSubmitting(false);
@@ -212,7 +225,7 @@ export default function GamePlayPage() {
     <div className="container mx-auto pt-[92px] px-4">
       {/* Notification component for new numbers */}
       <NumberCallNotification number={lastCalledNumber} previousNumber={previousNumber} />
-      
+
       <div className="flex justify-between items-center mb-2">
         <h1 className="text-3xl font-bold">{event.name}</h1>
         <div className="flex gap-2 text-gray-500">
@@ -237,7 +250,7 @@ export default function GamePlayPage() {
             {!isConnected ? '✓ Conectado' : '✗ Desconectado'}
           </span>
         </div>
-        
+
         <div className="flex flex-col items-center">
           <p className="text-sm text-gray-500">Último número llamado:</p>
           {lastCalledNumber ? (
@@ -251,7 +264,7 @@ export default function GamePlayPage() {
             <span className="text-lg font-medium text-gray-400">Ninguno aún</span>
           )}
         </div>
-        
+
         <div className="flex flex-col items-center sm:items-end">
           <p className="text-sm text-gray-500">Números llamados:</p>
           <span className="font-bold text-lg text-indigo-700">{calledNumbers.length}/75</span>
@@ -355,9 +368,9 @@ export default function GamePlayPage() {
                 <BingoCard cardId={card.id} numbers={getCardNumbers(card)} active={true} />
                 <div className="mt-2 flex justify-between items-center px-2">
                   <p className="font-thin text-xs text-gray-500">Cartón #{card.id}</p>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
+                  <Button
+                    size="sm"
+                    variant="outline"
                     className="text-xs border-green-500 text-green-600 hover:bg-green-50"
                     onClick={() => {
                       setSelectedCard(card.id);
@@ -370,7 +383,7 @@ export default function GamePlayPage() {
               </div>
             ))}
           </div>
-          
+
           {/* Lista de números llamados en versión compacta */}
           <div className="mt-8 p-4 bg-white rounded-lg shadow-sm border border-indigo-100">
             <h3 className="text-lg font-semibold mb-2 text-indigo-700">Números Llamados</h3>

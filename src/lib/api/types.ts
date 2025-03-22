@@ -95,6 +95,12 @@ export interface ApiError {
   message?: string;
 }
 
+export interface BingoClaimResponse {
+  success: boolean;
+  message: string;
+  card: BingoCard;
+}
+
 // WebSocket message types
 export interface WebSocketEventInfo {
   id: number;

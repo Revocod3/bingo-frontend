@@ -4,12 +4,10 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import AdminRouteGuard from '@/components/AdminRouteGuard';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { FaCalendarPlus, FaListAlt, FaUserCog, FaChartBar } from 'react-icons/fa';
-import { useEvents } from '@/hooks/api/useEvents';
-import { formatDistanceToNow } from 'date-fns';
+import { FaCalendarPlus, FaUserCog, FaChartBar } from 'react-icons/fa';
 import TestCoinBadge from '@/components/TestCoinBadge';
 import EventManagementPanel from '@/components/admin/EventManagementPanel';
 

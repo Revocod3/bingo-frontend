@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
-import type { BingoCard as BingoCardType } from '@/src/lib/api/types';
+import type { ApiError, BingoCard as BingoCardType } from '@/src/lib/api/types';
 
 /**
  * Combines multiple class names or conditional class names and merges Tailwind classes properly
@@ -16,7 +16,7 @@ export const getCardNumbers = (card: BingoCardType): number[] => {
     }
     return Object.entries(card.numbers)
       .filter(([key]) => key !== 'free_space')
-      .flatMap(([_, value]) =>
+      .flatMap(([, value]) =>
         Array.isArray(value)
           ? value
           : typeof value === 'object' && value !== null
@@ -32,39 +32,17 @@ export const getCardNumbers = (card: BingoCardType): number[] => {
 /**
  * Extracts an appropriate error message from API error responses
  */
-export function getErrorMessage(error: any): string {
+export function getErrorMessage(error: unknown): string {
   // Check for API response with message
-  if (error.response?.data?.message) {
-    return error.response.data.message;
-  }
+    console.error('Error claiming bingo:', error);
   
-  // Check for error message directly on error object
-  if (error.message) {
-    return error.message;
-  }
-  
-  // Check for string error
-  if (typeof error === 'string') {
-    return error;
-  }
-  
-  // Default message
-  return 'Ocurrió un error inesperado. Por favor intenta nuevamente.';
-}
+        // Cast to ApiError type to access properties safely
+        const apiError = error as ApiError;
+        // More detailed error handling
+        const errorMessage = 
+          typeof apiError.response?.data?.message === 'string' ? apiError.response.data.message :
+          typeof apiError.message === 'string' ? apiError.message :
+          'Ocurrió un error inesperado. Por favor intenta nuevamente.';
 
-export function isPatternPotentiallyValid(cardNumbers: any, calledNumbers: number[], pattern: string): boolean {
-  // Simple check to avoid obviously invalid claims
-  // This doesn't replace server-side validation, just improves UX
-  
-  switch (pattern) {
-    case 'bingo':
-      // Check if at least 5 numbers in any row/column are called
-      return true; // Implement specific checks as needed
-    case 'blackout':
-      // For blackout, at least 24 numbers should be called (25 minus free space)
-      return calledNumbers.length >= 24;
-    // Add other pattern checks as needed
-    default:
-      return true;
-  }
+        return errorMessage;
 }

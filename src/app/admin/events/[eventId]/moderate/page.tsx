@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { FaArrowLeft, FaTrash, FaUndo } from 'react-icons/fa';
 import { toast } from 'sonner';
+import { BingoNumber } from '@/src/lib/api/types';
 
 export default function ModerateEventPage() {
     const params = useParams<{ eventId: string }>();
@@ -18,30 +19,30 @@ export default function ModerateEventPage() {
 
     const { data: event, isLoading: eventLoading } = useEvent(eventId);
     const { data: calledNumbersData, isLoading: numbersLoading } = useNumbersByEvent(eventId);
-    
+
     const postNumberMutation = usePostNumbersByEvent(eventId);
     const deleteLastNumberMutation = useDeleteLastNumber(eventId);
     const resetEventNumbersMutation = useResetEventNumbers(eventId);
-    
+
     const [calledNumbers, setCalledNumbers] = useState<number[]>([]);
     const [lastCalledNumber, setLastCalledNumber] = useState<number | null>(null);
-    
+
     // Estados para los modales de confirmación
     const [showDeleteLastModal, setShowDeleteLastModal] = useState(false);
     const [showResetAllModal, setShowResetAllModal] = useState(false);
-    
+
     // Referencia para rastrear si el cambio de lastCalledNumber vino de un clic del usuario
     const isManualUpdate = useRef(false);
-    
+
     // Columnas del bingo (B, I, N, G, O)
     const columns = ['B', 'I', 'N', 'G', 'O'];
 
     useEffect(() => {
         if (calledNumbersData) {
             // Extraer los valores de los números llamados
-            const numberValues = calledNumbersData.map((num: any) => num.value);
+            const numberValues = calledNumbersData.map((num: BingoNumber) => num.value);
             setCalledNumbers(numberValues);
-            
+
             // Solo actualizamos el último número desde la API si no hay una actualización manual en progreso
             if (!isManualUpdate.current && calledNumbersData.length > 0) {
                 // Ordenar los números por fecha de creación (si está disponible) o por ID
@@ -57,12 +58,12 @@ export default function ModerateEventPage() {
                     // Si no hay forma confiable de ordenar, devolver sin cambios
                     return 0;
                 });
-                
+
                 // El último número es el más reciente en el array ordenado
                 const mostRecentNumber = sortedNumbers[sortedNumbers.length - 1].value;
                 setLastCalledNumber(mostRecentNumber);
             }
-            
+
             // Resetear la bandera después de procesar los datos
             isManualUpdate.current = false;
         }
@@ -70,12 +71,12 @@ export default function ModerateEventPage() {
 
     // Genera todos los números del bingo (B1-O75)
     const generateBingoNumbers = () => {
-        const numbers: {letter: string, number: number}[] = [];
-        
+        const numbers: { letter: string, number: number }[] = [];
+
         columns.forEach((letter, columnIndex) => {
             const start = columnIndex * 15 + 1;
             const end = start + 14;
-            
+
             for (let i = start; i <= end; i++) {
                 numbers.push({
                     letter,
@@ -83,7 +84,7 @@ export default function ModerateEventPage() {
                 });
             }
         });
-        
+
         return numbers;
     };
 
@@ -96,16 +97,16 @@ export default function ModerateEventPage() {
                 toast.error(`El número ${number} ya ha sido llamado`);
                 return;
             }
-            
+
             // Establecer que estamos haciendo una actualización manual
             isManualUpdate.current = true;
-            
+
             // Actualizar inmediatamente el último número llamado para UI
             setLastCalledNumber(number);
-            
+
             // Llamar a la API para seleccionar este número
             await postNumberMutation.mutateAsync(number);
-            
+
             toast.success(`Número ${number} llamado exitosamente`);
         } catch (error) {
             // Si hay un error, reseteamos la bandera
@@ -123,7 +124,7 @@ export default function ModerateEventPage() {
             }
 
             await deleteLastNumberMutation.mutateAsync();
-            
+
             toast.success('Último número eliminado correctamente');
             setShowDeleteLastModal(false);
         } catch (error) {
@@ -141,10 +142,10 @@ export default function ModerateEventPage() {
             }
 
             await resetEventNumbersMutation.mutateAsync();
-            
+
             // Reset lastCalledNumber when all numbers are reset
             setLastCalledNumber(null);
-            
+
             toast.success('Todos los números han sido reseteados');
             setShowResetAllModal(false);
         } catch (error) {
@@ -204,19 +205,19 @@ export default function ModerateEventPage() {
                             <p>
                                 <strong>Números llamados:</strong> {calledNumbers.length}/75
                             </p>
-                            
+
                             {/* Botones para acciones de gestión de números */}
                             <div className="flex gap-3 mt-4">
-                                <Button 
-                                    variant="outline" 
+                                <Button
+                                    variant="outline"
                                     className="gap-2 text-amber-600 border-amber-600 hover:bg-amber-50"
                                     onClick={() => setShowDeleteLastModal(true)}
                                     disabled={calledNumbers.length === 0 || deleteLastNumberMutation.isPending}
                                 >
                                     <FaUndo size={14} /> Eliminar último
                                 </Button>
-                                <Button 
-                                    variant="outline" 
+                                <Button
+                                    variant="outline"
                                     className="gap-2 text-red-600 border-red-600 hover:bg-red-50"
                                     onClick={() => setShowResetAllModal(true)}
                                     disabled={calledNumbers.length === 0 || resetEventNumbersMutation.isPending}
@@ -294,26 +295,26 @@ export default function ModerateEventPage() {
                         </div>
                     </CardContent>
                 </Card>
-                
+
                 {/* Modal de confirmación para eliminar último número */}
                 <Dialog open={showDeleteLastModal} onOpenChange={setShowDeleteLastModal}>
                     <DialogContent className="sm:max-w-[425px] text-gray-800">
                         <DialogHeader>
                             <DialogTitle>Confirmar eliminación</DialogTitle>
                             <DialogDescription>
-                                ¿Estás seguro de que deseas eliminar el último número llamado? 
+                                ¿Estás seguro de que deseas eliminar el último número llamado?
                                 Esta acción no se puede deshacer.
                             </DialogDescription>
                         </DialogHeader>
                         <DialogFooter className="flex justify-between mt-4">
-                            <Button 
-                                variant="outline" 
+                            <Button
+                                variant="outline"
                                 onClick={() => setShowDeleteLastModal(false)}
                                 disabled={deleteLastNumberMutation.isPending}
                             >
                                 Cancelar
                             </Button>
-                            <Button 
+                            <Button
                                 variant="destructive"
                                 onClick={handleDeleteLastNumber}
                                 disabled={deleteLastNumberMutation.isPending}
@@ -323,26 +324,26 @@ export default function ModerateEventPage() {
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
-                
+
                 {/* Modal de confirmación para resetear todos los números */}
                 <Dialog open={showResetAllModal} onOpenChange={setShowResetAllModal}>
                     <DialogContent className="sm:max-w-[425px] text-gray-800">
                         <DialogHeader>
                             <DialogTitle>Confirmar reseteo</DialogTitle>
                             <DialogDescription>
-                                ¿Estás seguro de que deseas resetear todos los números llamados? 
+                                ¿Estás seguro de que deseas resetear todos los números llamados?
                                 Esta acción eliminará todos los números llamados y no se puede deshacer.
                             </DialogDescription>
                         </DialogHeader>
                         <DialogFooter className="flex justify-between mt-4">
-                            <Button 
-                                variant="outline" 
+                            <Button
+                                variant="outline"
                                 onClick={() => setShowResetAllModal(false)}
                                 disabled={resetEventNumbersMutation.isPending}
                             >
                                 Cancelar
                             </Button>
-                            <Button 
+                            <Button
                                 variant="destructive"
                                 onClick={handleResetAllNumbers}
                                 disabled={resetEventNumbersMutation.isPending}
