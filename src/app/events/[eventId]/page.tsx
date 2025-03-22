@@ -23,9 +23,10 @@ export default function EventDetailPage() {
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
 
   // Filter cards for the current event AND current user (double safety)
+  console.log('cards', cards);
+  console.log('user', user);
   const eventCards = cards?.filter(card => 
-    card.event === eventId && 
-    user && card.user === user.id
+    card.event === eventId
   ) || [];
 
   if (eventLoading) {

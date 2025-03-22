@@ -28,14 +28,11 @@ export default function DashboardPage() {
 
   // Get user's cards grouped by event
   const cardsByEvent = cards?.reduce((acc, card) => {
-    // Verify that we're only processing cards for the current user (extra safety)
-    if (user && card.user === user.id) {
-      const eventId = String(card.event);
-      if (!acc[eventId]) {
-        acc[eventId] = [];
-      }
-      acc[eventId].push(card);
+    const eventId = String(card.event);
+    if (!acc[eventId]) {
+      acc[eventId] = [];
     }
+    acc[eventId].push(card);
     return acc;
   }, {} as Record<string, typeof cards>) || {};
 
