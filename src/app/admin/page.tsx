@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import AdminRouteGuard from '@/components/AdminRouteGuard';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,7 +12,6 @@ import EventManagementPanel from '@/components/admin/EventManagementPanel';
 
 export default function AdminPage() {
     const [activeTab, setActiveTab] = useState('events');
-    const router = useRouter();
 
     return (
         <AdminRouteGuard>

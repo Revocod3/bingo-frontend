@@ -67,15 +67,10 @@ export function useClaimBingo() {
       queryClient.invalidateQueries({ queryKey: ['bingoCards'] });
     },
     onError: (error: unknown) => {
-      // Log detailed error information
-      console.error('Error claiming bingo:', error);
-
       // Cast to ApiError type to access properties safely
       const apiError = error as ApiError;
       // More detailed error handling
-      const errorMessage = apiError.response?.data?.message ||
-        apiError.message ||
-        'Error al reclamar bingo. Por favor intenta nuevamente.';
+      console.error('Error code:', apiError);
     }
   });
 }
