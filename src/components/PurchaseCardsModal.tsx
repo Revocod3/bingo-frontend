@@ -62,10 +62,8 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
 
       if (result.success) {
         setSuccessMessage(`Successfully purchased ${quantity} bingo card${quantity !== 1 ? 's' : ''}!`);
-        setTimeout(() => {
-          onClose();
-          setSuccessMessage(null);
-        }, 2000);
+        // Don't automatically close and don't set a timer
+        // This prevents the possible race condition causing duplicate purchases
       } else {
         setErrorMessage(result.message || "Failed to purchase cards");
       }
@@ -87,7 +85,12 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={(open) => {
+      // Only allow closing if not in the middle of a purchase
+      if (!purchaseCardsMutation.isPending) {
+        onClose();
+      }
+    }}>
       <DialogContent className="sm:max-w-[425px] text-gray-800">
         <DialogHeader>
           <DialogTitle>Compra tus cartones</DialogTitle>
@@ -165,7 +168,7 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
             disabled={!hasEnoughCoins || purchaseCardsMutation.isPending}
             className="bg-[#7C3AED] hover:bg-[#6D28D9]"
           >
-            {purchaseCardsMutation.isPending ? 'Procesando...' : `Compra de ${quantity} Carton ${quantity !== 1 ? 'es' : ''}`}
+            {purchaseCardsMutation.isPending ? 'Procesando...' : `Compra de ${quantity} Carton${quantity !== 1 ? 'es' : ''}`}
           </Button>
         </DialogFooter>
       </DialogContent>

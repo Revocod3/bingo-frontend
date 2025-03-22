@@ -4,6 +4,41 @@ import { memo, useState, useEffect } from 'react';
 import { useBingoStore } from '@/lib/stores/bingo';
 import websocketService from '@/lib/websocket/websocket';
 
+// Function to parse the bingo card numbers properly
+export function parseCardNumbers(numbers: string[]): { letter: string, number: number }[] {
+  return numbers.map(item => {
+    // Extract the letter and number parts
+    const letter = item.substring(0, 1);
+    const number = parseInt(item.substring(1), 10);
+    return { letter, number };
+  });
+}
+
+// Ensure numbers are sorted correctly by column (BINGO order)
+export function organizeCardByColumn(parsedNumbers: { letter: string, number: number }[]) {
+  const columns: Record<string, number[]> = {
+    'B': [],
+    'I': [],
+    'N': [],
+    'G': [],
+    'O': []
+  };
+  
+  // Sort into columns
+  parsedNumbers.forEach(item => {
+    if (columns[item.letter]) {
+      columns[item.letter].push(item.number);
+    }
+  });
+  
+  // Sort numbers within each column
+  for (const letter in columns) {
+    columns[letter].sort((a, b) => a - b);
+  }
+  
+  return columns;
+}
+
 interface BingoCardProps {
   cardId: number;
   numbers: number[];
