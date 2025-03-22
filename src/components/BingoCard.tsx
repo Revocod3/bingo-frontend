@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useState, useEffect } from 'react';
+import { memo, useState, useEffect, useMemo } from 'react';
 import { useBingoStore } from '@/lib/stores/bingo';
 import websocketService from '@/lib/websocket/websocket';
 
@@ -41,7 +41,7 @@ export function organizeCardByColumn(parsedNumbers: { letter: string, number: nu
 
 interface BingoCardProps {
   cardId: number;
-  numbers: number[];
+  numbers: number[] | string[];
   active?: boolean;
 }
 
@@ -53,18 +53,58 @@ export const BingoCard = memo(function BingoCard({
   const { calledNumbers, currentNumber, eventId } = useBingoStore();
   const [selectedCells, setSelectedCells] = useState<boolean[]>(Array(25).fill(false));
 
+  // Process and organize numbers correctly
+  const processedCard = useMemo(() => {
+    // Check if numbers are already in string format with letter prefixes
+    const isStringNumbers = numbers.length > 0 && typeof numbers[0] === 'string';
+    
+    if (isStringNumbers) {
+      // Parse the string numbers and organize by column
+      const parsedNumbers = parseCardNumbers(numbers as string[]);
+      return organizeCardByColumn(parsedNumbers);
+    } else {
+      // If they're just numbers, distribute them in order (legacy support)
+      // This shouldn't be used anymore but kept for backward compatibility
+      const result: Record<string, number[]> = {
+        'B': (numbers as number[]).slice(0, 5),
+        'I': (numbers as number[]).slice(5, 10),
+        'N': (numbers as number[]).slice(10, 15),
+        'G': (numbers as number[]).slice(15, 20),
+        'O': (numbers as number[]).slice(20, 25),
+      };
+      return result;
+    }
+  }, [numbers]);
+
+  // Create flat array of numbers in correct order for display
+  const displayNumbers = useMemo(() => {
+    const result: number[] = [];
+    for (let i = 0; i < 5; i++) { // For each row
+      result.push(processedCard['B'][i] || 0);
+      result.push(processedCard['I'][i] || 0);
+      result.push(processedCard['N'][i] || 0);
+      result.push(processedCard['G'][i] || 0);
+      result.push(processedCard['O'][i] || 0);
+    }
+    // Set the middle spot (index 12) to 0 for FREE space
+    if (result.length > 12) {
+      result[12] = 0;
+    }
+    return result;
+  }, [processedCard]);
+
   // Auto-select cells that match called numbers
   useEffect(() => {
     setSelectedCells(prev => {
       const newSelection = [...prev];
-      numbers.forEach((num, idx) => {
+      displayNumbers.forEach((num, idx) => {
         if (calledNumbers.includes(num) || idx === 12) { // 12 is the center FREE spot
           newSelection[idx] = true;
         }
       });
       return newSelection;
     });
-  }, [numbers, calledNumbers]);
+  }, [displayNumbers, calledNumbers]);
 
   // Check for potential bingo
   useEffect(() => {
@@ -130,7 +170,7 @@ export const BingoCard = memo(function BingoCard({
         </div>
       ))}
 
-      {numbers.map((num, index) => {
+      {displayNumbers.map((num, index) => {
         const isNewCall = isNewlyCalled(num);
         const isSelected = selectedCells[index];
         const isCenter = index === 12; // Center spot (free space)
