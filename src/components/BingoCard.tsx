@@ -7,6 +7,7 @@ import { useBingoStore } from '@/lib/stores/bingo';
 export function parseCardNumbers(numbers: string[]): { letter: string, number: number }[] {
   return numbers.map(item => {
     // Extract the letter and number parts
+    console.log(item);
     const letter = item.substring(0, 1);
     const number = parseInt(item.substring(1), 10);
     return { letter, number };
@@ -30,9 +31,11 @@ export function organizeCardByColumn(parsedNumbers: { letter: string, number: nu
     }
   });
 
-  // Sort numbers within each column
+  // Sort numbers within each column, except for N column
   for (const letter in columns) {
-    columns[letter].sort((a, b) => a - b);
+    if (letter !== 'N') {
+      columns[letter].sort((a, b) => a - b);
+    }
   }
 
   return columns;
@@ -54,35 +57,31 @@ export const BingoCard = memo(function BingoCard({
 
   // Process and organize numbers correctly
   const processedCard = useMemo(() => {
-    const isStringNumbers = numbers.length > 0 && typeof numbers[0] === 'string';
-
-    if (isStringNumbers) {
-      const parsedNumbers = parseCardNumbers(numbers as string[]);
-      return organizeCardByColumn(parsedNumbers);
-    } else {
-      // Legacy support
-      return {
-        'B': (numbers as number[]).slice(0, 5),
-        'I': (numbers as number[]).slice(5, 10),
-        'N': (numbers as number[]).slice(10, 15),
-        'G': (numbers as number[]).slice(15, 20),
-        'O': (numbers as number[]).slice(20, 25),
-      };
-    }
+    // Always assume string format numbers like "B1", "I30", etc.
+    const parsedNumbers = parseCardNumbers(numbers as string[]);
+    return organizeCardByColumn(parsedNumbers);
   }, [numbers]);
 
   // Create flat array of numbers in correct order for display
   const displayNumbers = useMemo(() => {
     const result: number[] = [];
-    for (let i = 0; i < 5; i++) {
-      result.push(processedCard['B'][i] || 0);
-      result.push(processedCard['I'][i] || 0);
-      result.push(processedCard['N'][i] || 0);
-      result.push(processedCard['G'][i] || 0);
-      result.push(processedCard['O'][i] || 0);
+    const columnLetters = ['B', 'I', 'N', 'G', 'O'];
+
+    // Build the card row by row, creating the correct grid pattern
+    for (let row = 0; row < 5; row++) {
+      for (let col = 0; col < 5; col++) {
+        const letter = columnLetters[col];
+        // If this is the center (FREE) space, use 0
+        if (row === 2 && col === 2) {
+          result.push(0);
+        } else {
+          // Get the number from the column or 0 if not available
+          const cellValue = processedCard[letter][row] || 0;
+          result.push(cellValue);
+        }
+      }
     }
-    // FREE space in the middle
-    result[12] = 0;
+
     return result;
   }, [processedCard]);
 
@@ -92,7 +91,7 @@ export const BingoCard = memo(function BingoCard({
       const newSelection = [...prev];
       displayNumbers.forEach((num, idx) => {
         // Auto-mark the FREE space and called numbers
-        if (num === 0 || calledNumbers.includes(num)) {
+        if (num === 0 || (num !== 0 && calledNumbers.includes(num))) {
           newSelection[idx] = true;
         }
       });
