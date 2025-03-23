@@ -19,6 +19,8 @@ import { getCardNumbers } from '@/src/lib/utils';
 import { NumberCallNotification } from '@/components/NumberCallNotification';
 import { useClaimBingo } from '@/hooks/api/useBingoCards';
 import { toast } from 'sonner';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 // Define interfaces for type safety
 interface CalledNumberData {
@@ -48,8 +50,24 @@ export default function GamePlayPage() {
   // State for tracking last number for notifications
   const [lastCalledNumber, setLastCalledNumber] = useState<number | null>(null);
   const [previousNumber, setPreviousNumber] = useState<number | null>(null);
+  // Auto-marking toggle state - default to false
+  const [autoMarkEnabled, setAutoMarkEnabled] = useState(false);
   // Auto-refresh interval reference
   const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Initialize auto-mark preference from localStorage
+  useEffect(() => {
+    const savedPreference = localStorage.getItem('bingoAutoMarkPreference');
+    if (savedPreference !== null) {
+      setAutoMarkEnabled(savedPreference === 'true');
+    }
+  }, []);
+
+  // Handle toggle change
+  const handleAutoMarkToggle = (enabled: boolean) => {
+    setAutoMarkEnabled(enabled);
+    localStorage.setItem('bingoAutoMarkPreference', enabled.toString());
+  };
 
   // Use ReactQuery with refetchInterval for real-time updates (more aggressive polling)
   useEffect(() => {
@@ -348,6 +366,20 @@ export default function GamePlayPage() {
 
       {activeTab === 'cards' && (
         <div>
+          {/* Auto-mark toggle */}
+          <div className="mb-4 flex items-center justify-end">
+            <div className="flex items-center space-x-2">
+              <Label htmlFor="auto-mark" className="text-sm text-gray-600">
+                Marcar números automáticamente
+              </Label>
+              <Switch
+                id="auto-mark"
+                checked={autoMarkEnabled}
+                onCheckedChange={handleAutoMarkToggle}
+              />
+            </div>
+          </div>
+
           {/* Botón de CANTAR BINGO más prominente */}
           <div className="mb-4 sm:mb-6 flex justify-center">
             <Button
@@ -366,7 +398,12 @@ export default function GamePlayPage() {
             {eventCards.map(card => (
               <div key={card.id} className="p-1 sm:p-2 bg-gradient-to-br from-white to-purple-50 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
                 <div className="transform scale-[0.95] sm:scale-100">
-                  <BingoCard cardId={card.id} numbers={getCardNumbers(card)} active={true} />
+                  <BingoCard
+                    cardId={card.id}
+                    numbers={getCardNumbers(card)}
+                    active={true}
+                    autoMark={autoMarkEnabled}
+                  />
                 </div>
                 <div className="mt-1 sm:mt-2 flex justify-between items-center px-2">
                   <p className="font-thin text-[10px] sm:text-xs text-gray-500">Cartón #{card.id}</p>

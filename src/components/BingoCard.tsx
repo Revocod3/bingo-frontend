@@ -45,12 +45,14 @@ interface BingoCardProps {
   cardId: number;
   numbers: number[] | string[];
   active?: boolean;
+  autoMark?: boolean;  // New prop for auto-marking preference
 }
 
 export const BingoCard = memo(function BingoCard({
   cardId,
   numbers,
-  active = false
+  active = false,
+  autoMark = false
 }: BingoCardProps) {
   const { calledNumbers } = useBingoStore();
   const [selectedCells, setSelectedCells] = useState<boolean[]>(Array(25).fill(false));
@@ -87,17 +89,19 @@ export const BingoCard = memo(function BingoCard({
 
   // Auto-select cells that match called numbers
   useEffect(() => {
-    setSelectedCells(prev => {
-      const newSelection = [...prev];
-      displayNumbers.forEach((num, idx) => {
-        // Auto-mark the FREE space and called numbers
-        if (num === 0 || (num !== 0 && calledNumbers.includes(num))) {
-          newSelection[idx] = true;
-        }
+    if (autoMark && calledNumbers.length > 0) {
+      setSelectedCells(prev => {
+        const newSelection = [...prev];
+        displayNumbers.forEach((num, idx) => {
+          // Auto-mark the FREE space and called numbers
+          if (num === 0 || (num !== 0 && calledNumbers.includes(num))) {
+            newSelection[idx] = true;
+          }
+        });
+        return newSelection;
       });
-      return newSelection;
-    });
-  }, [displayNumbers, calledNumbers]);
+    }
+  }, [displayNumbers, calledNumbers, autoMark]);
 
   // Toggle cell selection
   const toggleCell = (index: number) => {
