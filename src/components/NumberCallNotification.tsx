@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { formatBingoNumber } from '@/lib/utils';
 
 interface NumberCallNotificationProps {
   number: number | null;
@@ -7,33 +8,62 @@ interface NumberCallNotificationProps {
 }
 
 export function NumberCallNotification({ number, previousNumber }: NumberCallNotificationProps) {
-  const [showAnimation, setShowAnimation] = useState(false);
-  
+  const [showNotification, setShowNotification] = useState(false);
+
+  // Show notification when a new number is called
   useEffect(() => {
-    // Solo mostrar animación cuando cambia el número y no es la carga inicial
-    if (number && previousNumber !== number) {
-      setShowAnimation(true);
-      
-      // Ocultar la animación después de 3 segundos
+    if (number !== null && previousNumber !== number) {
+      setShowNotification(true);
+
+      // Auto-hide the notification after 5 seconds
       const timer = setTimeout(() => {
-        setShowAnimation(false);
-      }, 3000);
-      
+        setShowNotification(false);
+      }, 5000);
+
       return () => clearTimeout(timer);
     }
   }, [number, previousNumber]);
-  
-  if (!showAnimation || !number) return null;
-  
+
+  // Only render if we have a number
+  if (!number) return null;
+
   return (
-    <motion.div 
-      className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-purple-600 text-white py-4 px-6 rounded-lg shadow-lg"
-      initial={{ opacity: 0, y: -50 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0 }}
-    >
-      <p className="text-xl font-bold">¡Nuevo número llamado!</p>
-      <div className="text-4xl font-bold text-center mt-2">{number}</div>
-    </motion.div>
+    <Dialog open={showNotification} onOpenChange={setShowNotification}>
+      <DialogContent className="max-w-[300px] sm:max-w-md p-0 gap-0 overflow-hidden rounded-xl border-0 shadow-xl">
+        <div className="bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 p-4 text-center text-white">
+          <DialogHeader className="pb-2 pt-2 sm:py-3">
+            <DialogTitle className="text-lg sm:text-xl text-white font-bold">
+              ¡Nuevo número llamado!
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="mt-2 sm:mt-4 mb-4 sm:mb-6 flex items-center justify-center">
+            <div className="relative">
+              {/* Previous number (smaller) */}
+              {previousNumber && (
+                <div className="absolute -left-14 sm:-left-20 top-1/2 -translate-y-1/2">
+                  <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-white/20 flex items-center justify-center shadow-md">
+                    <span className="text-white text-lg sm:text-xl font-medium">
+                      {previousNumber}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Main number (larger) */}
+              <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full bg-white flex items-center justify-center shadow-lg animate-pulse">
+                <span className="text-purple-700 text-4xl sm:text-5xl font-bold">
+                  {number}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-sm sm:text-base mb-2 sm:mb-3 text-white/90">
+            {formatBingoNumber ? formatBingoNumber(number) : number}
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

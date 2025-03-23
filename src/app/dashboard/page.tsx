@@ -67,15 +67,18 @@ export default function DashboardPage() {
       </div>
 
       <Tabs defaultValue="events" value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="events" className="flex items-center gap-2">
-            <FaGamepad /> Eventos Activos
+        <TabsList className="mb-2">
+          <TabsTrigger value="events" className="flex items-center gap-1 sm:gap-2 flex-1">
+            <span className="sm:inline"><FaGamepad /></span>
+            <span className="text-xs sm:text-sm">Eventos</span>
           </TabsTrigger>
-          <TabsTrigger value="cards" className="flex items-center gap-2">
-            <FaCalendarAlt /> Mis Cartones
+          <TabsTrigger value="cards" className="flex items-center gap-1 sm:gap-2 flex-1">
+            <span className="sm:inline"><FaCalendarAlt /></span>
+            <span className="text-xs sm:text-sm">Cartones</span>
           </TabsTrigger>
-          <TabsTrigger value="history" className="flex items-center gap-2">
-            <FaTrophy /> Historial
+          <TabsTrigger value="history" className="flex items-center gap-1 sm:gap-2 flex-1">
+            <span className="sm:inline"><FaTrophy /></span>
+            <span className="text-xs sm:text-sm">Historial</span>
           </TabsTrigger>
         </TabsList>
 

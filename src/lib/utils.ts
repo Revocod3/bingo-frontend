@@ -46,3 +46,8 @@ export function getErrorMessage(error: unknown): string {
 
         return errorMessage;
 }
+
+export function formatBingoNumber(number: number | null) {
+    if (number === null) return 'N/A';
+    return number < 10 ? `0${number}` : String(number);
+}

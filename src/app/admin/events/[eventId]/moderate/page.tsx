@@ -167,7 +167,7 @@ export default function ModerateEventPage() {
     if (!event) {
         return (
             <AdminRouteGuard>
-                <div className="container mx-auto py-24 px-4">
+                <div className="container mx-auto py-8 sm:py-16 px-4">
                     <div className="text-center">
                         <h2 className="text-2xl font-bold mb-4">Evento no encontrado 😢</h2>
                         <p className="text-gray-500">El evento que intentas moderar no existe o ha sido eliminado.</p>
@@ -182,78 +182,80 @@ export default function ModerateEventPage() {
 
     return (
         <AdminRouteGuard>
-            <div className="container mx-auto py-24 px-4">
-                <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-3xl font-bold">Moderar Evento: {event.name}</h1>
+            <div className="container mx-auto pt-16 pb-8 px-2 sm:px-4 md:pt-24">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6">
+                    <h1 className="text-xl sm:text-3xl font-bold mb-2 sm:mb-0">Moderar: {event.name}</h1>
                     <Link href="/admin" passHref>
-                        <Button variant="outline" className="gap-2 text-gray-600">
-                            <FaArrowLeft size={14} /> Volver al Panel
+                        <Button variant="outline" size="sm" className="gap-2 text-gray-600">
+                            <FaArrowLeft size={14} /> Volver
                         </Button>
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <Card>
-                        <CardHeader>
-                            <CardTitle>Información del Evento</CardTitle>
+                        <CardHeader className="py-3 sm:py-4">
+                            <CardTitle className="text-base sm:text-lg">Información del Evento</CardTitle>
                         </CardHeader>
-                        <CardContent>
-                            <p><strong>Premio:</strong> ${event.prize}</p>
-                            <p>
+                        <CardContent className="space-y-3">
+                            <p className="text-sm sm:text-base"><strong>Premio:</strong> ${event.prize}</p>
+                            <p className="text-sm sm:text-base">
                                 <strong>Fecha:</strong> {new Date(event.start ?? Date.now()).toLocaleDateString()}
                             </p>
-                            <p>
+                            <p className="text-sm sm:text-base">
                                 <strong>Números llamados:</strong> {calledNumbers.length}/75
                             </p>
 
                             {/* Botones para acciones de gestión de números */}
-                            <div className="flex gap-3 mt-4">
+                            <div className="flex flex-wrap gap-2 mt-3">
                                 <Button
                                     variant="outline"
-                                    className="gap-2 text-amber-600 border-amber-600 hover:bg-amber-50"
+                                    size="sm"
+                                    className="gap-1 text-amber-600 border-amber-600 hover:bg-amber-50 text-xs sm:text-sm"
                                     onClick={() => setShowDeleteLastModal(true)}
                                     disabled={calledNumbers.length === 0 || deleteLastNumberMutation.isPending}
                                 >
-                                    <FaUndo size={14} /> Eliminar último
+                                    <FaUndo size={12} /> Eliminar último
                                 </Button>
                                 <Button
                                     variant="outline"
-                                    className="gap-2 text-red-600 border-red-600 hover:bg-red-50"
+                                    size="sm"
+                                    className="gap-1 text-red-600 border-red-600 hover:bg-red-50 text-xs sm:text-sm"
                                     onClick={() => setShowResetAllModal(true)}
                                     disabled={calledNumbers.length === 0 || resetEventNumbersMutation.isPending}
                                 >
-                                    <FaTrash size={14} /> Resetear todos
+                                    <FaTrash size={12} /> Resetear todos
                                 </Button>
                             </div>
                         </CardContent>
                     </Card>
 
                     <Card>
-                        <CardHeader>
-                            <CardTitle>Último Número Llamado</CardTitle>
+                        <CardHeader className="py-3 sm:py-4">
+                            <CardTitle className="text-base sm:text-lg">Último Número Llamado</CardTitle>
                         </CardHeader>
-                        <CardContent className="flex justify-center items-center">
+                        <CardContent className="flex justify-center items-center py-8">
                             {lastCalledNumber ? (
-                                <div className="text-6xl font-bold text-center text-purple-600">
+                                <div className="text-5xl sm:text-6xl font-bold text-center text-purple-600">
                                     {lastCalledNumber}
                                 </div>
                             ) : (
-                                <p className="text-gray-500">No se ha llamado ningún número aún</p>
+                                <p className="text-sm sm:text-base text-gray-500">No se ha llamado ningún número aún</p>
                             )}
                         </CardContent>
                     </Card>
                 </div>
 
-                <Card className="mt-6">
-                    <CardHeader>
-                        <CardTitle>Seleccionar Números</CardTitle>
+                <Card className="mt-4 sm:mt-6">
+                    <CardHeader className="py-3 sm:py-4">
+                        <CardTitle className="text-base sm:text-lg">Seleccionar Números</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="grid grid-cols-5 gap-4">
+                        <div className="grid grid-cols-5 gap-1 sm:gap-4">
                             {columns.map((letter) => (
                                 <div key={letter} className="flex flex-col items-center">
-                                    <h3 className="text-xl font-bold mb-4">{letter}</h3>
-                                    <div className="flex flex-col gap-2">
+                                    <h3 className="text-base sm:text-xl font-bold mb-2 sm:mb-4">{letter}</h3>
+                                    <div className="flex flex-col gap-1 sm:gap-2">
                                         {allBingoNumbers
                                             .filter(item => item.letter === letter)
                                             .map(item => (
@@ -262,7 +264,7 @@ export default function ModerateEventPage() {
                                                     onClick={() => handleNumberClick(item.number)}
                                                     disabled={calledNumbers.includes(item.number)}
                                                     className={`
-                                                        w-12 h-12 rounded-full text-lg font-bold
+                                                        w-8 h-8 sm:w-12 sm:h-12 rounded-full text-sm sm:text-lg font-bold p-0
                                                         ${calledNumbers.includes(item.number)
                                                             ? 'bg-purple-200 text-purple-800 cursor-not-allowed'
                                                             : 'bg-white hover:bg-purple-100 border-2 border-purple-600 text-purple-600'}
@@ -276,20 +278,20 @@ export default function ModerateEventPage() {
                             ))}
                         </div>
 
-                        <div className="mt-8">
-                            <h3 className="text-xl font-bold mb-4">Números Llamados</h3>
-                            <div className="flex flex-wrap gap-2">
+                        <div className="mt-4 sm:mt-8">
+                            <h3 className="text-base sm:text-xl font-bold mb-2 sm:mb-4">Números Llamados</h3>
+                            <div className="flex flex-wrap gap-1 sm:gap-2">
                                 {calledNumbers.length > 0 ? (
                                     calledNumbers.map((number, index) => (
                                         <span
                                             key={index}
-                                            className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full"
+                                            className="px-2 sm:px-3 py-1 text-xs sm:text-sm bg-purple-100 text-purple-800 rounded-full"
                                         >
                                             {number}
                                         </span>
                                     ))
                                 ) : (
-                                    <p className="text-gray-500 italic">Aún no se han llamado números</p>
+                                    <p className="text-xs sm:text-sm text-gray-500 italic">Aún no se han llamado números</p>
                                 )}
                             </div>
                         </div>
@@ -298,7 +300,7 @@ export default function ModerateEventPage() {
 
                 {/* Modal de confirmación para eliminar último número */}
                 <Dialog open={showDeleteLastModal} onOpenChange={setShowDeleteLastModal}>
-                    <DialogContent className="sm:max-w-[425px] text-gray-800">
+                    <DialogContent className="sm:max-w-[425px] max-w-[90vw] text-gray-800">
                         <DialogHeader>
                             <DialogTitle>Confirmar eliminación</DialogTitle>
                             <DialogDescription>
@@ -306,18 +308,22 @@ export default function ModerateEventPage() {
                                 Esta acción no se puede deshacer.
                             </DialogDescription>
                         </DialogHeader>
-                        <DialogFooter className="flex justify-between mt-4">
+                        <DialogFooter className="flex flex-col-reverse sm:flex-row justify-end gap-2 mt-4">
                             <Button
                                 variant="outline"
+                                size="sm"
                                 onClick={() => setShowDeleteLastModal(false)}
                                 disabled={deleteLastNumberMutation.isPending}
+                                className="w-full sm:w-auto"
                             >
                                 Cancelar
                             </Button>
                             <Button
                                 variant="destructive"
+                                size="sm"
                                 onClick={handleDeleteLastNumber}
                                 disabled={deleteLastNumberMutation.isPending}
+                                className="w-full sm:w-auto"
                             >
                                 {deleteLastNumberMutation.isPending ? 'Eliminando...' : 'Eliminar número'}
                             </Button>
@@ -327,7 +333,7 @@ export default function ModerateEventPage() {
 
                 {/* Modal de confirmación para resetear todos los números */}
                 <Dialog open={showResetAllModal} onOpenChange={setShowResetAllModal}>
-                    <DialogContent className="sm:max-w-[425px] text-gray-800">
+                    <DialogContent className="sm:max-w-[425px] max-w-[90vw] text-gray-800">
                         <DialogHeader>
                             <DialogTitle>Confirmar reseteo</DialogTitle>
                             <DialogDescription>
@@ -335,18 +341,22 @@ export default function ModerateEventPage() {
                                 Esta acción eliminará todos los números llamados y no se puede deshacer.
                             </DialogDescription>
                         </DialogHeader>
-                        <DialogFooter className="flex justify-between mt-4">
+                        <DialogFooter className="flex flex-col-reverse sm:flex-row justify-end gap-2 mt-4">
                             <Button
                                 variant="outline"
+                                size="sm"
                                 onClick={() => setShowResetAllModal(false)}
                                 disabled={resetEventNumbersMutation.isPending}
+                                className="w-full sm:w-auto"
                             >
                                 Cancelar
                             </Button>
                             <Button
                                 variant="destructive"
+                                size="sm"
                                 onClick={handleResetAllNumbers}
                                 disabled={resetEventNumbersMutation.isPending}
+                                className="w-full sm:w-auto"
                             >
                                 {resetEventNumbersMutation.isPending ? 'Reseteando...' : 'Resetear todos'}
                             </Button>

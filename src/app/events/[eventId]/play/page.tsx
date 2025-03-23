@@ -222,20 +222,20 @@ export default function GamePlayPage() {
   }
 
   return (
-    <div className="container mx-auto pt-[92px] px-4">
+    <div className="container mx-auto pt-16 pb-8 px-2 sm:px-4 md:pt-[92px]">
       {/* Notification component for new numbers */}
       <NumberCallNotification number={lastCalledNumber} previousNumber={previousNumber} />
 
-      <div className="flex justify-between items-center mb-2">
-        <h1 className="text-3xl font-bold">{event.name}</h1>
-        <div className="flex gap-2 text-gray-500">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+        <h1 className="text-2xl sm:text-3xl font-bold">{event.name}</h1>
+        <div className="flex flex-wrap gap-2 text-gray-500">
           <Link href={`/events/${eventId}`} passHref>
-            <Button variant="outline" size="sm" className="gap-1">
-              <FaArrowLeft size={14} /> Evento
+            <Button variant="outline" size="sm" className="gap-1 text-xs sm:text-sm">
+              <FaArrowLeft size={12} /> Evento
             </Button>
           </Link>
           <Link href="/dashboard" passHref>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" className="text-xs sm:text-sm">
               Dashboard
             </Button>
           </Link>
@@ -243,44 +243,44 @@ export default function GamePlayPage() {
       </div>
 
       {/* Estado y último número prominentes */}
-      <div className="flex flex-col sm:flex-row justify-between items-center bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-lg shadow mb-4">
+      <div className="flex flex-col sm:flex-row justify-between items-center bg-gradient-to-r from-purple-50 to-indigo-50 p-3 sm:p-4 rounded-lg shadow mb-4">
         <div className="flex flex-col items-center sm:items-start mb-3 sm:mb-0">
-          <p className="text-sm text-gray-500">Estado del juego:</p>
-          <span className={`font-bold text-lg ${!isConnected ? 'text-green-600' : 'text-red-600'}`}>
+          <p className="text-xs sm:text-sm text-gray-500">Estado del juego:</p>
+          <span className={`font-bold text-sm sm:text-lg ${!isConnected ? 'text-green-600' : 'text-red-600'}`}>
             {!isConnected ? '✓ Conectado' : '✗ Desconectado'}
           </span>
         </div>
 
         <div className="flex flex-col items-center">
-          <p className="text-sm text-gray-500">Último número llamado:</p>
+          <p className="text-xs sm:text-sm text-gray-500">Último número llamado:</p>
           {lastCalledNumber ? (
             <div className="relative">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 
-                           shadow-lg flex items-center justify-center">
-                <span className="text-white text-3xl font-bold">{lastCalledNumber}</span>
+              <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 
+                         shadow-lg flex items-center justify-center">
+                <span className="text-white text-2xl sm:text-3xl font-bold">{lastCalledNumber}</span>
               </div>
             </div>
           ) : (
-            <span className="text-lg font-medium text-gray-400">Ninguno aún</span>
+            <span className="text-base sm:text-lg font-medium text-gray-400">Ninguno aún</span>
           )}
         </div>
 
-        <div className="flex flex-col items-center sm:items-end">
-          <p className="text-sm text-gray-500">Números llamados:</p>
-          <span className="font-bold text-lg text-indigo-700">{calledNumbers.length}/75</span>
+        <div className="flex flex-col items-center sm:items-end mt-3 sm:mt-0">
+          <p className="text-xs sm:text-sm text-gray-500">Números llamados:</p>
+          <span className="font-bold text-base sm:text-lg text-indigo-700">{calledNumbers.length}/75</span>
         </div>
       </div>
 
       {/* Tab header - Cambiado el orden para que "Tus Cartones" sea primero */}
-      <div className="flex border-b mb-4">
+      <div className="flex border-b mb-4 overflow-x-auto">
         <button
-          className={`px-4 py-2 cursor-pointer ${activeTab === 'cards' ? 'border-b-2 border-purple-600 font-bold text-purple-700' : 'text-gray-500'}`}
+          className={`px-3 sm:px-4 py-2 cursor-pointer whitespace-nowrap ${activeTab === 'cards' ? 'border-b-2 border-purple-600 font-bold text-purple-700' : 'text-gray-500'}`}
           onClick={() => setActiveTab('cards')}
         >
           Tus Cartones
         </button>
         <button
-          className={`px-4 py-2 cursor-pointer ${activeTab === 'info' ? 'border-b-2 border-purple-600 font-bold text-purple-700' : 'text-gray-500'}`}
+          className={`px-3 sm:px-4 py-2 cursor-pointer whitespace-nowrap ${activeTab === 'info' ? 'border-b-2 border-purple-600 font-bold text-purple-700' : 'text-gray-500'}`}
           onClick={() => setActiveTab('info')}
         >
           Información
@@ -292,8 +292,8 @@ export default function GamePlayPage() {
           <div className="flex flex-col">
             {/* Bingo Patterns Display */}
             <Card className="mb-6">
-              <CardHeader>
-                <CardTitle>Patrones de ganancia</CardTitle>
+              <CardHeader className="py-3 px-4 sm:px-6">
+                <CardTitle className="text-base sm:text-lg">Patrones de ganancia</CardTitle>
               </CardHeader>
               <CardContent>
                 <BingoPatternsDisplay />
@@ -302,11 +302,11 @@ export default function GamePlayPage() {
 
             {/* Game Info */}
             <Card>
-              <CardHeader>
-                <CardTitle>Información del evento</CardTitle>
+              <CardHeader className="py-3 px-4 sm:px-6">
+                <CardTitle className="text-base sm:text-lg">Información del evento</CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2">
+                <ul className="space-y-2 text-sm sm:text-base">
                   <li className="flex justify-between">
                     <span>Premio:</span>
                     <span className="font-bold">${event.prize}</span>
@@ -330,16 +330,16 @@ export default function GamePlayPage() {
             </Card>
           </div>
           {/* Section to display all called numbers */}
-          <div className="mt-6 p-4 bg-white rounded-lg shadow-sm border border-pink-100">
-            <h2 className="text-xl font-bold mb-2 text-pink-600">Todos los Números Llamados</h2>
-            <div className="flex flex-wrap gap-2">
+          <div className="mt-6 p-3 sm:p-4 bg-white rounded-lg shadow-sm border border-pink-100">
+            <h2 className="text-lg sm:text-xl font-bold mb-2 text-pink-600">Todos los Números Llamados</h2>
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {calledNumbers.length > 0
                 ? calledNumbers.map((num, index) => (
-                  <span key={index} className="px-3 py-1 bg-gradient-to-r from-purple-200 to-pink-200 rounded-full shadow">
+                  <span key={index} className="px-2 sm:px-3 py-1 bg-gradient-to-r from-purple-200 to-pink-200 rounded-full shadow text-xs sm:text-sm">
                     {num}
                   </span>
                 ))
-                : <span className="text-gray-500 italic">Aún no se han llamado números</span>
+                : <span className="text-gray-500 italic text-sm">Aún no se han llamado números</span>
               }
             </div>
           </div>
@@ -349,29 +349,31 @@ export default function GamePlayPage() {
       {activeTab === 'cards' && (
         <div>
           {/* Botón de CANTAR BINGO más prominente */}
-          <div className="mb-6 flex justify-center">
+          <div className="mb-4 sm:mb-6 flex justify-center">
             <Button
               onClick={handleClaimBingo}
               className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 
-                       text-white font-bold py-4 px-8 text-lg gap-2 rounded-full shadow-lg transform transition-all 
-                       duration-200 hover:scale-105"
+                       text-white font-bold py-2 sm:py-4 px-4 sm:px-8 text-base sm:text-lg gap-1 sm:gap-2 rounded-full shadow-lg transform transition-all 
+                       duration-200 hover:scale-105 w-full sm:w-auto"
               disabled={!isPlaying || calledNumbers.length < 5}
             >
-              <FaTrophy size={24} /> ¡CANTAR BINGO!
+              <FaTrophy size={16} className="sm:text-[24px]" /> ¡CANTAR BINGO!
             </Button>
           </div>
 
-          <h2 className="text-2xl font-bold mb-4">Tus Cartones</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Tus Cartones</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {eventCards.map(card => (
-              <div key={card.id} className="p-2 bg-gradient-to-br from-white to-purple-50 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
-                <BingoCard cardId={card.id} numbers={getCardNumbers(card)} active={true} />
-                <div className="mt-2 flex justify-between items-center px-2">
-                  <p className="font-thin text-xs text-gray-500">Cartón #{card.id}</p>
+              <div key={card.id} className="p-1 sm:p-2 bg-gradient-to-br from-white to-purple-50 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
+                <div className="transform scale-[0.95] sm:scale-100">
+                  <BingoCard cardId={card.id} numbers={getCardNumbers(card)} active={true} />
+                </div>
+                <div className="mt-1 sm:mt-2 flex justify-between items-center px-2">
+                  <p className="font-thin text-[10px] sm:text-xs text-gray-500">Cartón #{card.id}</p>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="text-xs border-green-500 text-green-600 hover:bg-green-50"
+                    className="text-[10px] sm:text-xs border-green-500 text-green-600 hover:bg-green-50 py-1 px-1.5 sm:px-2 h-auto"
                     onClick={() => {
                       setSelectedCard(card.id);
                       setShowClaimModal(true);
@@ -385,16 +387,16 @@ export default function GamePlayPage() {
           </div>
 
           {/* Lista de números llamados en versión compacta */}
-          <div className="mt-8 p-4 bg-white rounded-lg shadow-sm border border-indigo-100">
-            <h3 className="text-lg font-semibold mb-2 text-indigo-700">Números Llamados</h3>
-            <div className="flex flex-wrap gap-2">
+          <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-white rounded-lg shadow-sm border border-indigo-100">
+            <h3 className="text-base sm:text-lg font-semibold mb-2 text-indigo-700">Números Llamados</h3>
+            <div className="flex flex-wrap gap-1 sm:gap-2">
               {calledNumbers.length > 0
                 ? calledNumbers.map((num, index) => (
-                  <span key={index} className="inline-block px-2 py-1 bg-indigo-100 text-indigo-800 text-sm rounded-md">
+                  <span key={index} className="inline-block px-1.5 sm:px-2 py-1 bg-indigo-100 text-indigo-800 text-xs sm:text-sm rounded-md">
                     {num}
                   </span>
                 ))
-                : <span className="text-gray-500 italic">Aún no se han llamado números</span>
+                : <span className="text-gray-500 italic text-xs sm:text-sm">Aún no se han llamado números</span>
               }
             </div>
           </div>
@@ -402,17 +404,17 @@ export default function GamePlayPage() {
       )}
 
       <Dialog open={showClaimModal} onOpenChange={setShowClaimModal}>
-        <DialogContent className="sm:max-w-[425px] text-gray-700">
+        <DialogContent className="sm:max-w-[425px] text-gray-700 max-w-[95vw]">
           <DialogHeader>
             <DialogTitle>Confirmar Bingo</DialogTitle>
           </DialogHeader>
           <div className="py-4">
-            <p className="mb-2 mt-4">Selecciona el cartón con el que has obtenido bingo:</p>
+            <p className="mb-2 mt-4 text-sm sm:text-base">Selecciona el cartón con el que has obtenido bingo:</p>
             <div className="space-y-2 max-h-40 overflow-y-auto">
               {eventCards.map(card => (
                 <div
                   key={card.id}
-                  className={`p-3 border rounded-md cursor-pointer ${selectedCard === card.id ? 'border-green-500 bg-green-50' : ''}`}
+                  className={`p-2 sm:p-3 border rounded-md cursor-pointer text-xs sm:text-sm ${selectedCard === card.id ? 'border-green-500 bg-green-50' : ''}`}
                   onClick={() => setSelectedCard(card.id)}
                 >
                   Cartón #{card.id}
@@ -421,7 +423,7 @@ export default function GamePlayPage() {
             </div>
             <div className="mt-4 flex justify-end">
               <Button
-                className="bg-green-600 hover:bg-green-700"
+                className="bg-green-600 hover:bg-green-700 text-xs sm:text-sm"
                 onClick={() => submitBingoClaim(selectedCard!)}
                 disabled={!selectedCard || claimSubmitting}
               >

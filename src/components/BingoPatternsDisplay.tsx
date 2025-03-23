@@ -57,32 +57,49 @@ const patterns = [
 export default function BingoPatternsDisplay() {
     return (
         <div className="w-full">
-            <Tabs defaultValue="line">
-                <TabsList className="grid w-full grid-cols-4">
+            <Tabs defaultValue="line" className="w-full">
+                {/* Make tabs list more responsive */}
+                <TabsList className="w-full justify-start mb-4 overflow-x-auto flex-nowrap">
                     {patterns.map((pattern) => (
-                        <TabsTrigger key={pattern.id} value={pattern.id}>
+                        <TabsTrigger
+                            key={pattern.id}
+                            value={pattern.id}
+                            className="px-3 py-1 whitespace-nowrap flex-shrink-0"
+                        >
                             {pattern.name}
                         </TabsTrigger>
                     ))}
                 </TabsList>
 
+                {/* Improve the content display for each pattern */}
                 {patterns.map((pattern) => (
-                    <TabsContent key={pattern.id} value={pattern.id} className="mt-4">
-                        <h3 className="text-lg font-medium mb-2">{pattern.name}</h3>
-                        <p className="text-sm text-gray-500 mb-4">{pattern.description}</p>
+                    <TabsContent key={pattern.id} value={pattern.id} className="mt-4 animate-in fade-in-50">
+                        <div className="space-y-3">
+                            <h3 className="text-lg font-medium">{pattern.name}</h3>
+                            <p className="text-sm text-gray-500">{pattern.description}</p>
 
-                        <div className="grid grid-cols-5 gap-1 max-w-xs mx-auto">
-                            {pattern.pattern.flat().map((cell, index) => (
-                                <div
-                                    key={index}
-                                    className={`aspect-square flex items-center justify-center rounded-md ${cell
-                                            ? 'bg-[#DDD6FE] border-[#7C3AED] border-2'
-                                            : 'bg-gray-100 border border-gray-200'
-                                        }`}
-                                >
-                                    {cell === 1 && index === 12 ? 'FREE' : ''}
+                            <div className="flex justify-center my-6">
+                                <div className="grid grid-cols-5 gap-1.5 max-w-[200px] sm:max-w-[250px]">
+                                    {pattern.pattern.flat().map((cell, index) => (
+                                        <div
+                                            key={index}
+                                            className={`
+                                                aspect-square flex items-center justify-center rounded-md text-xs
+                                                ${cell
+                                                    ? 'bg-[#DDD6FE] border-[#7C3AED] border-2 shadow-sm'
+                                                    : 'bg-gray-100 border border-gray-200'
+                                                }
+                                            `}
+                                        >
+                                            {cell === 1 && index === 12 ? 'FREE' : ''}
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
+                            </div>
+
+                            <div className="text-sm text-center text-muted-foreground mt-4">
+                                Para ganar, debes marcar todos los números que forman este patrón.
+                            </div>
                         </div>
                     </TabsContent>
                 ))}
