@@ -7,7 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FaCalendarAlt, FaUsers, FaChartBar } from 'react-icons/fa';
-import TestCoinBadge from '@/components/TestCoinBadge';
 import EventManagementPanel from '@/components/admin/EventManagementPanel';
 
 export default function AdminPage() {

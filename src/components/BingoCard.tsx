@@ -2,7 +2,6 @@
 
 import { memo, useState, useEffect, useMemo } from 'react';
 import { useBingoStore } from '@/lib/stores/bingo';
-import websocketService from '@/lib/websocket/websocket';
 
 // Function to parse the bingo card numbers properly
 export function parseCardNumbers(numbers: string[]): { letter: string, number: number }[] {
@@ -50,7 +49,7 @@ export const BingoCard = memo(function BingoCard({
   numbers,
   active = false
 }: BingoCardProps) {
-  const { calledNumbers, currentNumber, eventId } = useBingoStore();
+  const { calledNumbers, currentNumber } = useBingoStore();
   const [selectedCells, setSelectedCells] = useState<boolean[]>(Array(25).fill(false));
 
   // Process and organize numbers correctly
@@ -128,9 +127,8 @@ export const BingoCard = memo(function BingoCard({
       ))}
 
       {displayNumbers.map((num, index) => {
-        const isNewCall = num === currentNumber;
         const isSelected = selectedCells[index];
-        const isCenter = index === 12; // Center FREE spot
+        const isCenter = index === 12;
 
         return (
           <div
