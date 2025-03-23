@@ -49,7 +49,7 @@ export const BingoCard = memo(function BingoCard({
   numbers,
   active = false
 }: BingoCardProps) {
-  const { calledNumbers, currentNumber } = useBingoStore();
+  const { calledNumbers } = useBingoStore();
   const [selectedCells, setSelectedCells] = useState<boolean[]>(Array(25).fill(false));
 
   // Process and organize numbers correctly
