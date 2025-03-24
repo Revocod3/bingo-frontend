@@ -46,13 +46,15 @@ export default function BingoPatternsDisplay({ eventId }: { eventId: string }) {
 
     return (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-flow-col auto-cols-fr mb-4">
-                {patterns.map((pattern, index) => (
-                    <TabsTrigger key={pattern.id} value={index.toString()}>
-                        {pattern.name}
-                    </TabsTrigger>
-                ))}
-            </TabsList>
+            <div className="relative w-full">
+                <TabsList className="flex overflow-x-auto scrollbar-hide pb-2 max-w-full flex-nowrap">
+                    {patterns.map((pattern, index) => (
+                        <TabsTrigger key={pattern.id} value={index.toString()} className="px-3 py-1.5 text-xs whitespace-nowrap flex-shrink-0">
+                            {pattern.name}
+                        </TabsTrigger>
+                    ))}
+                </TabsList>
+            </div>
 
             {patterns.map((pattern, index) => (
                 <TabsContent key={pattern.id} value={index.toString()}>
@@ -64,6 +66,9 @@ export default function BingoPatternsDisplay({ eventId }: { eventId: string }) {
                         <CardContent className="flex justify-center">
                             <BingoPatternVisualizer patternId={pattern.id} />
                         </CardContent>
+                        <div className="text-sm text-center text-muted-foreground mt-4 mb-4">
+                            Para ganar, debes marcar todos los números que forman este patrón.
+                        </div>
                     </Card>
                 </TabsContent>
             ))}

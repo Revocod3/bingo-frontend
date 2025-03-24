@@ -329,7 +329,7 @@ export default function GamePlayPage() {
       </div>
 
       {/* Tab header - Cambiado el orden para que "Tus Cartones" sea primero */}
-      <div className="flex border-b mb-4 overflow-x-auto">
+      <div className="flex border-b mb-4 mt-2 overflow-x-auto">
         <button
           className={`px-3 sm:px-4 py-2 cursor-pointer whitespace-nowrap ${activeTab === 'cards' ? 'border-b-2 border-purple-600 font-bold text-purple-700' : 'text-gray-500'}`}
           onClick={() => setActiveTab('cards')}
@@ -340,66 +340,23 @@ export default function GamePlayPage() {
           className={`px-3 sm:px-4 py-2 cursor-pointer whitespace-nowrap ${activeTab === 'info' ? 'border-b-2 border-purple-600 font-bold text-purple-700' : 'text-gray-500'}`}
           onClick={() => setActiveTab('info')}
         >
-          Información
+          Patrones de Ganancia
         </button>
       </div>
 
       {activeTab === 'info' && (
         <>
-          <div className="flex flex-col">
-            {/* Bingo Patterns Display */}
-            <Card className="mb-6">
-              <CardHeader className="py-3 px-4 sm:px-6">
-                <CardTitle className="text-base sm:text-lg">Patrones de ganancia</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <BingoPatternsDisplay eventId={eventId} />
-              </CardContent>
-            </Card>
+          {/* Bingo Patterns Display */}
+          <Card className="mb-6">
+            <CardHeader className="py-3 px-4 sm:px-6">
+              <CardTitle className="text-base sm:text-lg">Patrones de ganancia</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <BingoPatternsDisplay eventId={eventId} />
+            </CardContent>
+          </Card>
 
-            {/* Game Info */}
-            <Card>
-              <CardHeader className="py-3 px-4 sm:px-6">
-                <CardTitle className="text-base sm:text-lg">Información del evento</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm sm:text-base">
-                  <li className="flex justify-between">
-                    <span>Premio:</span>
-                    <span className="font-bold">${event.prize}</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Tus cartones:</span>
-                    <span className="font-bold">{eventCards.length}</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Números llamados:</span>
-                    <span className="font-bold">{calledNumbers.length}/75</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Estado:</span>
-                    <span className={`font-bold ${isConnected ? 'text-green-500' : 'text-red-500'}`}>
-                      {isConnected ? 'Conectado' : 'Desconectado'}
-                    </span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-          {/* Section to display all called numbers */}
-          <div className="mt-6 p-3 sm:p-4 bg-white rounded-lg shadow-sm border border-pink-100">
-            <h2 className="text-lg sm:text-xl font-bold mb-2 text-pink-600">Todos los Números Llamados</h2>
-            <div className="flex flex-wrap gap-1.5 sm:gap-2">
-              {calledNumbers.length > 0
-                ? calledNumbers.map((num, index) => (
-                  <span key={index} className="px-2 sm:px-3 py-1 bg-gradient-to-r from-purple-200 to-pink-200 rounded-full shadow text-xs sm:text-sm">
-                    {num}
-                  </span>
-                ))
-                : <span className="text-gray-500 italic text-sm">Aún no se han llamado números</span>
-              }
-            </div>
-          </div>
+
         </>
       )}
 
