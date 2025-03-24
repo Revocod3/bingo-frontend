@@ -1,9 +1,19 @@
 // Types for Bingo-specific features
 
+// Interfaz para el formato de patrón de la API
+export interface APIBingoPattern {
+  id: string;
+  name: string;
+  display_name: string;
+  positions: number[]; // Posiciones 0-24 que conforman el patrón
+  is_active: boolean;
+}
+
 export type BingoPattern = {
   name: string;
   description: string;
   cells: number[];
+  id?: string; // Añadimos id opcional para vincular con patrones de la API
 };
 
 // Standard bingo patterns
@@ -33,6 +43,16 @@ export const BINGO_PATTERNS = {
   // Full card
   BLACKOUT: { name: 'Cartón lleno', description: 'Todos los números del cartón', cells: Array.from({ length: 25 }, (_, i) => i) },
 };
+
+// Función auxiliar para convertir un patrón de la API al formato local
+export function convertAPIPatternToLocal(apiPattern: APIBingoPattern): BingoPattern {
+  return {
+    id: apiPattern.id,
+    name: apiPattern.display_name || apiPattern.name,
+    description: apiPattern.name,
+    cells: apiPattern.positions
+  };
+}
 
 export type BingoCardData = {
   id: number;

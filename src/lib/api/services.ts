@@ -134,7 +134,7 @@ export const bingoCardService = {
     return response.data;
   },
 
-  claimBingo: async ({ cardId }: { cardId: number | string }): Promise<BingoClaimResponse> => {
+  claimBingo: async ({ cardId, patternName }: { cardId: number | string, patternName?: string }): Promise<BingoClaimResponse> => {
     // Ensure cardId is valid and properly formatted
     if (cardId === null || cardId === undefined) {
       throw new Error('Card ID is required');
@@ -146,8 +146,22 @@ export const bingoCardService = {
       throw new Error('Invalid card ID format');
     }
     
-    const response = await apiClient.post('/api/cards/claim/', {
+    const payload: { card_id: number, pattern?: string } = {
       card_id: numericCardId
+    };
+    
+    // Include pattern name if provided
+    if (patternName) {
+      payload.pattern = patternName;
+    }
+    
+    const response = await apiClient.post('/api/cards/claim/', payload);
+    return response.data;
+  },
+  
+  verifyPattern: async ({ cardId, patternName }: { cardId: number | string, patternName: string }): Promise<{ is_winner: boolean, matched_positions: number[] }> => {
+    const response = await apiClient.get(`/api/cards/${cardId}/verify_pattern/`, {
+      params: { pattern: patternName }
     });
     return response.data;
   }
