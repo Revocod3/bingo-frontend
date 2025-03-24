@@ -24,8 +24,6 @@ interface PatternVisualization {
 
 export default function BingoPatternVisualizer({ patternId }: BingoPatternVisualizerProps) {
     const { data: visualization, isLoading } = useWinningPatternVisualization(patternId);
-
-    console.log("Visualización del patrón:", visualization);
     if (isLoading) {
         return (
             <div className="flex justify-center items-center h-32">

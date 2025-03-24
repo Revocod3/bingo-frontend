@@ -26,24 +26,12 @@ export default function BingoCard({
   autoMarkEnabled = false // Default to false
 }: BingoCardProps) {
   const [markedNumbers, setMarkedNumbers] = useState<Set<string>>(new Set());
-  const { data: patternVerification, isLoading: verificationLoading } = useVerifyCardPattern(cardId, active);
+  const { data: patternVerification } = useVerifyCardPattern(cardId, active);
   const { data: eventPatterns } = useEventPatterns(eventId || '');
   const claimMutation = useClaimBingo();
 
   // Columnas BINGO
   const columns = ['B', 'I', 'N', 'G', 'O'];
-
-  // Mapa de posiciones a índices lineales (0-24)
-  const positionMap = useMemo(() => {
-    const map = new Map<string, number>();
-    numbers.flat().forEach((num, index) => {
-      // Si es el espacio libre (N0), no lo incluimos en el mapa
-      if (num !== 'N0') {
-        map.set(num, index);
-      }
-    });
-    return map;
-  }, [numbers]);
 
   // Efecto para marcar automáticamente el espacio FREE
   useEffect(() => {
@@ -193,7 +181,6 @@ export default function BingoCard({
             const position = rowIdx * 5 + colIdx;
             const isFree = num === 'N0';
             const isMarked = markedNumbers.has(num);
-            const isCalled = isNumberCalled(num);
             const isWinningPosition = isPartOfWinningPattern(position);
 
             return (
@@ -228,7 +215,7 @@ export default function BingoCard({
                 ? "bg-[#7C3AED] hover:bg-[#6D28D9]"
                 : "bg-gray-400 hover:bg-gray-500"
             )}
-            disabled={!patternVerification?.is_winner || claimMutation.isPending}
+            disabled={claimMutation.isPending}
           >
             {claimMutation.isPending ? '¡Verificando...' : '¡BINGO!'}
           </Button>

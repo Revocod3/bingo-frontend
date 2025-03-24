@@ -26,7 +26,6 @@ class WebSocketService {
     if (typeof window === 'undefined') return;
     // Use the API URL but replace http/https with ws/wss if needed
     this.url = config.wsUrl || config.apiUrl.replace(/^http/, 'ws');
-    console.log('WebSocket URL:', this.url);
   }
   
   public connect(eventId: string, token: string, options: WebSocketOptions = {}) {
@@ -47,17 +46,14 @@ class WebSocketService {
       this.disconnect();
       
       // Connect to the specific event WebSocket endpoint
-      console.log(`Connecting to WebSocket for event ${eventId}`);
       this.socket = new WebSocket(`${this.url}/ws/event/${eventId}/?token=${token}`);
       
       this.socket.onopen = () => {
         this.reconnectAttempts = 0;
-        console.log(`WebSocket connection established for event ${eventId}`);
         this.options.onOpen?.();
       };
       
       this.socket.onclose = (event) => {
-        console.log('WebSocket connection closed:', event);
         this.options.onClose?.(event);
         this.attemptReconnect();
       };
@@ -70,7 +66,6 @@ class WebSocketService {
       this.socket.onmessage = (event) => {
         try {
           const message = JSON.parse(event.data) as WebSocketMessage;
-          console.log('WebSocket message received:', message);
           this.options.onMessage?.(message);
         } catch (error) {
           console.error('Error parsing WebSocket message:', error);
@@ -88,7 +83,6 @@ class WebSocketService {
     if (this.reconnectAttempts < this.maxReconnectAttempts && this.currentEventId) {
       this.reconnectAttempts++;
       setTimeout(() => {
-        console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`);
         this.connect(this.currentEventId, this.currentToken, this.options);
       }, this.reconnectInterval);
     }

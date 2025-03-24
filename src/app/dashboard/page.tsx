@@ -158,6 +158,7 @@ export default function DashboardPage() {
                       cardId={String(card.id)}
                       numbers={getCardNumbers(card)}
                       active={false}
+                      autoMarkEnabled
                     />
                   </div>
                 );

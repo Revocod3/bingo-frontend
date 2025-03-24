@@ -28,16 +28,11 @@ export const bingoCardService = {
   },
   
   claimBingo: async ({ cardId, pattern = 'bingo' }: { cardId: string | number; pattern: string }) => {
-    // Log what we're sending for debugging
-    console.log('Sending claim request with:', { card_id: cardId, pattern });
-    
     const response = await apiClient.post('/api/cards/claim/', { 
       card_id: cardId,
       pattern
     });
     
-    // Log the response for debugging
-    console.log('Claim response:', response.data);
     return response.data;
   }
 };

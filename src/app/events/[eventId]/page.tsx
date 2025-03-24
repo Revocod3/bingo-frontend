@@ -21,11 +21,7 @@ export default function EventDetailPage() {
   const { data: cards } = useBingoCards();
 
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
-
-  // Filter cards for the current event AND current user (double safety)
-  console.log('cards', cards);
-  console.log('user', user);
-  const eventCards = cards?.filter(card => 
+  const eventCards = cards?.filter(card =>
     card.event === eventId
   ) || [];
 
@@ -109,7 +105,7 @@ export default function EventDetailPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className='cursor-pointer'>
-                  <Button className="w-full" disabled>Ver cartón</Button>
+                  <Button className="w-full">Ver cartón</Button>
                 </CardContent>
               </Card>
             ))}
