@@ -36,9 +36,6 @@ type BingoState = {
   markWinner: (winnerInfo: WinnerInfo) => void;
   clearWinner: () => void;
   addCalledNumber: (number: number, calledAt: string) => void;
-  
-  // Method needed by ClaimBingoButton.tsx
-  updateWinnerStatus: (hasWon: boolean, winnerInfo: WinnerInfo) => void;
 };
 
 export const useBingoStore = create<BingoState>((set, get) => ({
@@ -201,15 +198,6 @@ export const useBingoStore = create<BingoState>((set, get) => ({
         calledNumbers: [...state.calledNumbers, number],
         lastCalledAt: calledAt || new Date().toISOString()
       };
-    });
-  },
-  
-  // Nueva función que necesita ClaimBingoButton
-  updateWinnerStatus: (hasWon, winnerInfo) => {
-    set({
-      isWinner: hasWon,
-      winnerInfo: hasWon ? winnerInfo : null,
-      isPlaying: !hasWon
     });
   }
 }));
