@@ -36,6 +36,7 @@ type BingoState = {
   markWinner: (winnerInfo: WinnerInfo) => void;
   clearWinner: () => void;
   addCalledNumber: (number: number, calledAt: string) => void;
+  
 };
 
 export const useBingoStore = create<BingoState>((set, get) => ({
@@ -180,6 +181,13 @@ export const useBingoStore = create<BingoState>((set, get) => ({
   },
   
   clearWinner: () => {
+    set({
+      isWinner: false,
+      winnerInfo: null,
+    });
+  },
+
+  resetWinner: () => {
     set({
       isWinner: false,
       winnerInfo: null,

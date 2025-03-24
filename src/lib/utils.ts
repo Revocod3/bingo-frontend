@@ -9,25 +9,39 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const getCardNumbers = (card: BingoCardType): number[] => {
-    if (!card.numbers) return Array(25).fill(0);
-    if (Array.isArray(card.numbers)) {
-      return card.numbers;
+// Función para convertir un cartón a una matriz 5x5 para visualización
+export const getCardNumbers = (card: any): string[][] => {
+  // Crear matriz 5x5 para la tarjeta
+  const cardMatrix: string[][] = Array(5).fill(0).map(() => Array(5).fill(''));
+  
+  // Asegurar que 'N0' esté en el centro
+  cardMatrix[2][2] = 'N0';
+  
+  // Llenar el resto de la tarjeta
+  if (Array.isArray(card.numbers)) {
+    for (let i = 0; i < card.numbers.length; i++) {
+      const number = String(card.numbers[i]); // Convertir a string si no lo es
+      if (number === 'N0') continue; // Ya colocamos el FREE en el centro
+      
+      const letter = number.charAt(0);
+      const colIndex = 'BINGO'.indexOf(letter);
+      if (colIndex === -1) continue; // Si no es una letra válida, saltar
+      
+      // Encontrar la primera fila vacía en esta columna (excluyendo el centro)
+      for (let row = 0; row < 5; row++) {
+        // Saltar el centro
+        if (colIndex === 2 && row === 2) continue;
+        
+        if (cardMatrix[row][colIndex] === '') {
+          cardMatrix[row][colIndex] = number;
+          break;
+        }
+      }
     }
-    return Object.entries(card.numbers)
-      .filter(([key]) => key !== 'free_space')
-      .flatMap(([, value]) =>
-        Array.isArray(value)
-          ? value
-          : typeof value === 'object' && value !== null
-            ? Object.values(value)
-            : [value]
-      )
-      .map(n => {
-        const num = Number(n);
-        return isNaN(num) ? 0 : num;
-      });
-  };
+  }
+  
+  return cardMatrix;
+};
 
 /**
  * Extracts an appropriate error message from API error responses

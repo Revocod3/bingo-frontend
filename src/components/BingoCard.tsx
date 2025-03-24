@@ -1,164 +1,204 @@
 'use client';
 
-import { memo, useState, useEffect, useMemo } from 'react';
-import { useBingoStore } from '@/lib/stores/bingo';
-
-// Function to parse the bingo card numbers properly
-export function parseCardNumbers(numbers: string[]): { letter: string, number: number }[] {
-  return numbers.map(item => {
-    // Extract the letter and number parts
-    console.log(item);
-    const letter = item.substring(0, 1);
-    const number = parseInt(item.substring(1), 10);
-    return { letter, number };
-  });
-}
-
-// Ensure numbers are sorted correctly by column (BINGO order)
-export function organizeCardByColumn(parsedNumbers: { letter: string, number: number }[]) {
-  const columns: Record<string, number[]> = {
-    'B': [],
-    'I': [],
-    'N': [],
-    'G': [],
-    'O': []
-  };
-
-  // Sort into columns
-  parsedNumbers.forEach(item => {
-    if (columns[item.letter]) {
-      columns[item.letter].push(item.number);
-    }
-  });
-
-  // Sort numbers within each column, except for N column
-  for (const letter in columns) {
-    if (letter !== 'N') {
-      columns[letter].sort((a, b) => a - b);
-    }
-  }
-
-  return columns;
-}
+import { useState, useEffect, useMemo } from 'react';
+import { Button } from '@/components/ui/button';
+import { useVerifyCardPattern, useClaimBingo } from '@/hooks/api/useCardVerification';
+import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
+import { useEventPatterns } from '@/hooks/api/useWinningPatterns';
+import { motion } from 'framer-motion';
 
 interface BingoCardProps {
-  cardId: number;
-  numbers: number[] | string[];
-  active?: boolean;
-  autoMark?: boolean;  // New prop for auto-marking preference
+  cardId: string;
+  numbers: string[][];
+  active: boolean;
+  eventId?: string | number;
+  calledNumbers?: number[];
 }
 
-export const BingoCard = memo(function BingoCard({
-  cardId,
-  numbers,
-  active = false,
-  autoMark = false
-}: BingoCardProps) {
-  const { calledNumbers } = useBingoStore();
-  const [selectedCells, setSelectedCells] = useState<boolean[]>(Array(25).fill(false));
+export default function BingoCard({ cardId, numbers, active, eventId, calledNumbers = [] }: BingoCardProps) {
+  const [markedNumbers, setMarkedNumbers] = useState<Set<string>>(new Set());
+  const { data: patternVerification, isLoading: verificationLoading } = useVerifyCardPattern(cardId, active);
+  const { data: eventPatterns } = useEventPatterns(eventId || '');
+  const claimMutation = useClaimBingo();
 
-  // Process and organize numbers correctly
-  const processedCard = useMemo(() => {
-    // Always assume string format numbers like "B1", "I30", etc.
-    const parsedNumbers = parseCardNumbers(numbers as string[]);
-    return organizeCardByColumn(parsedNumbers);
+  // Columnas BINGO
+  const columns = ['B', 'I', 'N', 'G', 'O'];
+
+  // Mapa de posiciones a índices lineales (0-24)
+  const positionMap = useMemo(() => {
+    const map = new Map<string, number>();
+    numbers.flat().forEach((num, index) => {
+      // Si es el espacio libre (N0), no lo incluimos en el mapa
+      if (num !== 'N0') {
+        map.set(num, index);
+      }
+    });
+    return map;
   }, [numbers]);
 
-  // Create flat array of numbers in correct order for display
-  const displayNumbers = useMemo(() => {
-    const result: number[] = [];
-    const columnLetters = ['B', 'I', 'N', 'G', 'O'];
-
-    // Build the card row by row, creating the correct grid pattern
-    for (let row = 0; row < 5; row++) {
-      for (let col = 0; col < 5; col++) {
-        const letter = columnLetters[col];
-        // If this is the center (FREE) space, use 0
-        if (row === 2 && col === 2) {
-          result.push(0);
-        } else {
-          // Get the number from the column or 0 if not available
-          const cellValue = processedCard[letter][row] || 0;
-          result.push(cellValue);
-        }
-      }
-    }
-
-    return result;
-  }, [processedCard]);
-
-  // Auto-select cells that match called numbers
+  // Efecto para marcar automáticamente el espacio FREE
   useEffect(() => {
-    if (autoMark && calledNumbers.length > 0) {
-      setSelectedCells(prev => {
-        const newSelection = [...prev];
-        displayNumbers.forEach((num, idx) => {
-          // Auto-mark the FREE space and called numbers
-          if (num === 0 || (num !== 0 && calledNumbers.includes(num))) {
-            newSelection[idx] = true;
-          }
-        });
-        return newSelection;
-      });
-    }
-  }, [displayNumbers, calledNumbers, autoMark]);
+    setMarkedNumbers(prev => {
+      const newSet = new Set(prev);
+      newSet.add('N0'); // El centro siempre está marcado
+      return newSet;
+    });
+  }, []);
 
-  // Toggle cell selection
-  const toggleCell = (index: number) => {
-    // Don't allow toggling the FREE space or non-interactive cards
-    if (index === 12 || !active) return;
+  // Marcar un número en el cartón
+  const toggleNumber = (num: string) => {
+    if (!active || num === 'N0') return; // No se puede desmarcar el FREE o si el cartón no está activo
 
-    setSelectedCells(prev => {
-      const newSelection = [...prev];
-      newSelection[index] = !newSelection[index];
-      return newSelection;
+    setMarkedNumbers(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(num)) {
+        newSet.delete(num);
+      } else if (calledNumbers.length === 0 || (num.length > 1 && calledNumbers.includes(parseInt(num.substring(1))))) {
+        // Solo permitir marcar si no hay números llamados o si el número está en la lista de llamados
+        newSet.add(num);
+      }
+      return newSet;
     });
   };
 
+  // Verificar si el número ha sido llamado
+  const isNumberCalled = (num: string) => {
+    if (num === 'N0') return true; // FREE siempre es "llamado"
+    if (calledNumbers.length === 0) return false; // Si no hay números llamados, devolver false
+
+    const numValue = parseInt(num.substring(1));
+    return calledNumbers.includes(numValue);
+  };
+
+  // Manejar reclamo de BINGO
+  const handleClaimBingo = async () => {
+    if (!patternVerification?.is_winner) {
+      toast.error('Todavía no has completado un patrón ganador');
+      return;
+    }
+
+    try {
+      const result = await claimMutation.mutateAsync(cardId);
+      if (result.success) {
+        toast.success('¡BINGO! Tu victoria ha sido verificada.', {
+          duration: 5000,
+          style: {
+            background: '#7C3AED',
+            color: 'white',
+            border: '2px solid #6D28D9'
+          },
+        });
+      } else {
+        toast.error(result.message || 'No se pudo verificar tu victoria');
+      }
+    } catch (error) {
+      toast.error('Error al reclamar el BINGO');
+      console.error('Error claiming bingo:', error);
+    }
+  };
+
+  // Verificar si una posición pertenece a un patrón ganador
+  const isPartOfWinningPattern = (position: number): boolean => {
+    if (!patternVerification?.is_winner || !patternVerification.matched_patterns || !eventPatterns) return false;
+
+    // Buscar en los patrones ganadores
+    for (const patternId of patternVerification.matched_patterns) {
+      const pattern = eventPatterns.find(p => p.id === patternId);
+      if (pattern && pattern.positions.includes(position)) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  // Estado de victoria para efectos visuales
+  const isWinner = patternVerification?.is_winner || false;
+
   return (
-    <div
-      className={`grid grid-cols-5 gap-1.5 bg-white p-3 rounded-lg shadow-lg transition-all duration-300 
-        ${active ? 'scale-105 shadow-xl ring-2 ring-[#7C3AED]' : 'hover:scale-102'}`}
-    >
-      {['B', 'I', 'N', 'G', 'O'].map((letter, i) => (
-        <div
-          key={`header-${i}`}
-          className="bg-[#7C3AED] text-white text-center p-2 font-bold rounded-t-md"
-        >
-          {letter}
-        </div>
-      ))}
-
-      {displayNumbers.map((num, index) => {
-        const isSelected = selectedCells[index];
-        const isCenter = index === 12;
-
-        return (
-          <div
-            key={`${cardId}-${index}`}
-            onClick={() => toggleCell(index)}
-            className={`
-              aspect-square flex items-center justify-center rounded-md text-center font-medium relative border border-[#DDD6FE]
-              transition-all duration-300 transform hover:scale-105
-              ${active ? 'cursor-pointer' : 'cursor-default'}
-              ${isCenter
-                ? 'bg-gradient-to-br from-green-400 to-green-600 text-white font-bold'
-                : isSelected
-                  ? 'bg-[#DDD6FE]'
-                  : 'bg-white hover:bg-gray-50'}
-              ${isSelected && active ? 'scale-95' : ''}
-            `}
-          >
-            {isCenter ? (
-              <span className="text-lg">FREE</span>
-            ) : (
-              <span className="text-lg text-gray-700">{num}</span>
-            )}
+    <div className={cn(
+      "rounded-lg overflow-hidden border bg-white shadow-sm transition-all",
+      active ? "cursor-pointer" : "opacity-90",
+      isWinner && "border-2 border-[#7C3AED]"
+    )}>
+      {/* Encabezado del cartón */}
+      <div className="grid grid-cols-5 bg-[#7C3AED] text-white">
+        {columns.map((letter, idx) => (
+          <div key={idx} className="text-center font-bold py-2 text-sm sm:text-base">
+            {letter}
           </div>
-        );
-      })}
+        ))}
+      </div>
+
+      {/* Números del cartón */}
+      <div className="grid grid-cols-5 gap-1 p-2 bg-gray-50">
+        {numbers.map((row, rowIdx) => (
+          row.map((num, colIdx) => {
+            const position = rowIdx * 5 + colIdx;
+            const isFree = num === 'N0';
+            const isMarked = markedNumbers.has(num);
+            const isCalled = isNumberCalled(num);
+            const isWinningPosition = isPartOfWinningPattern(position);
+
+            return (
+              <div
+                key={`${rowIdx}-${colIdx}`}
+                className={cn(
+                  "aspect-square flex items-center justify-center rounded-md text-xs sm:text-sm font-medium transition-all",
+                  isMarked && "bg-[#DDD6FE] text-[#7C3AED]",
+                  isFree && "bg-amber-100 text-amber-800",
+                  isWinningPosition && "bg-green-100 text-green-800 ring-2 ring-green-500",
+                  active && !isFree && "hover:bg-gray-200",
+                  !isMarked && !isFree && "bg-white"
+                )}
+                onClick={() => toggleNumber(num)}
+              >
+                {isFree ? 'FREE' : num.substring(1)}
+
+                {/* Indicador de número llamado */}
+                {isMarked && isCalled && !isFree && (
+                  <div className="absolute h-2 w-2 rounded-full bg-[#7C3AED]" />
+                )}
+              </div>
+            );
+          })
+        ))}
+      </div>
+
+      {/* Botón de BINGO */}
+      {active && (
+        <div className="p-2 bg-gray-100">
+          <Button
+            onClick={handleClaimBingo}
+            className={cn(
+              "w-full",
+              patternVerification?.is_winner
+                ? "bg-[#7C3AED] hover:bg-[#6D28D9]"
+                : "bg-gray-400 hover:bg-gray-500"
+            )}
+            disabled={!patternVerification?.is_winner || claimMutation.isPending}
+          >
+            {claimMutation.isPending ? '¡Verificando...' : '¡BINGO!'}
+          </Button>
+        </div>
+      )}
+
+      {/* Efecto de ganador */}
+      {isWinner && (
+        <motion.div
+          className="absolute inset-0 pointer-events-none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 0.3, 0] }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            repeatType: "reverse"
+          }}
+        >
+          <div className="h-full w-full bg-green-300 rounded-lg" />
+        </motion.div>
+      )}
     </div>
   );
-});
-
-export default BingoCard;
+}

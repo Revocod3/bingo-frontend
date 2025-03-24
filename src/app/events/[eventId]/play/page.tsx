@@ -16,7 +16,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import BingoPatternsDisplay from '@/src/components/BingoPatternsDisplay';
 import BingoCard from '@/components/BingoCard';
 import { getCardNumbers } from '@/src/lib/utils';
-// Remove NumberCallNotification import
 import { useClaimBingo } from '@/hooks/api/useBingoCards';
 import { toast } from 'sonner';
 import { Switch } from '@/components/ui/switch';
@@ -340,7 +339,7 @@ export default function GamePlayPage() {
                 <CardTitle className="text-base sm:text-lg">Patrones de ganancia</CardTitle>
               </CardHeader>
               <CardContent>
-                <BingoPatternsDisplay />
+                <BingoPatternsDisplay eventId={eventId} />
               </CardContent>
             </Card>
 
@@ -425,10 +424,11 @@ export default function GamePlayPage() {
               <div key={card.id} className="p-1 sm:p-2 bg-gradient-to-br from-white to-purple-50 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
                 <div className="transform scale-[0.95] sm:scale-100">
                   <BingoCard
-                    cardId={card.id}
-                    numbers={getCardNumbers(card)}
+                    cardId={String(card.id)} // Convertir a string
+                    numbers={getCardNumbers(card)} // Asegurar que esta función devuelve string[][]
                     active={true}
-                    autoMark={autoMarkEnabled}
+                    eventId={eventId}
+                    calledNumbers={calledNumbers}
                   />
                 </div>
                 <div className="mt-1 sm:mt-2 flex justify-between items-center px-2">
