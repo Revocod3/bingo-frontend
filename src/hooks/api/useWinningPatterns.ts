@@ -4,6 +4,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 export interface WinningPattern {
   id: number;
   name: string;
+  pattern_name: string;
+  display_name: string;
+  matched_numbers: string[];
   description: string;
   positions: number[];
   pattern: number[][];

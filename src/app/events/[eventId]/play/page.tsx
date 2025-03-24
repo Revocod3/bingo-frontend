@@ -9,15 +9,11 @@ import { useNumbersByEvent } from '@/hooks/api/useNumbers';
 import { useBingoStore } from '@/lib/stores/bingo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { WinModal } from '@/components/WinModal';
-import { FaArrowLeft, FaTrophy } from 'react-icons/fa';
+import { FaArrowLeft } from 'react-icons/fa';
 import { useQueryClient } from '@tanstack/react-query';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import BingoPatternsDisplay from '@/src/components/BingoPatternsDisplay';
 import BingoCard from '@/components/BingoCard';
 import { getCardNumbers } from '@/src/lib/utils';
-import { useClaimBingo } from '@/hooks/api/useBingoCards';
-import { toast } from 'sonner';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
@@ -28,16 +24,6 @@ interface CalledNumberData {
   called_at?: string;
   created_at?: string;
 }
-
-interface ApiError {
-  response?: {
-    data?: {
-      message?: string;
-    };
-  };
-  message?: string;
-}
-
 export default function GamePlayPage() {
   const params = useParams<{ eventId: string }>();
   const eventId = params?.eventId || '';
@@ -55,6 +41,9 @@ export default function GamePlayPage() {
   const [autoMarkEnabled, setAutoMarkEnabled] = useState(false);
   // Auto-refresh interval reference
   const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Add local state to control win modal visibility directly
+  const [showWinModal, setShowWinModal] = useState(false);
 
   // Initialize auto-mark preference from localStorage
   useEffect(() => {
@@ -91,16 +80,12 @@ export default function GamePlayPage() {
   }, [eventId, queryClient]);
 
   const {
-    isPlaying,
     calledNumbers,
     initializeGame,
     isConnected,
     addCalledNumber
   } = useBingoStore();
 
-  // State for bingo claim modal
-  const [showClaimModal, setShowClaimModal] = useState(false);
-  const [selectedCard, setSelectedCard] = useState<number | null>(null);
   // Changed default tab to 'cards' to show cartones first
   const [activeTab, setActiveTab] = useState<'info' | 'cards'>('cards');
 
@@ -165,54 +150,6 @@ export default function GamePlayPage() {
       return () => clearTimeout(timer);
     }
   }, [lastCalledNumber]);
-
-  // Handle bingo claim
-  const handleClaimBingo = () => {
-    // Open modal to confirm bingo claim
-    setShowClaimModal(true);
-  };
-
-  // Add this hook
-  const claimBingoMutation = useClaimBingo();
-  const [claimSubmitting, setClaimSubmitting] = useState(false); // Add loading state
-
-  // Submit bingo claim
-  const submitBingoClaim = async (cardId: number) => {
-    try {
-      setClaimSubmitting(true);
-
-      // Log the card details before submission for debugging
-      const cardToSubmit = eventCards.find(card => card.id === cardId);
-      console.log('Attempting to claim bingo with card:', cardToSubmit);
-      console.log('Called numbers:', calledNumbers);
-
-      const result = await claimBingoMutation.mutateAsync({
-        cardId
-      });
-
-      if (result.success) {
-        toast.success(result.message || '¡Bingo reclamado con éxito!');
-        setShowClaimModal(false);
-      } else {
-        // More specific error message
-        const errorMsg = result.message || 'No se pudo validar el bingo';
-        toast.error(errorMsg);
-        console.error('Bingo claim rejected:', result);
-      }
-    } catch (error: unknown) {
-      console.error('Error claiming bingo:', error);
-
-      // Cast to ApiError type to access properties safely
-      const apiError = error as ApiError;
-      // More detailed error handling
-      const errorMessage = apiError.response?.data?.message ||
-        apiError.message ||
-        'Error al reclamar bingo. Por favor intenta nuevamente.';
-      toast.error(errorMessage);
-    } finally {
-      setClaimSubmitting(false);
-    }
-  };
 
   if (eventLoading || cardsLoading || numbersLoading) {
     return (
@@ -396,46 +333,6 @@ export default function GamePlayPage() {
           </div>
         </div>
       )}
-
-      <Dialog open={showClaimModal} onOpenChange={setShowClaimModal}>
-        <DialogContent className="sm:max-w-[425px] text-gray-700 max-w-[95vw]">
-          <DialogHeader>
-            <DialogTitle>Confirmar Bingo</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <p className="mb-2 mt-4 text-sm sm:text-base">Selecciona el cartón con el que has obtenido bingo:</p>
-            <div className="space-y-2 max-h-40 overflow-y-auto">
-              {eventCards.map(card => (
-                <div
-                  key={card.id}
-                  className={`p-2 sm:p-3 border rounded-md cursor-pointer text-xs sm:text-sm ${selectedCard === card.id ? 'border-green-500 bg-green-50' : ''}`}
-                  onClick={() => setSelectedCard(card.id)}
-                >
-                  Cartón #{card.id}
-                </div>
-              ))}
-            </div>
-            <div className="mt-4 flex justify-end">
-              <Button
-                className="bg-green-600 hover:bg-green-700 text-xs sm:text-sm"
-                onClick={() => submitBingoClaim(selectedCard!)}
-                disabled={!selectedCard || claimSubmitting}
-              >
-                {claimSubmitting ? (
-                  <>
-                    <span className="animate-spin mr-2">⏳</span> Verificando
-                  </>
-                ) : (
-                  'Confirmar Bingo'
-                )}
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Win Modal - shows automatically when isWinner is true */}
-      <WinModal />
     </div>
   );
 }

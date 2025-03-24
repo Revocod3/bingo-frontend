@@ -77,7 +77,7 @@ export function LoginForm({
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password" className="text-sm font-medium">Contraseña</Label>
-                  <Link href="/auth/reset-password" className="text-xs text-[#8B5CF6] hover:text-[#6D28D9]">
+                  <Link href="/auth/reset-password" className="text-xs text-right text-[#8B5CF6] hover:text-[#6D28D9]">
                     ¿Olvidaste tu contraseña?
                   </Link>
                 </div>

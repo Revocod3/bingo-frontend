@@ -1,3 +1,5 @@
+import { WinningPattern } from "@/src/hooks/api/useWinningPatterns";
+
 // Authentication types
 export interface LoginRequest {
   email: string;
@@ -99,6 +101,7 @@ export interface BingoClaimResponse {
   success: boolean;
   message: string;
   card: BingoCard;
+  winning_pattern: WinningPattern;
 }
 
 // WebSocket message types
