@@ -14,9 +14,17 @@ interface BingoCardProps {
   active: boolean;
   eventId?: string | number;
   calledNumbers?: number[];
+  autoMarkEnabled?: boolean; // Make this optional with a default value
 }
 
-export default function BingoCard({ cardId, numbers, active, eventId, calledNumbers = [] }: BingoCardProps) {
+export default function BingoCard({
+  cardId,
+  numbers,
+  active,
+  eventId,
+  calledNumbers = [],
+  autoMarkEnabled = false // Default to false
+}: BingoCardProps) {
   const [markedNumbers, setMarkedNumbers] = useState<Set<string>>(new Set());
   const { data: patternVerification, isLoading: verificationLoading } = useVerifyCardPattern(cardId, active);
   const { data: eventPatterns } = useEventPatterns(eventId || '');
@@ -45,6 +53,34 @@ export default function BingoCard({ cardId, numbers, active, eventId, calledNumb
       return newSet;
     });
   }, []);
+
+  // Add effect to automatically mark called numbers when autoMarkEnabled is true
+  useEffect(() => {
+    if (!autoMarkEnabled || !active) return;
+
+    // Only proceed if auto-marking is enabled
+    setMarkedNumbers(prev => {
+      const newSet = new Set(prev);
+
+      // Always ensure FREE space is marked
+      newSet.add('N0');
+
+      // Find all called numbers on this card and mark them
+      numbers.flat().forEach(num => {
+        if (num !== 'N0') { // Skip FREE space as it's already marked
+          const letter = num.charAt(0);
+          const numberPart = parseInt(num.substring(1));
+
+          // If this number has been called, mark it
+          if (calledNumbers.includes(numberPart)) {
+            newSet.add(num);
+          }
+        }
+      });
+
+      return newSet;
+    });
+  }, [autoMarkEnabled, calledNumbers, numbers, active]);
 
   // Marcar un número en el cartón
   const toggleNumber = (num: string) => {
@@ -175,10 +211,6 @@ export default function BingoCard({ cardId, numbers, active, eventId, calledNumb
               >
                 {isFree ? 'FREE' : num.substring(1)}
 
-                {/* Indicador de número llamado */}
-                {isMarked && isCalled && !isFree && (
-                  <div className="absolute h-2 w-2 rounded-full bg-[#7C3AED]" />
-                )}
               </div>
             );
           })

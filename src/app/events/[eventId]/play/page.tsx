@@ -388,6 +388,7 @@ export default function GamePlayPage() {
                     active={true}
                     eventId={eventId}
                     calledNumbers={calledNumbers}
+                    autoMarkEnabled={autoMarkEnabled} // Add this prop
                   />
                 </div>
               </div>
