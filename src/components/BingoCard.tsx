@@ -100,7 +100,26 @@ export default function BingoCard({ cardId, numbers, active, eventId, calledNumb
 
   // Verificar si una posición pertenece a un patrón ganador
   const isPartOfWinningPattern = (position: number): boolean => {
-    if (!patternVerification?.is_winner || !patternVerification.matched_patterns || !eventPatterns) return false;
+    // Agregar más debugging
+    if (!eventPatterns) {
+      console.log('eventPatterns no disponible todavía');
+      return false;
+    }
+
+    if (!patternVerification) {
+      console.log('patternVerification no disponible todavía');
+      return false;
+    }
+
+    if (!patternVerification.is_winner) {
+      // No hay ganador todavía
+      return false;
+    }
+
+    if (!patternVerification.matched_patterns || patternVerification.matched_patterns.length === 0) {
+      console.log('No hay matched_patterns en la verificación');
+      return false;
+    }
 
     // Buscar en los patrones ganadores
     for (const patternId of patternVerification.matched_patterns) {

@@ -23,6 +23,21 @@ export interface UpdateWinningPatternRequest {
   is_active?: boolean;
 }
 
+// Add this new interface for pattern visualization
+export interface PatternVisualization {
+  pattern: {
+    id: string;
+    name: string;
+    display_name: string;
+    positions: number[];
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+    created_by: number;
+  };
+  visualization: string;
+}
+
 export const useWinningPatterns = () => {
   return useQuery<WinningPattern[]>({
     queryKey: ['winning-patterns'],
@@ -45,7 +60,7 @@ export const useWinningPattern = (id: string | number) => {
 };
 
 export const useWinningPatternVisualization = (id: string | number) => {
-  return useQuery<{ pattern: number[][] }>({
+  return useQuery<PatternVisualization>({
     queryKey: ['winning-pattern-visualization', id],
     queryFn: async () => {
       const { data } = await apiClient.get(`/api/winning-patterns/${id}/visualize/`);
