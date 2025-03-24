@@ -97,11 +97,6 @@ export default function BingoCard({
 
   // Manejar reclamo de BINGO
   const handleClaimBingo = async () => {
-    if (!patternVerification?.is_winner) {
-      toast.error('Todavía no has completado un patrón ganador');
-      return;
-    }
-
     try {
       const result = await claimMutation.mutateAsync(cardId);
       if (result.success) {
@@ -215,7 +210,6 @@ export default function BingoCard({
                 ? "bg-[#7C3AED] hover:bg-[#6D28D9]"
                 : "bg-gray-400 hover:bg-gray-500"
             )}
-            disabled={claimMutation.isPending}
           >
             {claimMutation.isPending ? '¡Verificando...' : '¡BINGO!'}
           </Button>
