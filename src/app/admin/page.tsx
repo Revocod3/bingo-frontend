@@ -6,8 +6,9 @@ import AdminRouteGuard from '@/components/AdminRouteGuard';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { FaCalendarAlt, FaUsers, FaChartBar } from 'react-icons/fa';
+import { FaCalendarAlt, FaUsers, FaChartBar, FaPuzzlePiece } from 'react-icons/fa';
 import EventManagementPanel from '@/components/admin/EventManagementPanel';
+import WinningPatternsPanel from '@/components/admin/WinningPatternsPanel';
 
 export default function AdminPage() {
     const [activeTab, setActiveTab] = useState('events');
@@ -38,6 +39,10 @@ export default function AdminPage() {
                             <span className="sm:inline"><FaCalendarAlt /></span>
                             <span className="text-xs sm:text-sm">Eventos</span>
                         </TabsTrigger>
+                        <TabsTrigger value="patterns" className="flex items-center gap-1 sm:gap-2 flex-1">
+                            <span className="sm:inline"><FaPuzzlePiece /></span>
+                            <span className="text-xs sm:text-sm">Patrones</span>
+                        </TabsTrigger>
                         <TabsTrigger value="users" className="flex items-center gap-1 sm:gap-2 flex-1">
                             <span className="sm:inline"><FaUsers /></span>
                             <span className="text-xs sm:text-sm">Usuarios</span>
@@ -50,6 +55,10 @@ export default function AdminPage() {
 
                     <TabsContent value="events" className="space-y-4">
                         <EventManagementPanel />
+                    </TabsContent>
+
+                    <TabsContent value="patterns" className="space-y-4">
+                        <WinningPatternsPanel />
                     </TabsContent>
 
                     <TabsContent value="users" className="space-y-4">

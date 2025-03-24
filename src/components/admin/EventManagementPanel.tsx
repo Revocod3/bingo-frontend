@@ -22,7 +22,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { FaPlus, FaEdit, FaTrash, FaEye } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaEye, FaPuzzlePiece } from 'react-icons/fa';
 import { formatDistanceToNow } from 'date-fns';
 import { toast } from 'sonner';
 import Link from 'next/link';
@@ -118,10 +118,15 @@ export default function EventManagementPanel() {
                                 <span>${event.prize}</span>
                             </div>
                         </CardContent>
-                        <CardFooter className="flex justify-between gap-2">
+                        <CardFooter className="flex justify-between gap-2 flex-wrap">
                             <Link href={`/admin/events/${event.id}/moderate`} passHref style={{ flexGrow: 1 }}>
                                 <Button variant="outline" className="w-full">
                                     <FaEye className="mr-2" /> Moderar
+                                </Button>
+                            </Link>
+                            <Link href={`/admin/events/${event.id}/patterns`} passHref style={{ flexGrow: 1 }}>
+                                <Button variant="outline" className="w-full">
+                                    <FaPuzzlePiece className="mr-2" /> Patrones
                                 </Button>
                             </Link>
                             <Link href={`/admin/events/${event.id}/edit`} passHref style={{ flexGrow: 1 }}>
