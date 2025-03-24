@@ -155,7 +155,7 @@ export default function DashboardPage() {
                       </span>
                     </div>
                     <BingoCard
-                      cardId={card.id}
+                      cardId={String(card.id)}
                       numbers={getCardNumbers(card)}
                       active={false}
                     />

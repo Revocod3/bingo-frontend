@@ -313,6 +313,20 @@ export default function GamePlayPage() {
           <span className="font-bold text-base sm:text-lg text-indigo-700">{calledNumbers.length}/75</span>
         </div>
       </div>
+      {/* Lista de números llamados en versión compacta */}
+      <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-white rounded-lg shadow-sm border border-indigo-100">
+        <h3 className="text-base sm:text-lg font-semibold mb-2 text-indigo-700">Números Llamados</h3>
+        <div className="flex flex-wrap gap-1 sm:gap-2">
+          {calledNumbers.length > 0
+            ? calledNumbers.map((num, index) => (
+              <span key={index} className="inline-block px-1.5 sm:px-2 py-1 bg-indigo-100 text-indigo-800 text-xs sm:text-sm rounded-md">
+                {num}
+              </span>
+            ))
+            : <span className="text-gray-500 italic text-xs sm:text-sm">Aún no se han llamado números</span>
+          }
+        </div>
+      </div>
 
       {/* Tab header - Cambiado el orden para que "Tus Cartones" sea primero */}
       <div className="flex border-b mb-4 overflow-x-auto">
@@ -392,9 +406,10 @@ export default function GamePlayPage() {
       {activeTab === 'cards' && (
         <div>
           {/* Auto-mark toggle */}
-          <div className="mb-4 flex items-center justify-end">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-xl sm:text-2xl font-bold">Tus Cartones</h2>
             <div className="flex items-center space-x-2">
-              <Label htmlFor="auto-mark" className="text-sm text-gray-600">
+              <Label htmlFor="auto-mark" className="text-sm font-thin">
                 Marcar números automáticamente
               </Label>
               <Switch
@@ -406,19 +421,6 @@ export default function GamePlayPage() {
           </div>
 
           {/* Botón de CANTAR BINGO más prominente */}
-          <div className="mb-4 sm:mb-6 flex justify-center">
-            <Button
-              onClick={handleClaimBingo}
-              className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 
-                       text-white font-bold py-2 sm:py-4 px-4 sm:px-8 text-base sm:text-lg gap-1 sm:gap-2 rounded-full shadow-lg transform transition-all 
-                       duration-200 hover:scale-105 w-full sm:w-auto"
-              disabled={!isPlaying || calledNumbers.length < 5}
-            >
-              <FaTrophy size={16} className="sm:text-[24px]" /> ¡CANTAR BINGO!
-            </Button>
-          </div>
-
-          <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Tus Cartones</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {eventCards.map(card => (
               <div key={card.id} className="p-1 sm:p-2 bg-gradient-to-br from-white to-purple-50 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
@@ -431,37 +433,8 @@ export default function GamePlayPage() {
                     calledNumbers={calledNumbers}
                   />
                 </div>
-                <div className="mt-1 sm:mt-2 flex justify-between items-center px-2">
-                  <p className="font-thin text-[10px] sm:text-xs text-gray-500">Cartón #{card.id}</p>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="text-[10px] sm:text-xs border-green-500 text-green-600 hover:bg-green-50 py-1 px-1.5 sm:px-2 h-auto"
-                    onClick={() => {
-                      setSelectedCard(card.id);
-                      setShowClaimModal(true);
-                    }}
-                  >
-                    Cantar con este
-                  </Button>
-                </div>
               </div>
             ))}
-          </div>
-
-          {/* Lista de números llamados en versión compacta */}
-          <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-white rounded-lg shadow-sm border border-indigo-100">
-            <h3 className="text-base sm:text-lg font-semibold mb-2 text-indigo-700">Números Llamados</h3>
-            <div className="flex flex-wrap gap-1 sm:gap-2">
-              {calledNumbers.length > 0
-                ? calledNumbers.map((num, index) => (
-                  <span key={index} className="inline-block px-1.5 sm:px-2 py-1 bg-indigo-100 text-indigo-800 text-xs sm:text-sm rounded-md">
-                    {num}
-                  </span>
-                ))
-                : <span className="text-gray-500 italic text-xs sm:text-sm">Aún no se han llamado números</span>
-              }
-            </div>
           </div>
         </div>
       )}

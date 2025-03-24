@@ -54,8 +54,8 @@ export default function BingoCard({ cardId, numbers, active, eventId, calledNumb
       const newSet = new Set(prev);
       if (newSet.has(num)) {
         newSet.delete(num);
-      } else if (calledNumbers.length === 0 || (num.length > 1 && calledNumbers.includes(parseInt(num.substring(1))))) {
-        // Solo permitir marcar si no hay números llamados o si el número está en la lista de llamados
+      } else {
+        // Se permite marcar el número sin verificar llamada
         newSet.add(num);
       }
       return newSet;
@@ -118,7 +118,7 @@ export default function BingoCard({ cardId, numbers, active, eventId, calledNumb
 
   return (
     <div className={cn(
-      "rounded-lg overflow-hidden border bg-white shadow-sm transition-all",
+      "rounded-lg overflow-hidden border bg-white shadow-sm transition-all text-gray-800 relative",
       active ? "cursor-pointer" : "opacity-90",
       isWinner && "border-2 border-[#7C3AED]"
     )}>
@@ -147,7 +147,7 @@ export default function BingoCard({ cardId, numbers, active, eventId, calledNumb
                 className={cn(
                   "aspect-square flex items-center justify-center rounded-md text-xs sm:text-sm font-medium transition-all",
                   isMarked && "bg-[#DDD6FE] text-[#7C3AED]",
-                  isFree && "bg-amber-100 text-amber-800",
+                  isFree && "bg-green-100 text-green-800", // Cambio de color para el FREE
                   isWinningPosition && "bg-green-100 text-green-800 ring-2 ring-green-500",
                   active && !isFree && "hover:bg-gray-200",
                   !isMarked && !isFree && "bg-white"
