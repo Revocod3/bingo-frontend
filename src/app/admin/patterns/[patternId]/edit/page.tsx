@@ -28,16 +28,16 @@ export default function EditPatternPage() {
 
     const [formData, setFormData] = useState({
         name: '',
-        description: '',
         positions: [] as number[],
-        is_active: true
+        is_active: true,
+        display_name: ''
     });
 
     useEffect(() => {
         if (pattern) {
             setFormData({
                 name: pattern.name,
-                description: pattern.description || '',
+                display_name: pattern.name,
                 positions: pattern.positions,
                 is_active: pattern.is_active
             });
@@ -102,11 +102,12 @@ export default function EditPatternPage() {
     return (
         <AdminRouteGuard>
             <div className="container mx-auto py-16 px-4">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 mt-6">
                     <div className="flex items-center gap-2">
                         <Button
                             variant="outline"
                             size="icon"
+                            className='text-gray-600'
                             onClick={() => router.push('/admin?tab=patterns')}
                         >
                             <FaArrowLeft className="h-4 w-4" />
@@ -138,16 +139,6 @@ export default function EditPatternPage() {
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         placeholder="Nombre del patrón"
-                                    />
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label htmlFor="description">Descripción</Label>
-                                    <Textarea
-                                        id="description"
-                                        value={formData.description}
-                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                        placeholder="Descripción del patrón"
                                     />
                                 </div>
 

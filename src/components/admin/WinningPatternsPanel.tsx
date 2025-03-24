@@ -92,43 +92,12 @@ export default function WinningPatternsPanel() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {patterns && patterns.map((pattern) => (
                     <Card key={pattern.id} className="border shadow-md hover:shadow-lg transition-shadow">
-                        <CardHeader>
-                            <CardTitle>{pattern.name}</CardTitle>
+                        <CardHeader className='flex items-center justify-between'>
+                            <CardTitle className='text-xl'>{pattern.name}</CardTitle>
                             <CardDescription>
                                 {pattern.is_active ? 'Activo' : 'Inactivo'}
                             </CardDescription>
                         </CardHeader>
-                        <CardContent>
-                            <p className="mb-2 truncate">{pattern.description || 'Sin descripción'}</p>
-
-                            {pattern.pattern && (
-                                <div className="mt-4">
-                                    <div className="grid grid-cols-5 gap-1 max-w-[150px] mx-auto">
-                                        {pattern.pattern.flat().map((cell, idx) => {
-                                            const isCenterCell = idx === 12; // Posición central (FREE)
-                                            return (
-                                                <div
-                                                    key={idx}
-                                                    className={`
-                                                        aspect-square rounded-sm flex items-center justify-center text-[8px]
-                                                        ${isCenterCell ? 'bg-amber-100 border border-amber-300' : ''}
-                                                        ${cell && !isCenterCell ? 'bg-purple-200 border border-purple-400' : ''}
-                                                        ${!cell ? 'bg-gray-100 border border-gray-200' : ''}
-                                                    `}
-                                                >
-                                                    {isCenterCell && cell ? 'FREE' : ''}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                    <div className="mt-2 text-center">
-                                        <span className="text-xs text-gray-500">
-                                            {pattern.positions.length} posiciones
-                                        </span>
-                                    </div>
-                                </div>
-                            )}
-                        </CardContent>
                         <CardFooter className="flex justify-between gap-2">
                             <Link href={`/admin/patterns/${pattern.id}/edit`} passHref style={{ flexGrow: 1 }}>
                                 <Button variant="outline" className="w-full">
