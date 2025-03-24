@@ -16,7 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import BingoPatternsDisplay from '@/src/components/BingoPatternsDisplay';
 import BingoCard from '@/components/BingoCard';
 import { getCardNumbers } from '@/src/lib/utils';
-import { NumberCallNotification } from '@/components/NumberCallNotification';
+// Remove NumberCallNotification import
 import { useClaimBingo } from '@/hooks/api/useBingoCards';
 import { toast } from 'sonner';
 import { Switch } from '@/components/ui/switch';
@@ -50,6 +50,8 @@ export default function GamePlayPage() {
   // State for tracking last number for notifications
   const [lastCalledNumber, setLastCalledNumber] = useState<number | null>(null);
   const [previousNumber, setPreviousNumber] = useState<number | null>(null);
+  // Add animation state
+  const [isAnimating, setIsAnimating] = useState(false);
   // Auto-marking toggle state - default to false
   const [autoMarkEnabled, setAutoMarkEnabled] = useState(false);
   // Auto-refresh interval reference
@@ -154,6 +156,17 @@ export default function GamePlayPage() {
     }
   }, [calledNumbersData, initializeGame, addCalledNumber, lastCalledNumber]);
 
+  // Add animation effect when lastCalledNumber changes
+  useEffect(() => {
+    if (lastCalledNumber !== null) {
+      setIsAnimating(true);
+      const timer = setTimeout(() => {
+        setIsAnimating(false);
+      }, 2000); // Animation duration
+      return () => clearTimeout(timer);
+    }
+  }, [lastCalledNumber]);
+
   // Handle bingo claim
   const handleClaimBingo = () => {
     // Open modal to confirm bingo claim
@@ -241,8 +254,7 @@ export default function GamePlayPage() {
 
   return (
     <div className="container mx-auto pt-16 pb-8 px-2 sm:px-4 md:pt-[92px]">
-      {/* Notification component for new numbers */}
-      <NumberCallNotification number={lastCalledNumber} previousNumber={previousNumber} />
+      {/* Remove NumberCallNotification component */}
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
         <h1 className="text-2xl sm:text-3xl font-bold">{event.name}</h1>
@@ -273,10 +285,24 @@ export default function GamePlayPage() {
           <p className="text-xs sm:text-sm text-gray-500">Último número llamado:</p>
           {lastCalledNumber ? (
             <div className="relative">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 
-                         shadow-lg flex items-center justify-center">
-                <span className="text-white text-2xl sm:text-3xl font-bold">{lastCalledNumber}</span>
+              <div
+                className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full 
+                  bg-gradient-to-r from-purple-600 to-indigo-600 
+                  shadow-lg flex items-center justify-center
+                  ${isAnimating ? 'animate-pulse ring-4 ring-yellow-400 scale-110' : ''}
+                  transition-all duration-300`}
+              >
+                <span className="text-white text-2xl sm:text-3xl font-bold">
+                  {lastCalledNumber}
+                </span>
               </div>
+              {isAnimating && previousNumber && (
+                <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center opacity-0 animate-fade-out">
+                  <span className="text-yellow-500 text-3xl font-bold absolute -top-6 -right-6 bg-white rounded-full px-2 py-1 border border-yellow-400">
+                    {previousNumber}
+                  </span>
+                </div>
+              )}
             </div>
           ) : (
             <span className="text-base sm:text-lg font-medium text-gray-400">Ninguno aún</span>
