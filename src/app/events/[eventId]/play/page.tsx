@@ -42,9 +42,6 @@ export default function GamePlayPage() {
   // Auto-refresh interval reference
   const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Add local state to control win modal visibility directly
-  const [showWinModal, setShowWinModal] = useState(false);
-
   // Initialize auto-mark preference from localStorage
   useEffect(() => {
     const savedPreference = localStorage.getItem('bingoAutoMarkPreference');

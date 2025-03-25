@@ -10,7 +10,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 // Función para convertir un cartón a una matriz 5x5 para visualización
-export const getCardNumbers = (card: any): string[][] => {
+export const getCardNumbers = (card: BingoCardType): string[][] => {
   // Crear matriz 5x5 para la tarjeta
   const cardMatrix: string[][] = Array(5).fill(0).map(() => Array(5).fill(''));
   

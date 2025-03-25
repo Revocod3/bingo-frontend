@@ -4,7 +4,6 @@ import { useBingoStore } from '@/lib/stores/bingo';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
 import { FaTrophy } from 'react-icons/fa';
 
 export function WinModal() {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useVerifyCardPattern, useClaimBingo } from '@/hooks/api/useCardVerification';
 import { toast } from 'sonner';
@@ -81,7 +81,6 @@ export default function BingoCard({
       // Find all called numbers on this card and mark them
       numbers.flat().forEach(num => {
         if (num !== 'N0') { // Skip FREE space as it's already marked
-          const letter = num.charAt(0);
           const numberPart = parseInt(num.substring(1));
 
           // If this number has been called, mark it
@@ -109,15 +108,6 @@ export default function BingoCard({
       }
       return newSet;
     });
-  };
-
-  // Verificar si el número ha sido llamado
-  const isNumberCalled = (num: string) => {
-    if (num === 'N0') return true; // FREE siempre es "llamado"
-    if (calledNumbers.length === 0) return false; // Si no hay números llamados, devolver false
-
-    const numValue = parseInt(num.substring(1));
-    return calledNumbers.includes(numValue);
   };
 
   // Manejar reclamo de BINGO

@@ -7,21 +7,6 @@ interface BingoPatternVisualizerProps {
     patternId: number;
 }
 
-// Update the interface to match the actual data structure
-interface PatternVisualization {
-    pattern: {
-        id: string;
-        name: string;
-        display_name: string;
-        positions: number[];
-        is_active: boolean;
-        created_at: string;
-        updated_at: string;
-        created_by: number;
-    };
-    visualization: string;
-}
-
 export default function BingoPatternVisualizer({ patternId }: BingoPatternVisualizerProps) {
     const { data: visualization, isLoading } = useWinningPatternVisualization(patternId);
     if (isLoading) {
