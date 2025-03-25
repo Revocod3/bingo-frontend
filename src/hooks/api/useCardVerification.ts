@@ -7,6 +7,7 @@ export interface PatternVerificationResult {
   is_winner: boolean;
   matched_patterns?: number[];
   error?: string;
+  success: boolean;
 }
 
 // Interfaz para reclamar victoria
