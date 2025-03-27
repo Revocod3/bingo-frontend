@@ -18,29 +18,29 @@ function Footer() {
                         className="mb-2"
                     />
                     <p className="text-center text-gray-300 max-w-md text-sm">
-                        The ultimate platform for social media bingo streaming.
+                        La plataforma definitiva para streaming de bingo en redes sociales.
                     </p>
                 </div>
 
-                {/* Grid for columns */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-4 border-t border-b border-gray-700">
+                {/* Mobile: rows, Desktop: columns */}
+                <div className="flex flex-col md:grid md:grid-cols-3 gap-6 py-4 border-t border-b border-gray-700">
                     {/* Product column */}
-                    <div className="flex flex-col items-center md:items-start">
-                        <h3 className="font-bold text-base mb-2">Product</h3>
-                        <ul className="space-y-1">
+                    <div className="flex flex-col items-center text-center md:items-start md:text-left">
+                        <h3 className="font-bold text-base mb-3">Producto</h3>
+                        <ul className="space-y-2">
                             <li>
                                 <Link href="/features" className="text-gray-300 hover:text-white transition-colors">
-                                    Features
+                                    Características
                                 </Link>
                             </li>
                             <li>
                                 <Link href="/pricing" className="text-gray-300 hover:text-white transition-colors">
-                                    Pricing
+                                    Precios
                                 </Link>
                             </li>
                             <li>
                                 <Link href="/integration" className="text-gray-300 hover:text-white transition-colors">
-                                    Integration
+                                    Integración
                                 </Link>
                             </li>
                             <li>
@@ -52,12 +52,12 @@ function Footer() {
                     </div>
 
                     {/* Resources column */}
-                    <div className="flex flex-col items-center md:items-start">
-                        <h3 className="font-bold text-base mb-2">Resources</h3>
-                        <ul className="space-y-1">
+                    <div className="flex flex-col items-center text-center md:items-start md:text-left mt-6 md:mt-0">
+                        <h3 className="font-bold text-base mb-3">Recursos</h3>
+                        <ul className="space-y-2">
                             <li>
                                 <Link href="/docs" className="text-gray-300 hover:text-white transition-colors">
-                                    Documentation
+                                    Documentación
                                 </Link>
                             </li>
                             <li>
@@ -67,21 +67,21 @@ function Footer() {
                             </li>
                             <li>
                                 <Link href="/support" className="text-gray-300 hover:text-white transition-colors">
-                                    Support
+                                    Soporte
                                 </Link>
                             </li>
                             <li>
                                 <Link href="/community" className="text-gray-300 hover:text-white transition-colors">
-                                    Community
+                                    Comunidad
                                 </Link>
                             </li>
                         </ul>
                     </div>
 
                     {/* Connect column */}
-                    <div className="flex flex-col items-center md:items-start">
-                        <h3 className="font-bold text-base mb-2">Connect</h3>
-                        <div className="flex space-x-4">
+                    <div className="flex flex-col items-center text-center md:items-start md:text-left mt-6 md:mt-0">
+                        <h3 className="font-bold text-base mb-3">Conéctate</h3>
+                        <div className="flex space-x-6 mt-2">
                             <a
                                 href="https://twitter.com"
                                 target="_blank"
@@ -89,7 +89,7 @@ function Footer() {
                                 className="text-gray-300 hover:text-white transition-colors"
                                 aria-label="Twitter"
                             >
-                                <FaTwitter size={24} />
+                                <FaTwitter size={28} />
                             </a>
                             <a
                                 href="https://youtube.com"
@@ -98,7 +98,7 @@ function Footer() {
                                 className="text-gray-300 hover:text-white transition-colors"
                                 aria-label="YouTube"
                             >
-                                <FaYoutube size={24} />
+                                <FaYoutube size={28} />
                             </a>
                             <a
                                 href="https://discord.com"
@@ -107,7 +107,7 @@ function Footer() {
                                 className="text-gray-300 hover:text-white transition-colors"
                                 aria-label="Discord"
                             >
-                                <FaDiscord size={24} />
+                                <FaDiscord size={28} />
                             </a>
                             <a
                                 href="https://twitch.tv"
@@ -116,7 +116,7 @@ function Footer() {
                                 className="text-gray-300 hover:text-white transition-colors"
                                 aria-label="Twitch"
                             >
-                                <FaTwitch size={24} />
+                                <FaTwitch size={28} />
                             </a>
                         </div>
                     </div>
@@ -124,13 +124,13 @@ function Footer() {
 
                 {/* Copyright and legal links */}
                 <div className="pt-4 text-center text-xs text-gray-400">
-                    <p>© {new Date().getFullYear()} BingoLive. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} BingoLive. Todos los derechos reservados.</p>
                     <div className="flex justify-center mt-2 space-x-4">
                         <Link href="/privacy" className="hover:text-white transition-colors">
-                            Privacy Policy
+                            Política de Privacidad
                         </Link>
                         <Link href="/terms" className="hover:text-white transition-colors">
-                            Terms of Service
+                            Términos de Servicio
                         </Link>
                     </div>
                 </div>
