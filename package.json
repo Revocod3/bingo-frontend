@@ -29,6 +29,7 @@
     "date-fns": "^4.1.0",
     "framer-motion": "^12.5.0",
     "lucide-react": "^0.479.0",
+    "motion": "^12.6.2",
     "next": "15.2.2",
     "next-auth": "^4.24.11",
     "postcss": "^8.5.3",
