@@ -22,7 +22,7 @@ export default function Features() {
                                 Juego en Tiempo Real
                             </h3>
                             <p className="text-gray-300 text-center">
-                                Disfruta de la emoción del bingo en vivo con números llamados en tiempo real y actualizaciones instantáneas.
+                                Disfruta de la emoción del bingo en vivo con números cantados en tiempo real y actualizaciones instantáneas.
                             </p>
                         </div>
                     </div>

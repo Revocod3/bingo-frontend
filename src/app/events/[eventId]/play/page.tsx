@@ -243,13 +243,13 @@ export default function GamePlayPage() {
         </div>
 
         <div className="flex flex-col items-center sm:items-end mt-3 sm:mt-0">
-          <p className="text-xs sm:text-sm text-gray-500">Números llamados:</p>
+          <p className="text-xs sm:text-sm text-gray-500">Números cantados:</p>
           <span className="font-bold text-base sm:text-lg text-indigo-700">{calledNumbers.length}/75</span>
         </div>
       </div>
-      {/* Lista de números llamados en versión compacta */}
+      {/* Lista de números cantados en versión compacta */}
       <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-white rounded-lg shadow-sm border border-indigo-100">
-        <h3 className="text-base sm:text-lg font-semibold mb-2 text-indigo-700">Números Llamados</h3>
+        <h3 className="text-base sm:text-lg font-semibold mb-2 text-indigo-700">Números Cantados</h3>
         <div className="flex flex-wrap gap-1 sm:gap-2">
           {calledNumbers.length > 0
             ? calledNumbers.map((num, index) => (

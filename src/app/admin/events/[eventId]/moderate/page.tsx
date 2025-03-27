@@ -39,7 +39,7 @@ export default function ModerateEventPage() {
 
     useEffect(() => {
         if (calledNumbersData) {
-            // Extraer los valores de los números llamados
+            // Extraer los valores de los números cantados
             const numberValues = calledNumbersData.map((num: BingoNumber) => num.value);
             setCalledNumbers(numberValues);
 
@@ -203,7 +203,7 @@ export default function ModerateEventPage() {
                                 <strong>Fecha:</strong> {new Date(event.start ?? Date.now()).toLocaleDateString()}
                             </p>
                             <p className="text-sm sm:text-base">
-                                <strong>Números llamados:</strong> {calledNumbers.length}/75
+                                <strong>Números cantados:</strong> {calledNumbers.length}/75
                             </p>
 
                             {/* Botones para acciones de gestión de números */}
@@ -279,7 +279,7 @@ export default function ModerateEventPage() {
                         </div>
 
                         <div className="mt-4 sm:mt-8">
-                            <h3 className="text-base sm:text-xl font-bold mb-2 sm:mb-4">Números Llamados</h3>
+                            <h3 className="text-base sm:text-xl font-bold mb-2 sm:mb-4">Números Cantados</h3>
                             <div className="flex flex-wrap gap-1 sm:gap-2">
                                 {calledNumbers.length > 0 ? (
                                     calledNumbers.map((number, index) => (
@@ -337,8 +337,8 @@ export default function ModerateEventPage() {
                         <DialogHeader>
                             <DialogTitle>Confirmar reseteo</DialogTitle>
                             <DialogDescription>
-                                ¿Estás seguro de que deseas resetear todos los números llamados?
-                                Esta acción eliminará todos los números llamados y no se puede deshacer.
+                                ¿Estás seguro de que deseas resetear todos los números cantados?
+                                Esta acción eliminará todos los números cantados y no se puede deshacer.
                             </DialogDescription>
                         </DialogHeader>
                         <DialogFooter className="flex flex-col-reverse sm:flex-row justify-end gap-2 mt-4">
