@@ -50,7 +50,7 @@ const Testimonials = () => {
                                 <p className="text-green-300 text-sm mt-1">{testimonial.handle}</p>
                             </div>
                         </div>
-                        <p className="text-gray-200 leading-relaxed">"{testimonial.text}"</p>
+                        <p className="text-gray-200 leading-relaxed">{`"${testimonial.text}"`}</p>
                     </div>
                 ))}
             </div>
