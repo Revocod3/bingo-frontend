@@ -4,20 +4,20 @@ import React from 'react';
 const Testimonials = () => {
     const testimonials = [
         {
-            name: "Sarah Johnson",
-            handle: "@sarahplays",
+            name: "Ana María B.",
+            handle: "@anamariab",
             image: "/testimonial1.jpg",
-            text: "¡Increíble experiencia! Bingo me ha dado horas de diversión y he conocido a personas maravillosas. Los premios son excelentes y la plataforma es muy fácil de usar."
+            text: "¡Increíble experiencia! Bingo en vivo me ha dado horas de diversión y he conocido a personas maravillosas. Los premios son excelentes y la plataforma es muy fácil de usar."
         },
         {
-            name: "Mike Chen",
-            handle: "@mikestreams",
+            name: "Luis Miguel S.",
+            handle: "@luismiguels24",
             image: "/testimonial2.jpg",
             text: "He probado muchos sitios de bingo, pero este es definitivamente el mejor. Atención al cliente impecable y eventos especiales que hacen que vuelva cada semana."
         },
         {
-            name: "Emma Wilson",
-            handle: "@emmogames",
+            name: "Mónica G.",
+            handle: "@megarunner23",
             image: "/testimonial3.jpg",
             text: "Lo que más me gusta es la comunidad. Siempre hay alguien con quien charlar mientras jugamos. La aplicación móvil es perfecta para jugar sobre la marcha."
         }
@@ -50,7 +50,7 @@ const Testimonials = () => {
                                 <p className="text-green-300 text-sm mt-1">{testimonial.handle}</p>
                             </div>
                         </div>
-                        <p className="text-gray-200 leading-relaxed">{`"${testimonial.text}"`}</p>
+                        <p className="text-gray-200 leading-relaxed italic">{`"${testimonial.text}"`}</p>
                     </div>
                 ))}
             </div>

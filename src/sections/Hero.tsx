@@ -17,10 +17,10 @@ const Hero: React.FC = () => {
                         Conéctate, con amigos y familiares en tiempo real, compite por <span className='text-[#8B5CF6] font-bold'>grandes premios</span> y disfruta de un gran momento sin salir de casa.
                     </h4>
                     <div className='flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 md:space-x-6 justify-center md:justify-start'>
-                        <Link href='/auth/login' className='bg-[#7C3AED] hover:bg-[#6D28D9] text-white px-8 sm:px-12 md:px-16 lg:px-20 py-3 md:py-4 rounded-full font-medium transition-colors shadow-lg text-center'>
-                            Jugar Ahora
+                        <Link href='/auth/register' className='bg-[#7C3AED] hover:bg-[#6D28D9] text-white px-8 sm:px-12 md:px-16 lg:px-20 py-3 md:py-4 rounded-full font-medium transition-colors shadow-lg text-center'>
+                            Registrate Ahora
                         </Link>
-                        <Link href='#' className='bg-transparent border-2 border-[#7C3AED] hover:bg-[#6D28D9] text-white px-8 sm:px-12 md:px-16 lg:px-20 py-3 md:py-4 rounded-full font-medium transition-colors shadow-lg text-center'>
+                        <Link href='https://wa.me/+573228031537' target='_blank' className='bg-transparent border-2 border-[#7C3AED] hover:bg-[#6D28D9] text-white px-8 sm:px-12 md:px-16 lg:px-20 py-3 md:py-4 rounded-full font-medium transition-colors shadow-lg text-center'>
                             Contáctanos
                         </Link>
                     </div>

@@ -5,7 +5,7 @@ import { FaGamepad, FaTrophy, FaUsers } from 'react-icons/fa';
 
 export default function Features() {
     return (
-        <section className="pt-2 pb-4 px-4">
+        <section className="pt-2 pb-4 px-4" id='features'>
             <div className="container mx-auto">
                 <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-12">
                     ¿Por qué escoger nuestro Bingo En Vivo?

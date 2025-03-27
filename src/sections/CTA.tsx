@@ -17,7 +17,7 @@ export default function CTA() {
                     <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-8 justify-center">
                         <Link
                             href="/auth/register"
-                            className="bg-white hover:bg-[#6D28D9] text-[#7C3AED] hover:text-white px-8 py-3 rounded-full font-medium transition-colors shadow-lg text-center"
+                            className="bg-white hover:bg-transparent border-2 border-white text-[#7C3AED] hover:text-white px-8 py-3 rounded-full font-medium transition-colors shadow-lg text-center"
                         >
                             Regístrate Ahora
                         </Link>

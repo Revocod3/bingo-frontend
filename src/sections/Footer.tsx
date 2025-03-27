@@ -18,7 +18,7 @@ function Footer() {
                         className="mb-2"
                     />
                     <p className="text-center text-gray-300 max-w-md text-sm">
-                        La plataforma definitiva para streaming de bingo en redes sociales.
+                        La plataforma definitiva para disfrutar de bingo en vivo en redes sociales.
                     </p>
                 </div>
 
@@ -124,7 +124,7 @@ function Footer() {
 
                 {/* Copyright and legal links */}
                 <div className="pt-4 text-center text-xs text-gray-400">
-                    <p>© {new Date().getFullYear()} BingoLive. Todos los derechos reservados.</p>
+                    <p>© {new Date().getFullYear()} Bingo En Vivo S.A Todos los derechos reservados.</p>
                     <div className="flex justify-center mt-2 space-x-4">
                         <Link href="/privacy" className="hover:text-white transition-colors">
                             Política de Privacidad
