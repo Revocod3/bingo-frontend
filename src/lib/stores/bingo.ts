@@ -168,7 +168,7 @@ export const useBingoStore = create<BingoState>((set, get) => ({
         break;
         
       default:
-        console.log('Unknown message type:', message.type);
+        console.error('Unknown message type:', message.type);
     }
   },
   

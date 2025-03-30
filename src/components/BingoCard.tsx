@@ -144,22 +144,18 @@ export default function BingoCard({
   const isPartOfWinningPattern = (position: number): boolean => {
     // Agregar más debugging
     if (!eventPatterns) {
-      console.log('eventPatterns no disponible todavía');
       return false;
     }
 
     if (!patternVerification) {
-      console.log('patternVerification no disponible todavía');
       return false;
     }
 
     if (!patternVerification.is_winner) {
-      // No hay ganador todavía
       return false;
     }
 
     if (!patternVerification.matched_patterns || patternVerification.matched_patterns.length === 0) {
-      console.log('No hay matched_patterns en la verificación');
       return false;
     }
 
@@ -176,8 +172,6 @@ export default function BingoCard({
 
   // Estado de victoria para efectos visuales
   const isWinner = patternVerification?.success || false;
-
-  console.log(isWinner, patternVerification);
 
   return (
     <div className={cn(

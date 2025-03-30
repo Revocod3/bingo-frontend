@@ -35,11 +35,9 @@ export default function Header() {
   };
 
   const handleLogout = async () => {
-    console.log('Logout button clicked');
     try {
       // First, call our API logout if needed
       if (typeof logoutAPI === 'function') {
-        console.log('Calling API logout function');
         await logoutAPI();
       }
 
@@ -53,11 +51,6 @@ export default function Header() {
       window.location.href = '/';
     }
   };
-
-  // For debugging
-  useEffect(() => {
-    console.log('Logout function type:', typeof logoutAPI);
-  }, [logoutAPI]);
 
   return (
     <header className="bg-[#1F1A4B] shadow-sm sticky top-0 z-50 text-white">

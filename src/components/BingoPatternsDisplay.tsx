@@ -10,16 +10,6 @@ export default function BingoPatternsDisplay({ eventId }: { eventId: string }) {
     const [activeTab, setActiveTab] = useState('0');
     const { data: patterns, isLoading, error } = useEventPatterns(eventId);
 
-    // Debug para verificar los patrones cargados
-    useEffect(() => {
-        if (patterns) {
-            console.log("Patrones cargados:", patterns);
-        }
-        if (error) {
-            console.error("Error al cargar patrones:", error);
-        }
-    }, [patterns, error]);
-
     // Resetear a la primera pestaña cuando cambian los patrones
     useEffect(() => {
         if (patterns && patterns.length > 0) {

@@ -22,7 +22,6 @@ export function WinModal() {
             checkInterval = setInterval(() => {
                 const currentWinnerState = useBingoStore.getState().isWinner;
                 if (currentWinnerState) {
-                    console.log("Winner state detected:", currentWinnerState);
                     setIsOpen(true);
                 }
             }, 1000);
@@ -35,13 +34,9 @@ export function WinModal() {
 
     useEffect(() => {
         if (isWinner) {
-            console.log("isWinner changed to true");
             setIsOpen(true);
         }
     }, [isWinner]);
-
-    // Debug on every render
-    console.log("WinModal rendering, isWinner:", isWinner, "isOpen:", isOpen);
 
     const handleClose = () => {
         setIsOpen(false);

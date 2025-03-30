@@ -12,18 +12,13 @@ export const authOptions: AuthOptions = {
       },
       async authorize(credentials, req) {
         try {
-          // Utilizamos nuestro servicio de autenticación existente
           const response = await authService.login({
             email: credentials?.email || '',
             password: credentials?.password || '',
           });
           
           if (response && response.access) {
-            // Ensure email is always a string
             const email = credentials?.email || '';
-            
-            // Devolvemos un objeto con los datos del usuario y los tokens
-            console.log('User authenticated:', response)
             return {
               id: String(response.user.id || 'unknown'),
               email: email,
