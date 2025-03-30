@@ -100,13 +100,13 @@ export default function EditPatternPage() {
 
     return (
         <AdminRouteGuard>
-            <div className="container mx-auto py-16 px-4">
+            <div className="container mx-auto py-4 px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 mt-6">
                     <div className="flex items-center gap-2">
                         <Button
                             variant="outline"
                             size="icon"
-                            className='text-gray-600'
+                            className='text-gray-600 cursor-pointer'
                             onClick={() => router.push('/admin?tab=patterns')}
                         >
                             <FaArrowLeft className="h-4 w-4" />
@@ -115,7 +115,7 @@ export default function EditPatternPage() {
                     </div>
 
                     <Button
-                        className="mt-4 md:mt-0 bg-[#7C3AED] hover:bg-[#6D28D9] text-white"
+                        className="mt-4 md:mt-0 bg-[#7C3AED] hover:bg-[#6D28D9] text-white cursor-pointer"
                         onClick={handleSubmit}
                         disabled={updatePatternMutation.isPending}
                     >

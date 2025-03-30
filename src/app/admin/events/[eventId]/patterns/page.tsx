@@ -69,7 +69,7 @@ export default function EventPatternsPage() {
     if (!event) {
         return (
             <AdminRouteGuard>
-                <div className="container mx-auto py-16 px-4">
+                <div className="container mx-auto py-4 px-4">
                     <div className="text-center">
                         <h2 className="text-2xl font-bold mb-4">Evento no encontrado</h2>
                         <p className="text-gray-500 mb-6">El evento que intentas configurar no existe o ha sido eliminado.</p>
@@ -84,19 +84,20 @@ export default function EventPatternsPage() {
 
     return (
         <AdminRouteGuard>
-            <div className="container mx-auto py-16 px-4">
+            <div className="mx-auto py-8 px-4">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                     <div className="flex items-center gap-2">
                         <Button
                             variant="outline"
                             size="icon"
+                            className='text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800'
                             onClick={() => router.push('/admin')}
                         >
                             <FaArrowLeft className="h-4 w-4" />
                         </Button>
                         <div>
                             <h1 className="text-2xl font-bold">Patrones de Ganancia</h1>
-                            <p className="text-gray-500">
+                            <p className="text-xs text-gray-500">
                                 {event.name}
                             </p>
                         </div>
@@ -176,7 +177,7 @@ export default function EventPatternsPage() {
 
                 {selectedPatterns.length > 0 && (
                     <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                        <h3 className="font-medium mb-2">Patrones seleccionados: {selectedPatterns.length}</h3>
+                        <h3 className="font-medium text-gray-800">Patrones seleccionados:</h3>
                         <p className="text-sm text-gray-600">
                             Has seleccionado {selectedPatterns.length} {selectedPatterns.length === 1 ? 'patrón' : 'patrones'} para este evento.
                             Los jugadores podrán ganar completando cualquiera de estos patrones.

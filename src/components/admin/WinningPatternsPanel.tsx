@@ -82,7 +82,7 @@ export default function WinningPatternsPanel() {
     return (
         <div className="container mx-auto py-4">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Patrones de Ganancia</h2>
+                <h2 className="text-xl md:text-2xl font-bold">Patrones de Ganancia</h2>
                 <Button
                     onClick={() => setIsCreateModalOpen(true)}
                     className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2"

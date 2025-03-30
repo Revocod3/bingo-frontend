@@ -17,7 +17,7 @@ export default function AdminPage() {
 
     return (
         <AdminRouteGuard>
-            <div className="container mx-auto pt-24 pb-8 px-4">
+            <div className="container mx-auto pt-8 pb-8 px-4">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
                     <div>
                         <h1 className="text-2xl md:text-3xl font-bold">Panel de Administración</h1>
@@ -59,12 +59,12 @@ export default function AdminPage() {
                     </TabsList>
 
                     <TabsContent value="events" className="space-y-4">
-                        <h2 className="text-2xl font-bold mb-4">Gestión de Eventos</h2>
+                        <h2 className="text-xl md:text-2xl font-bold ">Gestión de Eventos</h2>
                         <EventManagementPanel />
                     </TabsContent>
 
                     <TabsContent value="patterns" className="space-y-4">
-                        <h2 className="text-2xl font-bold mb-4">Gestión de Patrones</h2>
+                        <h2 className="text-xl md:text-2xl font-bold">Gestión de Patrones</h2>
                         <WinningPatternsPanel />
                     </TabsContent>
 

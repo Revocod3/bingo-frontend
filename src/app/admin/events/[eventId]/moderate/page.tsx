@@ -182,7 +182,7 @@ export default function ModerateEventPage() {
 
     return (
         <AdminRouteGuard>
-            <div className="container mx-auto pt-16 pb-8 px-2 sm:px-4 md:pt-24">
+            <div className="container mx-auto pt-8 pb-8 px-2 sm:px-4 md:pt-12">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6">
                     <h1 className="text-xl sm:text-3xl font-bold mb-2 sm:mb-0">Moderar: {event.name}</h1>
                     <Link href="/admin" passHref>
@@ -194,10 +194,10 @@ export default function ModerateEventPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <Card>
-                        <CardHeader className="py-3 sm:py-4">
+                        <CardHeader className="py-2">
                             <CardTitle className="text-base sm:text-lg">Información del Evento</CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-3">
+                        <CardContent className="space-y-2">
                             <p className="text-sm sm:text-base"><strong>Premio:</strong> ${event.prize}</p>
                             <p className="text-sm sm:text-base">
                                 <strong>Fecha:</strong> {new Date(event.start ?? Date.now()).toLocaleDateString()}
@@ -207,7 +207,7 @@ export default function ModerateEventPage() {
                             </p>
 
                             {/* Botones para acciones de gestión de números */}
-                            <div className="flex flex-wrap gap-2 mt-3">
+                            <div className="flex flex-wrap gap-2 mt-2">
                                 <Button
                                     variant="outline"
                                     size="sm"

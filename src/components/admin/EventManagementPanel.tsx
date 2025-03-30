@@ -9,7 +9,6 @@ import {
     CardDescription,
     CardFooter,
     CardHeader,
-    CardTitle
 } from '@/components/ui/card';
 import {
     Dialog,
@@ -23,7 +22,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { FaPlus, FaEdit, FaTrash, FaEye, FaPuzzlePiece, FaCalendarAlt, FaClock, FaTrophy } from 'react-icons/fa';
-import { formatDistanceToNow } from 'date-fns';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { CreateEventRequest } from '@/lib/api/types';
@@ -91,10 +89,10 @@ export default function EventManagementPanel() {
     return (
         <div className="container mx-auto py-4">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Listado de Eventos</h2>
+                <h2 className="text-xl md:text-2xl font-bold">Listado de Eventos</h2>
                 <Button
                     onClick={() => setIsCreateModalOpen(true)}
-                    className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2"
+                    className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2 cursor-pointer"
                 >
                     <FaPlus className="h-4 w-4" /> Crear Evento
                 </Button>
@@ -151,23 +149,23 @@ export default function EventManagementPanel() {
                             </CardContent>
                             <CardFooter className="flex gap-2 flex-wrap">
                                 <Link href={`/admin/events/${event.id}/moderate`} passHref className="flex-1">
-                                    <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                                    <Button variant="outline" className="w-full flex items-center justify-center gap-2 cursor-pointer">
                                         <FaEye className="h-4 w-4" /> Moderar
                                     </Button>
                                 </Link>
                                 <Link href={`/admin/events/${event.id}/patterns`} passHref className="flex-1">
-                                    <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                                    <Button variant="outline" className="w-full flex items-center justify-center gap-2 cursor-pointer">
                                         <FaPuzzlePiece className="h-4 w-4" /> Patrones
                                     </Button>
                                 </Link>
                                 <Link href={`/admin/events/${event.id}/edit`} passHref className="flex-1">
-                                    <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                                    <Button variant="outline" className="w-full flex items-center justify-center gap-2 cursor-pointer">
                                         <FaEdit className="h-4 w-4" /> Editar
                                     </Button>
                                 </Link>
                                 <Button
                                     variant="outline"
-                                    className="text-red-500 border-red-500 hover:bg-red-50 p-2 h-10 w-10 flex items-center justify-center"
+                                    className="text-red-500 border-red-500 hover:bg-red-50 p-2 h-10 w-10 flex items-center justify-center cursor-pointer"
                                     onClick={() => handleDeleteEvent(event.id)}
                                 >
                                     <FaTrash />
@@ -181,7 +179,7 @@ export default function EventManagementPanel() {
                         <p className="text-gray-500 mb-4">Crea tu primer evento para empezar</p>
                         <Button
                             onClick={() => setIsCreateModalOpen(true)}
-                            className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2"
+                            className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2 cursor-pointer"
                         >
                             <FaPlus className="h-4 w-4" /> Crear Evento
                         </Button>
