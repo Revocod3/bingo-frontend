@@ -35,7 +35,7 @@ export default function BingoPatternVisualizer({ patternId }: BingoPatternVisual
     return (
         <div className="max-w-[250px] w-full">
             {/* Encabezado del cartón */}
-            <div className="grid grid-cols-5 bg-[#7C3AED] text-white rounded-t-md">
+            <div className="grid grid-cols-5 bg-[#7C3AED]/70 text-white rounded-t-md">
                 {columns.map((letter, idx) => (
                     <div key={idx} className="text-center font-bold py-1 text-xs">
                         {letter}
@@ -56,10 +56,10 @@ export default function BingoPatternVisualizer({ patternId }: BingoPatternVisual
                             className={cn(
                                 "aspect-square flex items-center justify-center rounded-sm text-xs",
                                 isMarked
-                                    ? "bg-[#7C3AED] text-white"
+                                    ? "bg-[#7C3AED]/70 text-white"
                                     : isFreeCell
                                         ? "bg-green-100 text-green-800"
-                                        : "bg-white"
+                                        : "bg-gray-200 text-gray-800",
                             )}
                         >
                             {isFreeCell ? 'FREE' : ''}
