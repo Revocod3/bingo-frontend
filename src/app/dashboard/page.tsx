@@ -11,16 +11,19 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TestCoinBadge from '@/components/TestCoinBadge';
 import BingoCard from '@/components/BingoCard';
-import { FaGamepad, FaCalendarAlt, FaTrophy, FaCogs, FaClock, FaMapMarkerAlt, FaArrowRight, FaCreditCard } from 'react-icons/fa';
+import { FaGamepad, FaCalendarAlt, FaTrophy, FaCogs, FaClock, FaMapMarkerAlt, FaArrowRight, FaCreditCard, FaPlus } from 'react-icons/fa';
 import { Event } from '@/src/lib/api/types';
 import { getCardNumbers } from '@/src/lib/utils';
 import { Badge } from '@/src/components/ui/badge';
+import { PurchaseCardsModal } from '@/components/PurchaseCardsModal';
 
 export default function DashboardPage() {
   const { data: events, isLoading: eventsLoading } = useEvents();
   const { data: cards } = useBingoCards();
   const { data: user } = useCurrentUser();
   const [activeTab, setActiveTab] = useState('events');
+  const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
+  const [selectedEventId, setSelectedEventId] = useState<string>('');
 
   // Filter for active events (those that haven't ended)
   const activeEvents = events?.filter((event: Event) =>
@@ -36,6 +39,12 @@ export default function DashboardPage() {
     acc[eventId].push(card);
     return acc;
   }, {} as Record<string, typeof cards>) || {};
+
+  // Función para abrir el modal de compra
+  const handleOpenPurchaseModal = (eventId: string) => {
+    setSelectedEventId(eventId);
+    setIsPurchaseModalOpen(true);
+  };
 
   if (eventsLoading) {
     return (
@@ -89,7 +98,7 @@ export default function DashboardPage() {
 
                 return (
                   <Card key={eventId} className="overflow-hidden shadow-md hover:shadow-lg gap-4 transition-shadow pt-0 border-0 rounder-lg">
-                    <div className="relative h-40 bg-gradient-to-r from-purple-700 to-indigo-700 rounded-t-lg opacity-80">
+                    <div className="relative h-28 bg-gradient-to-r from-purple-700 to-indigo-700 rounded-t-lg opacity-80">
                       <div className="absolute inset-0 flex items-center justify-center">
                         <h3 className="text-2xl font-bold text-white">{event.name}</h3>
                       </div>
@@ -124,24 +133,32 @@ export default function DashboardPage() {
                         </p>
                       </div>
 
-                      <div className="rounded-lg bg-blue-50 py-1 px-4 dark:bg-blue-950/50">
+                      <div className="rounded-lg bg-purple-50 py-1 px-4 dark:bg-purple-950/50">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <FaGamepad className="h-4 w-4 text-blue-500" />
-                            <span className="text-sm font-semibold text-blue-700 dark:text-blue-400">Tus cartones</span>
+                            <FaGamepad className="h-4 w-4 text-purple-500" />
+                            <span className="text-sm font-semibold text-purple-700 dark:text-purple-400">Tus cartones</span>
                           </div>
-                          <span className="font-bold text-blue-800">{eventCards.length}</span>
+                          <span className="font-bold text-purple-800">{eventCards.length}</span>
                         </div>
                       </div>
                     </CardContent>
                     <CardFooter className="flex flex-col gap-2">
-                      {eventCards.length > 0 ? (
-                        <Link href={`/events/${eventId}/play`} passHref className="w-full">
-                          <Button className="w-full bg-green-600 hover:bg-green-700 gap-1 cursor-pointer">
-                            Jugar Ahora <FaArrowRight className="h-3 w-3 ml-1" />
-                          </Button>
-                        </Link>
-                      ) : null}
+                      <div className="flex gap-2 w-full">
+                        {eventCards.length > 0 ? (
+                          <Link href={`/events/${eventId}/play`} passHref className="flex-1">
+                            <Button className="w-full bg-green-600 hover:bg-green-700 gap-1 cursor-pointer">
+                              <FaArrowRight className="h-3 w-3 ml-1" /> Jugar Ahora
+                            </Button>
+                          </Link>
+                        ) : null}
+                        <Button
+                          className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-1 cursor-pointer"
+                          onClick={() => handleOpenPurchaseModal(eventId)}
+                        >
+                          <FaPlus className="h-3 w-3" /> Cartones
+                        </Button>
+                      </div>
                     </CardFooter>
                   </Card>
                 );
@@ -182,8 +199,14 @@ export default function DashboardPage() {
             </div>
           )}
         </TabsContent>
-
       </Tabs>
+
+      {/* Modal de compra de cartones */}
+      <PurchaseCardsModal
+        eventId={selectedEventId}
+        isOpen={isPurchaseModalOpen}
+        onClose={() => setIsPurchaseModalOpen(false)}
+      />
     </div>
   );
 }

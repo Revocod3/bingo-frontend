@@ -17,14 +17,14 @@ interface PurchaseCardsModalProps {
   eventId: string;
   isOpen: boolean;
   onClose: () => void;
-  costPerCard?: number; // Default cost shown in the UI
+  costPerCard?: number;
 }
 
 export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
   eventId,
   isOpen,
   onClose,
-  costPerCard = 10, // Default cost per card
+  costPerCard = 0.2,
 }) => {
   const [quantity, setQuantity] = useState(1);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -43,14 +43,12 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
   };
 
   const handleIncrease = () => {
-    if (quantity < 3) { // Maximum 3 cards
-      setQuantity(quantity + 1);
-    }
+    setQuantity(quantity + 1);
   };
 
   const handlePurchase = async () => {
     if (!hasEnoughCoins) {
-      setErrorMessage(`Insufficient test coins. You need ${totalCost} coins but have ${coinBalance?.balance || 0}.`);
+      setErrorMessage(`No tienes suficientes monedas para comprar ${quantity} cartón${quantity !== 1 ? 'es' : ''}.`);
       return;
     }
 
@@ -61,15 +59,14 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
       const result = await purchaseCardsMutation.mutateAsync({ eventId, quantity });
 
       if (result.success) {
-        setSuccessMessage(`Successfully purchased ${quantity} bingo card${quantity !== 1 ? 's' : ''}!`);
+        setSuccessMessage(`Has comprado ${quantity} cartón${quantity !== 1 ? 'es' : ''} con éxito.`);
         // Don't automatically close and don't set a timer
         // This prevents the possible race condition causing duplicate purchases
       } else {
-        setErrorMessage(result.message || "Failed to purchase cards");
+        setErrorMessage(result.message || "Error desconocido");
       }
     } catch (error: unknown) {
-      let errorMessage = "Failed to purchase cards. Please try again.";
-
+      let errorMessage = "Error en la compra";
       if (error instanceof Error) {
         errorMessage = error.message;
       } else if (error && typeof error === 'object') {
@@ -111,22 +108,23 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
           </Alert>
         )}
 
-        <div className="my-4">
-          <p className="mb-2 text-sm">Balance actual:</p>
-          <div className="flex items-center">
+        <div className="my-1 flex flex-col items-center">
+          <p className="mb-1 text-sm">Balance actual:</p>
+          <div className="flex items-center bg-[#7C3AED]/20 rounded-full px-4 py-2">
             <FaCoins className="text-yellow-500 mr-2" />
-            <span className="font-bold">{coinBalance?.balance || 0} moneda de prueba</span>
+            <span className="font-bold">{coinBalance?.balance || 0} USDB</span>
           </div>
         </div>
 
-        <div className="my-6">
-          <p className="mb-2 text-sm">Selecciona la cantidad (max 3):</p>
+        <div className="my-2">
+          <p className="mb-2 text-sm">Selecciona la cantidad:</p>
           <div className="flex items-center justify-between">
             <Button
               variant="outline"
               size="icon"
               onClick={handleDecrease}
               disabled={quantity <= 1}
+              className="cursor-pointer"
             >
               <FaMinus className="h-4 w-4" />
             </Button>
@@ -137,7 +135,8 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
               variant="outline"
               size="icon"
               onClick={handleIncrease}
-              disabled={quantity >= 3}
+              disabled={quantity >= 100} // Assuming a max limit of 100
+              className="cursor-pointer"
             >
               <FaPlus className="h-4 w-4" />
             </Button>
@@ -147,11 +146,11 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
         <div className="border-t pt-4 mt-4">
           <div className="flex justify-between">
             <span>Costo del carton:</span>
-            <span>{costPerCard} monedas de prueba</span>
+            <span>{costPerCard.toFixed(2)} USDB</span>
           </div>
           <div className="flex justify-between font-bold text-lg mt-2">
             <span>Total ({quantity}) :</span>
-            <span>{totalCost} monedas de prueba</span>
+            <span>{totalCost.toFixed(2)} USDB</span>
           </div>
         </div>
 
@@ -160,15 +159,16 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
             variant="outline"
             onClick={onClose}
             disabled={purchaseCardsMutation.isPending}
+            className="border-gray-300 text-gray-700 hover:bg-gray-100 cursor-pointer"
           >
             Cancelar
           </Button>
           <Button
             onClick={handlePurchase}
             disabled={!hasEnoughCoins || purchaseCardsMutation.isPending}
-            className="bg-[#7C3AED] hover:bg-[#6D28D9]"
+            className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white cursor-pointer"
           >
-            {purchaseCardsMutation.isPending ? 'Procesando...' : `Compra de ${quantity} Carton${quantity !== 1 ? 'es' : ''}`}
+            {purchaseCardsMutation.isPending ? 'Procesando...' : 'Comprar'}
           </Button>
         </DialogFooter>
       </DialogContent>
