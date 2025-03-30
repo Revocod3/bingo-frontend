@@ -65,7 +65,9 @@ export default function Header() {
         <div className="flex justify-between h-16 items-center">
           {/* Logo Section */}
           <div className="flex-shrink-0">
-            <Link href="/" className="font-bold text-xl">
+            <Link href={
+              isAuthenticated ? '/dashboard' : '/'
+            } className="font-bold text-xl">
               <Image src="/logo.svg" alt="Logo" width={140} height={40} />
             </Link>
           </div>

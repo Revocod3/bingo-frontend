@@ -48,7 +48,8 @@ export const TestCoinBadge: React.FC = () => {
         </div>
       </TooltipTrigger>
       <TooltipContent>
-        <p>USDB: La moneda de nuestra plataforma, equivalente a un dolar americano</p>
+        <p className='w-[200px] md:w-auto text-center'>
+          USDB: La moneda de nuestra plataforma, equivalente a un dolar americano</p>
       </TooltipContent>
     </Tooltip>
   );
