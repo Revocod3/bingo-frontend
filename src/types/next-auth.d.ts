@@ -8,6 +8,7 @@ declare module "next-auth" {
   interface User extends DefaultUser {
     id: string;
     email: string;
+    name?: string;
     accessToken?: string;
     refreshToken?: string;
     is_staff?: boolean;
@@ -22,8 +23,8 @@ declare module "next-auth" {
     user: {
       id: string;
       email: string;
-      name?: string;
-      is_staff?: boolean;
+      name: string;
+      is_staff: boolean;
     } & DefaultSession["user"];
   }
 }

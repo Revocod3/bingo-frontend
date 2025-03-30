@@ -58,6 +58,11 @@ export const authService = {
       localStorage.removeItem('authToken');
       localStorage.removeItem('refreshToken');
     }
+  },
+
+  getCurrentUser: async (): Promise<User> => {
+    const response = await apiClient.get<User>('/api/auth/user/');
+    return response.data;
   }
 };
 
