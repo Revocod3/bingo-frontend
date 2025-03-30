@@ -276,8 +276,8 @@ export default function GamePlayPage() {
       {activeTab === 'info' && (
         <>
           {/* Bingo Patterns Display */}
-          <Card className="mb-6">
-            <CardHeader className="py-3 px-4 sm:px-6">
+          <Card className="mb-2">
+            <CardHeader className="px-6">
               <CardTitle className="text-base sm:text-lg">Patrones ganadores</CardTitle>
             </CardHeader>
             <CardContent>
