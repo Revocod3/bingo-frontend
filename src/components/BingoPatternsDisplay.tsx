@@ -5,7 +5,7 @@ import BingoPatternVisualizer from '@/src/components/BingoPatternVisualizer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card';
 
 export default function BingoPatternsDisplay({ eventId }: { eventId: string }) {
-    const { data: patterns, isLoading, error } = useEventPatterns(eventId);
+    const { data: patterns, isLoading } = useEventPatterns(eventId);
 
     if (isLoading) {
         return <div className="flex justify-center py-10">

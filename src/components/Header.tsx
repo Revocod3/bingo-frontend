@@ -1,11 +1,10 @@
 "use client"
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { LogoutIcon } from '@/components/ui/logout';
-import { FaCog } from 'react-icons/fa';
 import { useAuthStatus } from '@/hooks/useAuthStatus';
 import { useLogout } from '../hooks/api';
 import { signOut } from 'next-auth/react';

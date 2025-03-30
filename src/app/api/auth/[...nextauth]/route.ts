@@ -2,7 +2,7 @@ import NextAuth, { AuthOptions, SessionStrategy } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { authService } from '@/lib/api/services';
 
-export const authOptions: AuthOptions = {
+const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -10,7 +10,7 @@ export const authOptions: AuthOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" }
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         try {
           const response = await authService.login({
             email: credentials?.email || '',
@@ -47,16 +47,22 @@ export const authOptions: AuthOptions = {
         token.email = user.email;
         token.name = user.name;
         token.is_staff = user.is_staff;
+        // Inicializar el tiempo de expiración cuando el usuario se autentica
+        token.accessTokenExpires = Date.now() + 55 * 60 * 1000; // 55 minutos en milisegundos
       }
       
       // Aquí puedes añadir lógica para refrescar el token si ha expirado
       // Por ejemplo:
-      /*
-      if (Date.now() < token.accessTokenExpires) {
+      
+      // Verificar si accessTokenExpires existe y si aún no ha expirado
+      if (token.accessTokenExpires && typeof token.accessTokenExpires === 'number' && Date.now() < token.accessTokenExpires) {
         return token;
       }
       
       try {
+        if (!token.refreshToken) {
+          return { ...token, error: 'RefreshTokenError' };
+        }
         const response = await authService.refreshToken(token.refreshToken);
         if (response.access) {
           token.accessToken = response.access;
@@ -67,7 +73,7 @@ export const authOptions: AuthOptions = {
         console.error('Token refresh error:', error);
         return { ...token, error: 'RefreshTokenError' };
       }
-      */
+      
       
       return token;
     },

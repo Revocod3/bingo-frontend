@@ -6,12 +6,12 @@ import { useEvents } from '@/hooks/api/useEvents';
 import { useBingoCards } from '@/hooks/api/useBingoCards';
 import { useCurrentUser } from '@/hooks/api/useUsers';
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TestCoinBadge from '@/components/TestCoinBadge';
 import BingoCard from '@/components/BingoCard';
-import { FaGamepad, FaCalendarAlt, FaTrophy, FaCogs, FaClock, FaMapMarkerAlt, FaArrowRight, FaCreditCard, FaPlus } from 'react-icons/fa';
+import { FaGamepad, FaCalendarAlt, FaTrophy, FaClock, FaArrowRight, FaPlus } from 'react-icons/fa';
 import { Event } from '@/src/lib/api/types';
 import { cn, getCardNumbers } from '@/src/lib/utils';
 import { Badge } from '@/src/components/ui/badge';
