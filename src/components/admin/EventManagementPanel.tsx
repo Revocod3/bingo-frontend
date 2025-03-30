@@ -22,11 +22,13 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { FaPlus, FaEdit, FaTrash, FaEye, FaPuzzlePiece } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaEye, FaPuzzlePiece, FaCalendarAlt, FaClock, FaTrophy } from 'react-icons/fa';
 import { formatDistanceToNow } from 'date-fns';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { CreateEventRequest } from '@/lib/api/types';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 export default function EventManagementPanel() {
     const { data: events, isLoading } = useEvents();
@@ -80,81 +82,108 @@ export default function EventManagementPanel() {
 
     if (isLoading) {
         return (
-            <div className="flex justify-center items-center h-48">
+            <div className="flex justify-center items-center min-h-screen">
                 <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#7C3AED]"></div>
             </div>
         );
     }
 
     return (
-        <div>
+        <div className="container mx-auto py-4">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-semibold">Listado de Eventos</h2>
+                <h2 className="text-2xl font-bold">Listado de Eventos</h2>
                 <Button
                     onClick={() => setIsCreateModalOpen(true)}
-                    className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white"
+                    className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2"
                 >
-                    <FaPlus className="mr-2" /> Crear Evento
+                    <FaPlus className="h-4 w-4" /> Crear Evento
                 </Button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {events && events.map((event) => (
-                    <Card key={event.id} className="border shadow-md hover:shadow-lg transition-shadow">
-                        <CardHeader>
-                            <CardTitle>{event.name}</CardTitle>
-                            <CardDescription>
-                                {event.start ? (
-                                    <>Inicia {formatDistanceToNow(new Date(event.start), { addSuffix: true })}</>
-                                ) : (
-                                    'Fecha no establecida'
-                                )}
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="mb-2 truncate">{event.description || 'Sin descripción'}</p>
-                            <div className="flex justify-between items-center text-sm font-medium">
-                                <span>Premio:</span>
-                                <span>${event.prize}</span>
+                {events && events.length > 0 ? (
+                    events.map((event) => (
+                        <Card key={event.id} className="overflow-hidden shadow-md hover:shadow-lg gap-4 transition-shadow pt-0 border-0 rounded-lg">
+                            <div className="relative h-28 bg-gradient-to-r from-purple-700 to-indigo-700 rounded-t-lg opacity-80">
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <h3 className="text-2xl font-bold text-white">{event.name}</h3>
+                                </div>
                             </div>
-                        </CardContent>
-                        <CardFooter className="flex justify-between gap-2 flex-wrap">
-                            <Link href={`/admin/events/${event.id}/moderate`} passHref style={{ flexGrow: 1 }}>
-                                <Button variant="outline" className="w-full">
-                                    <FaEye className="mr-2" /> Moderar
-                                </Button>
-                            </Link>
-                            <Link href={`/admin/events/${event.id}/patterns`} passHref style={{ flexGrow: 1 }}>
-                                <Button variant="outline" className="w-full">
-                                    <FaPuzzlePiece className="mr-2" /> Patrones
-                                </Button>
-                            </Link>
-                            <Link href={`/admin/events/${event.id}/edit`} passHref style={{ flexGrow: 1 }}>
-                                <Button variant="outline" className="w-full">
-                                    <FaEdit className="mr-2" /> Editar
-                                </Button>
-                            </Link>
-                            <Button
-                                variant="outline"
-                                className="text-red-500 border-red-500 hover:bg-red-50"
-                                onClick={() => handleDeleteEvent(event.id)}
-                                style={{ flexGrow: 0 }}
-                            >
-                                <FaTrash />
-                            </Button>
-                        </CardFooter>
-                    </Card>
-                ))}
+                            <CardHeader>
+                                <CardDescription>
+                                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                        <div className="flex items-center gap-2">
+                                            <FaCalendarAlt className="h-4 w-4 text-muted-foreground" />
+                                            <span>{event.start ? new Date(event.start).toLocaleDateString() : 'Fecha desconocida'}</span>
+                                            {event.start && (
+                                                <div className="flex items-center gap-2 text-xs">
+                                                    <FaClock className="h-4 w-4 text-muted-foreground" />
+                                                    <span>{new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <Badge className={cn("bg-slate-400 text-slate-200", {
+                                                'bg-green-400 text-green-200 animate-pulse': event.is_live,
+                                            })}>
+                                                {event.is_live ? 'En Vivo' : 'Inactivo'}
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-2">
+                                <div className="rounded-lg bg-amber-50 py-1 px-4 dark:bg-amber-950/50 flex flex-row justify-between items-center">
+                                    <div className="flex items-center gap-2">
+                                        <FaTrophy className="h-4 w-4 text-amber-500" />
+                                        <h4 className="text-amber-600 text-sm font-semibold dark:text-amber-400">Premio</h4>
+                                    </div>
+                                    <p className="text-sm font-bold text-amber-700">
+                                        ${event.prize} USD
+                                    </p>
+                                </div>
 
-                {(!events || events.length === 0) && (
+                                {event.description && (
+                                    <div className="rounded-lg bg-gray-50 py-2 px-4 dark:bg-gray-800/50">
+                                        <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">{event.description}</p>
+                                    </div>
+                                )}
+                            </CardContent>
+                            <CardFooter className="flex gap-2 flex-wrap">
+                                <Link href={`/admin/events/${event.id}/moderate`} passHref className="flex-1">
+                                    <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                                        <FaEye className="h-4 w-4" /> Moderar
+                                    </Button>
+                                </Link>
+                                <Link href={`/admin/events/${event.id}/patterns`} passHref className="flex-1">
+                                    <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                                        <FaPuzzlePiece className="h-4 w-4" /> Patrones
+                                    </Button>
+                                </Link>
+                                <Link href={`/admin/events/${event.id}/edit`} passHref className="flex-1">
+                                    <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                                        <FaEdit className="h-4 w-4" /> Editar
+                                    </Button>
+                                </Link>
+                                <Button
+                                    variant="outline"
+                                    className="text-red-500 border-red-500 hover:bg-red-50 p-2 h-10 w-10 flex items-center justify-center"
+                                    onClick={() => handleDeleteEvent(event.id)}
+                                >
+                                    <FaTrash />
+                                </Button>
+                            </CardFooter>
+                        </Card>
+                    ))
+                ) : (
                     <div className="col-span-full bg-gray-100 dark:bg-gray-800 p-8 rounded-lg text-center">
-                        <p className="text-xl font-medium text-gray-600 mb-4">No hay eventos disponibles</p>
+                        <p className="text-xl font-medium text-gray-700 dark:text-gray-300 mb-4">No hay eventos disponibles</p>
                         <p className="text-gray-500 mb-4">Crea tu primer evento para empezar</p>
                         <Button
                             onClick={() => setIsCreateModalOpen(true)}
-                            className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white"
+                            className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2"
                         >
-                            <FaPlus className="mr-2" /> Crear Evento
+                            <FaPlus className="h-4 w-4" /> Crear Evento
                         </Button>
                     </div>
                 )}
@@ -162,7 +191,7 @@ export default function EventManagementPanel() {
 
             {/* Create Event Modal */}
             <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-                <DialogContent className="sm:max-w-[500px] text-gray-800">
+                <DialogContent className="sm:max-w-[500px]">
                     <DialogHeader>
                         <DialogTitle>Crear Nuevo Evento</DialogTitle>
                         <DialogDescription>
