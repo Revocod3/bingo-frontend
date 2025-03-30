@@ -65,12 +65,12 @@ export default function Header() {
             </Link>
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile menu button - positioned to the far right */}
           {isHome() && (
-            <div className="flex md:hidden">
+            <div className="flex md:hidden ml-auto">
               <button
                 type="button"
-                className="text-white"
+                className="text-white cursor-pointer"
                 onClick={toggleMenu}
                 aria-expanded="false"
               >
@@ -133,7 +133,7 @@ export default function Header() {
             ) : (
               <Link
                 href="/auth/login"
-                className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white px-4 py-2 rounded-full font-medium transition-colors"
+                className="hidden md:block bg-[#7C3AED] hover:bg-[#6D28D9] text-white px-4 py-2 rounded-full font-medium transition-colors"
               >
                 Jugar Ahora
               </Link>
@@ -143,7 +143,7 @@ export default function Header() {
 
         {/* Mobile Menu (Expanded) */}
         {isMenuOpen && isHome() && (
-          <div className="md:hidden py-2 space-y-2 z-100">
+          <div className="absolute left-0 right-0 md:hidden py-2 space-y-2 z-50 bg-[#1F1A4B] shadow-lg px-4">
             {navigationLinks.map((link, index) => (
               <Link
                 key={index}

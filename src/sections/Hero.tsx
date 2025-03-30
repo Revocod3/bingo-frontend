@@ -4,7 +4,7 @@ import React from 'react';
 
 const Hero: React.FC = () => {
     return (
-        <section className='h-[calc(100vh+4px)] flex flex-col items-center justify-center relative z-10 w-full overflow-hidden'>
+        <section className='h-100vh py-6 flex flex-col items-center justify-center relative z-10 w-full overflow-hidden'>
             <span id='top-bubble' className='absolute top-0 left-0 z-0 bg-[#2B216C] w-60 h-60 md:w-80 md:h-80 lg:w-96 lg:h-96 border-white rounded-full transform -translate-x-1/4 -translate-y-1/4' />
             <span id='bottom-bubble' className='absolute bottom-0 right-0 z-0 bg-[#46137B] w-60 h-60 md:w-80 md:h-80 lg:w-96 lg:h-96 border-white rounded-full transform translate-x-1/4 translate-y-1/4' />
             <div className='flex flex-col md:flex-row items-center md:space-x-8 lg:space-x-20 z-10 px-4 sm:px-8 md:px-12 lg:px-20'>

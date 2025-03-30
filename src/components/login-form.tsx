@@ -17,7 +17,6 @@ import Link from "next/link"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { FaGoogle, FaFacebook } from "react-icons/fa"
 import { signIn } from "next-auth/react"
-import { AuthForm } from "./auth-form"
 
 export function LoginForm({
   className,
@@ -56,89 +55,110 @@ export function LoginForm({
   };
 
   return (
-    <AuthForm
-      title="Iniciar sesión"
-      description="Ingresa tus credenciales para acceder a tu cuenta"
-      className={className}
-      {...props}
-    >
-      <form onSubmit={handleSubmit}>
-        {error && (
-          <Alert variant="destructive" className="mb-4">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-        <div className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="nombre@ejemplo.com"
-              autoComplete="email"
-              required
-              disabled={isLoading}
-            />
-          </div>
-          <div className="grid gap-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">Contraseña</Label>
+    <div className={cn("grid gap-6", className)} {...props}>
+      <Card className="border shadow-sm">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-semibold">Iniciar sesión</CardTitle>
+          <CardDescription className="text-sm text-muted-foreground">
+            Ingresa tus credenciales para acceder a tu cuenta
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {error && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="nombre@ejemplo.com"
+                  autoComplete="email"
+                  required
+                  disabled={isLoading}
+                  className="w-full"
+                />
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password" className="text-sm font-medium">Contraseña</Label>
+                  <Link
+                    href="/auth/forgot-password"
+                    className="text-sm text-muted-foreground hover:text-primary text-right"
+                  >
+                    ¿Olvidaste tu contraseña?
+                  </Link>
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="current-password"
+                  required
+                  disabled={isLoading}
+                  className="w-full"
+                />
+              </div>
+              <div className="space-y-2 pt-2">
+                <Button
+                  type="submit"
+                  className="w-full font-medium bg-[#7C3AED] hover:bg-[#6D28D9] text-white cursor-pointer"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Cargando..." : "Iniciar sesión"}
+                </Button>
+
+                <div className="relative my-4">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-foreground/20"></span>
+                  </div>
+                  <div className="relative flex justify-center text-xs">
+                    <span className="bg-card px-2 text-muted-foreground">o continuar con</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full border-[#7C3AED] text-[#8B5CF6] hover:bg-[#2D2658] hover:text-white cursor-pointer"
+                    disabled={isLoading}
+                  >
+                    <FaGoogle />
+                    Google
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full border-[#7C3AED] text-[#8B5CF6] hover:bg-[#2D2658] hover:text-white cursor-pointer"
+                    disabled={isLoading}
+                  >
+                    <FaFacebook />
+                    Facebook
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <div className="mt-6 text-center text-sm">
+              ¿No tienes una cuenta?{" "}
               <Link
-                href="/auth/forgot-password"
-                className="text-sm text-muted-foreground hover:text-primary"
+                href="/auth/register"
+                className="font-medium text-[#8B5CF6] hover:text-[#6D28D9] transition-colors"
               >
-                ¿Olvidaste tu contraseña?
+                Regístrate
               </Link>
             </div>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
-              required
-              disabled={isLoading}
-            />
-          </div>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Cargando..." : "Iniciar sesión"}
-          </Button>
-        </div>
-      </form>
-
-      <div className="mt-4">
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">
-              O continúa con
-            </span>
-          </div>
-        </div>
-
-        <div className="mt-4 grid grid-cols-2 gap-2">
-          <Button variant="outline" type="button" disabled={isLoading}>
-            <FaGoogle className="mr-2 h-4 w-4" /> Google
-          </Button>
-          <Button variant="outline" type="button" disabled={isLoading}>
-            <FaFacebook className="mr-2 h-4 w-4" /> Facebook
-          </Button>
-        </div>
-      </div>
-
-      <div className="mt-4 text-center text-sm">
-        ¿No tienes una cuenta?{" "}
-        <Link
-          href="/auth/register"
-          className="text-blue-600 hover:underline"
-        >
-          Regístrate
-        </Link>
-      </div>
-    </AuthForm>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

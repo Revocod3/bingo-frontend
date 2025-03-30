@@ -182,7 +182,7 @@ export function RegisterForm({
                     variant="outline"
                     className="w-full border-[#7C3AED] text-[#8B5CF6] hover:bg-[#2D2658] hover:text-white cursor-pointer"
                   >
-                    <FaGoogle className="mr-2" />
+                    <FaGoogle />
                     Google
                   </Button>
                   <Button
@@ -190,7 +190,7 @@ export function RegisterForm({
                     variant="outline"
                     className="w-full border-[#7C3AED] text-[#8B5CF6] hover:bg-[#2D2658] hover:text-white cursor-pointer"
                   >
-                    <FaFacebook className="mr-2" />
+                    <FaFacebook />
                     Facebook
                   </Button>
                 </div>
