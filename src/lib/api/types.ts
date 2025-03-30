@@ -16,6 +16,7 @@ export interface RegisterRequest {
 export interface TokenResponse {
   access: string;
   refresh: string;
+  user: User;
 }
 
 export interface VerifyEmailRequest {
@@ -39,6 +40,7 @@ export interface User {
   uuid: string;
   last_login?: string;
   date_joined?: string;
+  phone_number?: string;
 }
 
 // Event types

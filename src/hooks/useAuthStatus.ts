@@ -4,8 +4,7 @@ export function useAuthStatus() {
   try {
     const { data: session, status } = useSession();
     const isAuthenticated = status === 'authenticated';
-    const isAdmin = isAuthenticated && true; // Replace true with your admin check logic
-    console.log(session);
+    const isAdmin = isAuthenticated && session?.user?.is_staff === true;
     
     return {
       isAuthenticated,

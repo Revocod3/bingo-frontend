@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import Header from '@/components/Header';
+import { SessionProvider } from '../providers/session-provider';
 
 import '../styles/globals.css';
 import { QueryProvider } from '../providers/QueryProvider';
@@ -23,15 +24,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={poppins.variable}>
-      <body
-        className="bg-gradient-to-r from-[#1E1B4B] to-[#3B0764] text-white font-poppins -mt-[70px] w-full min-h-screen"
-        suppressHydrationWarning
-      >
-        <QueryProvider>
-          <Header />
-          {children}
-        </QueryProvider>
+    <html lang="es" className={poppins.variable} suppressHydrationWarning>
+      <body className="bg-gradient-to-r from-[#1E1B4B] to-[#3B0764] text-white font-poppins -mt-[70px] w-full min-h-screen">
+        <SessionProvider>
+          <QueryProvider>
+            <Header />
+            {children}
+          </QueryProvider>
+        </SessionProvider>
       </body>
     </html>
   );
