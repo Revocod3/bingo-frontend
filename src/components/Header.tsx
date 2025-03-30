@@ -1,17 +1,21 @@
 "use client"
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { LogoutIcon } from '@/components/ui/logout';
 import { FaCog } from 'react-icons/fa';
 import { useAuthStatus } from '@/hooks/useAuthStatus';
+import { useLogout } from '../hooks/api';
+import { signOut } from 'next-auth/react';
+import { SettingsGearIcon } from './ui/settings-gear';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
   const { isAuthenticated, isAdmin } = useAuthStatus();
+  const logoutAPI = useLogout(); // Renamed to avoid confusion
 
   // Check if current route is an auth page
   const isHome = () => {
@@ -30,6 +34,31 @@ export default function Header() {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const handleLogout = async () => {
+    console.log('Logout button clicked');
+    try {
+      // First, call our API logout if needed
+      if (typeof logoutAPI === 'function') {
+        console.log('Calling API logout function');
+        await logoutAPI();
+      }
+
+      // Then use NextAuth's signOut for proper session cleanup
+      await signOut({ redirect: true, callbackUrl: '/' });
+
+      // Note: The redirect is handled by NextAuth, so we don't need to manually redirect
+    } catch (error) {
+      console.error('Error during logout:', error);
+      // Fallback redirect in case of error
+      window.location.href = '/';
+    }
+  };
+
+  // For debugging
+  useEffect(() => {
+    console.log('Logout function type:', typeof logoutAPI);
+  }, [logoutAPI]);
+
   return (
     <header className="bg-[#1F1A4B] shadow-sm sticky top-0 z-50 text-white">
       <div className="w-full mx-auto px-4 sm:px-6 lg:px-26">
@@ -42,25 +71,27 @@ export default function Header() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="flex md:hidden">
-            <button
-              type="button"
-              className="text-white"
-              onClick={toggleMenu}
-              aria-expanded="false"
-            >
-              <span className="sr-only">Open main menu</span>
-              {isMenuOpen ? (
-                <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              )}
-            </button>
-          </div>
+          {isHome() && (
+            <div className="flex md:hidden">
+              <button
+                type="button"
+                className="text-white"
+                onClick={toggleMenu}
+                aria-expanded="false"
+              >
+                <span className="sr-only">Open main menu</span>
+                {isMenuOpen ? (
+                  <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                ) : (
+                  <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                )}
+              </button>
+            </div>
+          )}
 
           {/* Desktop Navigation */}
           {isHome() && (
@@ -80,43 +111,44 @@ export default function Header() {
             </div>
           )}
 
-          <div className="hidden md:flex md:items-center">
-            {/* Mostrar diferentes opciones según autenticación */}
-            <div className="flex items-center space-x-4">
-              {isAuthenticated ? (
-                <>
-                  {isAdmin && (
-                    <Link
-                      href="/admin"
-                      className="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors"
-                    >
-                      <FaCog size={20} />
-                      <span>Admin</span>
-                    </Link>
-                  )}
+
+          {/* Mostrar diferentes opciones según autenticación */}
+          <div className="flex items-center space-x-4">
+            {isAuthenticated ? (
+              <>
+                {isAdmin && (
                   <Link
-                    href="/auth/logout"
-                    className="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors"
+                    href="/admin"
+                    className="flex items-center space-x-2 text-white hover:bg-white/2 transition-colors cursor-pointer rounded-lg pl-2 md:px-4"
                   >
-                    <LogoutIcon size={20} />
-                    <span>Salir</span>
+                    <SettingsGearIcon size={20} />
+                    <span className='hidden md:block'>Admin</span>
                   </Link>
-                </>
-              ) : (
-                <Link
-                  href="/auth/login"
-                  className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white px-4 py-2 rounded-full font-medium transition-colors"
+                )}
+                {/* Corregido: Ahora usa handleLogout en lugar de logout directamente */}
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center space-x-2 text-white hover:bg-white/2 transition-colors cursor-pointer rounded-lg pl-2 md:px-4"
+                  type="button"
                 >
-                  Jugar Ahora
-                </Link>
-              )}
-            </div>
+                  <LogoutIcon size={20} />
+                  <span className='hidden md:block'>Salir</span>
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/auth/login"
+                className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white px-4 py-2 rounded-full font-medium transition-colors"
+              >
+                Jugar Ahora
+              </Link>
+            )}
           </div>
         </div>
 
         {/* Mobile Menu (Expanded) */}
         {isMenuOpen && isHome() && (
-          <div className="md:hidden py-2 space-y-2">
+          <div className="md:hidden py-2 space-y-2 z-100">
             {navigationLinks.map((link, index) => (
               <Link
                 key={index}
@@ -128,40 +160,16 @@ export default function Header() {
               </Link>
             ))}
 
-            {/* Opciones de autenticación en móvil */}
-            {isAuthenticated ? (
-              <>
-                {isAdmin && (
-                  <Link
-                    href="/admin"
-                    className="flex items-center space-x-2 text-white hover:bg-[#2D2658] px-3 py-2 rounded-full"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <FaCog size={20} />
-                    <span>Admin</span>
-                  </Link>
-                )}
-                <Link
-                  href="/auth/logout"
-                  className="flex items-center space-x-2 text-white hover:bg-[#2D2658] px-3 py-2 rounded-full"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <LogoutIcon size={20} />
-                  <span>Salir</span>
-                </Link>
-              </>
-            ) : (
-              <Link
-                href="/auth/login"
-                className="block bg-[#7C3AED] text-white text-center px-3 py-2 rounded-full font-medium my-2"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Jugar Ahora
-              </Link>
-            )}
+            <Link
+              href="/auth/login"
+              className="block bg-[#7C3AED] text-white text-center px-3 py-2 rounded-full font-medium my-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Jugar Ahora
+            </Link>
           </div>
         )}
       </div>
-    </header>
+    </header >
   );
 }
