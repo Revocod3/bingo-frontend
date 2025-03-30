@@ -54,6 +54,8 @@ export interface Event {
   description?: string;
   end_date?: string;
   creator?: number;
+  is_active?: boolean;
+  is_live?: boolean;
 }
 
 export interface CreateEventRequest {

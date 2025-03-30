@@ -189,17 +189,12 @@ export default function GamePlayPage() {
     <div className="container mx-auto pt-16 pb-8 px-2 sm:px-4 md:pt-[92px]">
       {/* Remove NumberCallNotification component */}
 
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+      <div className="flex flex-row justify-between items-start sm:items-center my-6 gap-3">
         <h1 className="text-2xl sm:text-3xl font-bold">{event.name}</h1>
         <div className="flex flex-wrap gap-2 text-gray-500">
-          <Link href={`/events/${eventId}`} passHref>
-            <Button variant="outline" size="sm" className="gap-1 text-xs sm:text-sm">
-              <FaArrowLeft size={12} /> Evento
-            </Button>
-          </Link>
           <Link href="/dashboard" passHref>
-            <Button variant="outline" size="sm" className="text-xs sm:text-sm">
-              Dashboard
+            <Button variant="outline" size="sm" className="text-xs sm:text-sm cursor-pointer">
+              <FaArrowLeft size={12} /> Dashboard
             </Button>
           </Link>
         </div>
@@ -250,10 +245,10 @@ export default function GamePlayPage() {
       {/* Lista de números cantados en versión compacta */}
       <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-white rounded-lg shadow-sm border border-indigo-100">
         <h3 className="text-base sm:text-lg font-semibold mb-2 text-indigo-700">Números Cantados</h3>
-        <div className="flex flex-wrap gap-1 sm:gap-2">
+        <div className="flex flex-wrap justify-start gap-1 sm:gap-2">
           {calledNumbers.length > 0
             ? calledNumbers.map((num, index) => (
-              <span key={index} className="inline-block px-1.5 sm:px-2 py-1 bg-indigo-100 text-indigo-800 text-xs sm:text-sm rounded-md">
+              <span key={index} className="inline-block min-w-[30px] text-center py-1 bg-indigo-100 text-indigo-800 text-xs rounded-md">
                 {num}
               </span>
             ))
@@ -274,7 +269,7 @@ export default function GamePlayPage() {
           className={`px-3 sm:px-4 py-2 cursor-pointer whitespace-nowrap ${activeTab === 'info' ? 'border-b-2 border-purple-600 font-bold text-purple-700' : 'text-gray-500'}`}
           onClick={() => setActiveTab('info')}
         >
-          Patrones de Ganancia
+          ¿Cómo ganar?
         </button>
       </div>
 
@@ -283,7 +278,7 @@ export default function GamePlayPage() {
           {/* Bingo Patterns Display */}
           <Card className="mb-6">
             <CardHeader className="py-3 px-4 sm:px-6">
-              <CardTitle className="text-base sm:text-lg">Patrones de ganancia</CardTitle>
+              <CardTitle className="text-base sm:text-lg">Patrones ganadores</CardTitle>
             </CardHeader>
             <CardContent>
               <BingoPatternsDisplay eventId={eventId} />
@@ -297,11 +292,12 @@ export default function GamePlayPage() {
       {activeTab === 'cards' && (
         <div>
           {/* Auto-mark toggle */}
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl sm:text-2xl font-bold">Tus Cartones</h2>
-            <div className="flex items-center space-x-2">
-              <Label htmlFor="auto-mark" className="text-sm font-thin">
-                Marcar números automáticamente
+          <div className="mb-4 flex flex-row items-center justify-between gap-2">
+            <h2 className="text-xl sm:text-2xl font-bold">Cartones</h2>
+            <div className="flex items-center space-x-2 sm:self-auto">
+              <Label htmlFor="auto-mark" className="text-xs sm:text-sm font-thin max-w-[150px] sm:max-w-none">
+                <span className="hidden sm:inline">Marcar números automáticamente</span>
+                <span className="inline sm:hidden">Auto-marcar</span>
               </Label>
               <Switch
                 id="auto-mark"
@@ -310,6 +306,7 @@ export default function GamePlayPage() {
               />
             </div>
           </div>
+
 
           {/* Botón de CANTAR BINGO más prominente */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -329,7 +326,8 @@ export default function GamePlayPage() {
             ))}
           </div>
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 }

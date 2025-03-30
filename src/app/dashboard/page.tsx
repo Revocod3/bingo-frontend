@@ -13,7 +13,7 @@ import TestCoinBadge from '@/components/TestCoinBadge';
 import BingoCard from '@/components/BingoCard';
 import { FaGamepad, FaCalendarAlt, FaTrophy, FaCogs, FaClock, FaMapMarkerAlt, FaArrowRight, FaCreditCard, FaPlus } from 'react-icons/fa';
 import { Event } from '@/src/lib/api/types';
-import { getCardNumbers } from '@/src/lib/utils';
+import { cn, getCardNumbers } from '@/src/lib/utils';
 import { Badge } from '@/src/components/ui/badge';
 import { PurchaseCardsModal } from '@/components/PurchaseCardsModal';
 
@@ -72,11 +72,11 @@ export default function DashboardPage() {
       <Tabs defaultValue="events" value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="mb-2">
           <TabsTrigger value="events" className="flex items-center gap-1 sm:gap-2 flex-1 cursor-pointer">
-            <span className="sm:inline"><FaGamepad /></span>
+            <span className="sm:inline"><FaCalendarAlt /></span>
             <span className="text-xs sm:text-sm">Eventos</span>
           </TabsTrigger>
           <TabsTrigger value="cards" className="flex items-center gap-1 sm:gap-2 flex-1 cursor-pointer">
-            <span className="sm:inline"><FaCalendarAlt /></span>
+            <span className="sm:inline"><FaGamepad /></span>
             <span className="text-xs sm:text-sm">Cartones</span>
           </TabsTrigger>
         </TabsList>
@@ -94,7 +94,9 @@ export default function DashboardPage() {
               {activeEvents.map(event => {
                 const eventId = String(event.id);
                 const eventCards = cardsByEvent[eventId] || [];
-                const isLive = event.start && new Date(event.start) <= new Date();
+                const isLive = event.is_active ? event.is_active && event.is_live : false;
+
+                console.log('event', event, isLive);
 
                 return (
                   <Card key={eventId} className="overflow-hidden shadow-md hover:shadow-lg gap-4 transition-shadow pt-0 border-0 rounder-lg">
@@ -117,7 +119,9 @@ export default function DashboardPage() {
                             )}
                           </div>
                           <div className="flex items-center justify-between">
-                            {isLive && <Badge className="bg-green-600 hover:bg-green-700">Live</Badge>}
+                            <Badge className={cn("bg-slate-400 text-slate-200", {
+                              'bg-green-400 text-green-200 animate-pulse': isLive,
+                            })}>En Vivo</Badge>
                           </div>
                         </div>
                       </CardDescription>
@@ -201,7 +205,6 @@ export default function DashboardPage() {
         </TabsContent>
       </Tabs>
 
-      {/* Modal de compra de cartones */}
       <PurchaseCardsModal
         eventId={selectedEventId}
         isOpen={isPurchaseModalOpen}
