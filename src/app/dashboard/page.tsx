@@ -56,29 +56,18 @@ export default function DashboardPage() {
 
         <div className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-4">
           {user && <TestCoinBadge />}
-          {user && user.is_staff && (
-            <Link href="/admin" passHref>
-              <Button className="bg-gray-700 hover:bg-gray-800 text-white flex items-center gap-2">
-                <FaCogs /> Panel Admin
-              </Button>
-            </Link>
-          )}
         </div>
       </div>
 
       <Tabs defaultValue="events" value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="mb-2">
-          <TabsTrigger value="events" className="flex items-center gap-1 sm:gap-2 flex-1">
+          <TabsTrigger value="events" className="flex items-center gap-1 sm:gap-2 flex-1 cursor-pointer bg">
             <span className="sm:inline"><FaGamepad /></span>
             <span className="text-xs sm:text-sm">Eventos</span>
           </TabsTrigger>
-          <TabsTrigger value="cards" className="flex items-center gap-1 sm:gap-2 flex-1">
+          <TabsTrigger value="cards" className="flex items-center gap-1 sm:gap-2 flex-1 cursor-pointer">
             <span className="sm:inline"><FaCalendarAlt /></span>
             <span className="text-xs sm:text-sm">Cartones</span>
-          </TabsTrigger>
-          <TabsTrigger value="history" className="flex items-center gap-1 sm:gap-2 flex-1">
-            <span className="sm:inline"><FaTrophy /></span>
-            <span className="text-xs sm:text-sm">Historial</span>
           </TabsTrigger>
         </TabsList>
 
@@ -167,14 +156,6 @@ export default function DashboardPage() {
           )}
         </TabsContent>
 
-        <TabsContent value="history" className="space-y-4">
-          <h2 className="text-2xl font-bold mb-4">Historial de Juegos</h2>
-
-          <div className="bg-gray-100 dark:bg-gray-800 p-8 rounded-lg text-center">
-            <p className="text-xl font-medium mb-4 text-gray-700">Historial no disponible</p>
-            <p className="text-gray-500">Tu historial de juegos aparecerá aquí</p>
-          </div>
-        </TabsContent>
       </Tabs>
     </div>
   );
