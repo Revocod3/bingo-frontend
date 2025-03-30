@@ -30,19 +30,19 @@ export default function BingoPatternsDisplay({ eventId }: { eventId: string }) {
                 <CardDescription>Todos los patrones disponibles para este evento.</CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {patterns.map((pattern) => (
                         <div key={pattern.id} className="flex flex-col items-center">
-                            <BingoPatternVisualizer patternId={pattern.id} />
-                            <div className="mt-2 text-center">
+                            <div className="my-2 text-center">
                                 <h3 className="font-medium">{pattern.name}</h3>
                                 <p className="text-xs text-muted-foreground">{pattern.description}</p>
                             </div>
+                            <BingoPatternVisualizer patternId={pattern.id} />
                         </div>
                     ))}
                 </div>
             </CardContent>
-            <div className="text-sm text-center text-muted-foreground mt-4 mb-4">
+            <div className="text-sm text-center text-muted-foreground m-2">
                 Para ganar, debes marcar todos los números que forman alguno de estos patrones.
             </div>
         </Card>
