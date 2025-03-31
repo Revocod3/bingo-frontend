@@ -13,6 +13,16 @@ import {
   BingoNumber,
   BingoClaimResponse,
 } from './types';
+import {
+  DepositRequest,
+  DepositResponse,
+  DepositConfirmRequest,
+  DepositConfirmResponse,
+  Deposit,
+  AdminDeposit,
+  DepositApproveRequest,
+  DepositApproveResponse
+} from './depositTypes';
 
 // Auth services
 export const authService = {
@@ -203,34 +213,33 @@ export const testCoinService = {
   },
   
   // Nuevos métodos para el sistema de recargas
-  requestDeposit: async (amount: number): Promise<any> => {
-    const response = await apiClient.post('/api/test-coins/deposit/request_deposit/', { amount });
+  requestDeposit: async (amount: number): Promise<DepositResponse> => {
+    const response = await apiClient.post('/api/test-coins/deposit/request_deposit/', { amount } as DepositRequest);
     return response.data;
   },
   
-  confirmDeposit: async (uniqueCode: string, reference: string): Promise<any> => {
+  confirmDeposit: async (uniqueCode: string, reference: string): Promise<DepositConfirmResponse> => {
     const response = await apiClient.post('/api/test-coins/deposit/confirm_deposit/', { 
       unique_code: uniqueCode, 
       reference 
-    });
+    } as DepositConfirmRequest);
     return response.data;
   },
   
-  getMyDeposits: async (): Promise<any[]> => {
+  getMyDeposits: async (): Promise<Deposit[]> => {
     const response = await apiClient.get('/api/test-coins/deposit/my_deposits/');
     return response.data;
   },
   
   // Solo para admins
-  getPendingDeposits: async (): Promise<any[]> => {
+  getPendingDeposits: async (): Promise<AdminDeposit[]> => {
     const response = await apiClient.get('/api/test-coins/deposit/pending/');
     return response.data;
   },
   
-  approveDeposit: async (depositId: string, adminNotes?: string): Promise<any> => {
-    const response = await apiClient.post(`/api/test-coins/deposit/${depositId}/approve/`, {
-      admin_notes: adminNotes
-    });
+  approveDeposit: async (depositId: string, adminNotes?: string): Promise<DepositApproveResponse> => {
+    const response = await apiClient.post(`/api/test-coins/deposit/approve/`, 
+      { deposit_id: depositId, admin_notes: adminNotes } as DepositApproveRequest);
     return response.data;
   },
   
