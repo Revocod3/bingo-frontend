@@ -42,13 +42,15 @@ export function LoginForm({
 
       if (result?.error) {
         setError("Credenciales inválidas. Por favor, verifica tu email y contraseña.");
+        console.error("Login error:", result.error);
       } else {
+        // Successful login
         router.push("/dashboard");
         router.refresh();
       }
     } catch (err) {
       setError("Ocurrió un error al iniciar sesión. Por favor, intenta de nuevo.");
-      console.error(err);
+      console.error("Login exception:", err);
     } finally {
       setIsLoading(false);
     }
