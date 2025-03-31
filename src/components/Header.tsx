@@ -9,6 +9,7 @@ import { useAuthStatus } from '@/hooks/useAuthStatus';
 import { useLogout } from '../hooks/api';
 import { signOut } from 'next-auth/react';
 import { SettingsGearIcon } from './ui/settings-gear';
+import { UserIcon } from './ui/user';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -119,6 +120,15 @@ export default function Header() {
                     <span className='hidden md:block'>Admin</span>
                   </Link>
                 )}
+                {
+                  <Link
+                    href="/profile"
+                    className="flex items-center space-x-2 text-white hover:bg-white/2 transition-colors cursor-pointer rounded-lg pl-2 md:px-4"
+                  >
+                    <UserIcon size={20} />
+                    <span className='hidden md:block'>Perfil</span>
+                  </Link>
+                }
                 {/* Corregido: Ahora usa handleLogout en lugar de logout directamente */}
                 <button
                   onClick={handleLogout}
