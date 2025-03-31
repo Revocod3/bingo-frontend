@@ -200,5 +200,59 @@ export const testCoinService = {
   getBalance: async (): Promise<{ balance: number; last_updated: string }> => {
     const response = await apiClient.get<{ balance: number; last_updated: string }>('/api/test-coins/my_balance/');
     return response.data;
+  },
+  
+  // Nuevos métodos para el sistema de recargas
+  requestDeposit: async (amount: number): Promise<any> => {
+    const response = await apiClient.post('/api/test-coins/deposit/request_deposit/', { amount });
+    return response.data;
+  },
+  
+  confirmDeposit: async (uniqueCode: string, reference: string): Promise<any> => {
+    const response = await apiClient.post('/api/test-coins/deposit/confirm_deposit/', { 
+      unique_code: uniqueCode, 
+      reference 
+    });
+    return response.data;
+  },
+  
+  getMyDeposits: async (): Promise<any[]> => {
+    const response = await apiClient.get('/api/test-coins/deposit/my_deposits/');
+    return response.data;
+  },
+  
+  // Solo para admins
+  getPendingDeposits: async (): Promise<any[]> => {
+    const response = await apiClient.get('/api/test-coins/deposit/pending/');
+    return response.data;
+  },
+  
+  approveDeposit: async (depositId: string, adminNotes?: string): Promise<any> => {
+    const response = await apiClient.post(`/api/test-coins/deposit/${depositId}/approve/`, {
+      admin_notes: adminNotes
+    });
+    return response.data;
+  },
+  
+  rejectDeposit: async (depositId: string, adminNotes?: string): Promise<any> => {
+    const response = await apiClient.post(`/api/test-coins/deposit/${depositId}/reject/`, {
+      admin_notes: adminNotes
+    });
+    return response.data;
+  }
+};
+
+// Nuevo servicio para gestión de precios (admin)
+export const adminService = {
+  getCardPrice: async (): Promise<number> => {
+    const response = await apiClient.get('/api/cards/card_price/');
+    return response.data.card_price;
+  },
+  
+  updateCardPrice: async (price: number): Promise<any> => {
+    const response = await apiClient.post('/api/cards/card_price/', { 
+      card_price: price 
+    });
+    return response.data;
   }
 };
