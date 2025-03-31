@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FaCoins, FaPlus, FaMinus } from 'react-icons/fa';
+import Link from 'next/link';
 
 interface PurchaseCardsModalProps {
   eventId: string;
@@ -114,6 +115,21 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
             <FaCoins className="text-yellow-500 mr-2" />
             <span className="font-bold">{coinBalance?.balance || 0} USDB</span>
           </div>
+          {!hasEnoughCoins && (
+            <div className="flex flex-col items-center mt-2">
+              <p className="text-red-500 text-sm my-2">
+                No tienes suficientes monedas para comprar {quantity} cartón{quantity !== 1 ? 'es' : ''}.
+              </p>
+              <Link
+                href="/deposits"
+                className="py-2 px-4 bg-[#7C3AED] flex  items-center text-white rounded-full mt-2 hover:bg-[#6D28D9] transition duration-200"
+              >
+                Recargar
+                <FaCoins className="ml-2" />
+              </Link>
+            </div>
+          )}
+
         </div>
 
         <div className="my-2">

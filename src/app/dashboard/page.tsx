@@ -11,19 +11,23 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TestCoinBadge from '@/components/TestCoinBadge';
 import BingoCard from '@/components/BingoCard';
-import { FaGamepad, FaCalendarAlt, FaTrophy, FaClock, FaArrowRight, FaPlus } from 'react-icons/fa';
+import { FaGamepad, FaCalendarAlt, FaTrophy, FaClock, FaArrowRight, FaPlus, FaPlusCircle } from 'react-icons/fa';
 import { Event } from '@/src/lib/api/types';
 import { cn, getCardNumbers } from '@/src/lib/utils';
 import { Badge } from '@/src/components/ui/badge';
 import { PurchaseCardsModal } from '@/components/PurchaseCardsModal';
+import { useTestCoinBalance } from '@/src/hooks/api/useTestCoins';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
   const { data: events, isLoading: eventsLoading } = useEvents();
   const { data: cards } = useBingoCards();
   const { data: user } = useCurrentUser();
+  const { data: balance } = useTestCoinBalance();
   const [activeTab, setActiveTab] = useState('events');
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
   const [selectedEventId, setSelectedEventId] = useState<string>('');
+  const router = useRouter();
 
   // Filter for active events (those that haven't ended)
   const activeEvents = events?.filter((event: Event) =>
@@ -65,7 +69,23 @@ export default function DashboardPage() {
         </div>
 
         <div className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-4">
-          {user && <TestCoinBadge />}
+
+          {user &&
+            <div className="flex items-center gap-2">
+              <TestCoinBadge />
+              {balance && balance?.balance < 1 ?
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="cursor-pointer rounded-full border-[#7C3AED] hover:bg-[#7C3AED]/10 transition-colors bg-transparent"
+                  onClick={() => router.push('/deposits')}
+                >
+                  <span className="text-xm flex items-center gap-1 text-slate-50">
+                    Recargar <FaPlusCircle className="text-[#7C3AED]" />
+                  </span>
+                </Button>
+                : null}
+            </div>}
         </div>
       </div>
 
