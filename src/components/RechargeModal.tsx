@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,16 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FaCoins, FaMoneyBillWave, FaClipboard, FaCheck, FaBackspace, FaCreditCard, FaMobile, FaOtter, FaPaypal } from 'react-icons/fa';
 import { useDepositRequest, useDepositConfirm } from '@/hooks/api/useTestCoins';
+import { useActivePaymentMethods } from '@/hooks/api/usePaymentMethods';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-
-// Define payment method interface
-interface PaymentMethod {
-    id: string;
-    name: string;
-    icon: React.ReactNode;
-    instructions: string;
-    details: Record<string, string>;
-}
 
 interface RechargeModalProps {
     isOpen: boolean;
@@ -33,46 +25,59 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
     const depositRequest = useDepositRequest();
     const depositConfirm = useDepositConfirm();
 
+    // Fetch payment methods from API
+    const { data: apiPaymentMethods, isLoading: isLoadingPaymentMethods } = useActivePaymentMethods();
+
     // Add state for the active payment method
     const [activePaymentMethod, setActivePaymentMethod] = useState<string>('bank');
 
-    // Define payment methods
-    const paymentMethods: PaymentMethod[] = [
-        {
-            id: 'mobile',
-            name: 'Pago Móvil',
-            icon: <FaMobile className="text-purple-500" />,
-            instructions: 'Usa tu aplicación de pago móvil y proporciona el número de la transacción.',
-            details: {
-                'Banco': 'Banesco (0134)',
-                'Teléfono': '+58 412-123-4567',
-                'Nombre': 'Bingo Platform',
-                'Monto en bolívares': 'Bs. 100.000',
-            }
-        },
-        {
-            id: 'bank',
-            name: 'Transferencia',
-            icon: <FaMoneyBillWave className="text-green-500" />,
-            instructions: 'Realiza la transferencia bancaria y proporciona el número de referencia.',
-            details: {
-                'Banco': 'Banesco (0134)',
-                'Cuenta': '0134-0342273423083891',
-                'Titular': 'Bingo Platform Inc.',
-                'Documento': 'C.I. 12345678',
-                'Monto en bolívares': 'Bs. 100.000',
-            }
-        },
-        {
-            id: 'other',
-            name: 'Otros',
-            icon: <FaPaypal className="text-blue-500" />,
-            instructions: 'Realiza el pago con tu tarjeta de crédito y proporciona el número de autorización.',
-            details: {
-                'link': 'wa.me/584121234567?text=Hola%20quiero%20recargar%20mi%20bingo',
-            }
-        },
-    ];
+    // Map icon types to actual icon components
+    const getIconComponent = (iconType: string): React.ReactNode => {
+        console.log('Icon Type:', iconType);
+        switch (iconType) {
+            case 'Pago Movil':
+                return <FaMobile className="text-purple-500" />;
+            case 'Transferencia':
+                return <FaMoneyBillWave className="text-green-500" />;
+            case 'Otros':
+                return <FaPaypal className="text-blue-500" />;
+            case 'Nequi':
+                return <FaCreditCard className="text-red-500" />;
+            default:
+                return <FaCoins className="text-yellow-400" />;
+        }
+    };
+
+    // Transform API payment methods to the format used by the component
+    const paymentMethods = useMemo(() => {
+        if (!apiPaymentMethods || isLoadingPaymentMethods) {
+            return [{
+                id: 'bank',
+                name: 'Transferencia',
+                icon: <FaMoneyBillWave className="text-green-500" />,
+                instructions: 'Realiza la transferencia bancaria y proporciona el número de referencia.',
+                details: {
+                    'Banco': 'Cargando...',
+                }
+            }];
+        }
+
+        return apiPaymentMethods
+            .map(method => ({
+                id: method.id,
+                name: method.payment_method,
+                icon: getIconComponent(method.payment_method ?? ''),
+                instructions: method.instructions,
+                details: method.details
+            }));
+    }, [apiPaymentMethods, isLoadingPaymentMethods]);
+
+    // Set default payment method when data loads
+    React.useEffect(() => {
+        if (paymentMethods.length > 0 && !activePaymentMethod) {
+            setActivePaymentMethod(paymentMethods[0].id || 'default-id');
+        }
+    }, [paymentMethods, activePaymentMethod]);
 
     // Copy to clipboard function
     const copyToClipboard = (text: string) => {
@@ -282,7 +287,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
                                 <Tabs defaultValue="bank" value={activePaymentMethod} onValueChange={setActivePaymentMethod}>
                                     <TabsList className="w-full">
                                         {paymentMethods.map(method => (
-                                            <TabsTrigger key={method.id} value={method.id} className="flex items-center cursor-pointer">
+                                            <TabsTrigger key={method.id} value={method.id ?? ''} className="flex items-center cursor-pointer">
                                                 {method.icon}
                                                 <span>{method.name}</span>
                                             </TabsTrigger>
@@ -290,7 +295,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
                                     </TabsList>
 
                                     {paymentMethods.map(method => (
-                                        <TabsContent key={method.id} value={method.id} className="mt-3">
+                                        <TabsContent key={method.id} value={method.id ?? ''} className="mt-3">
                                             <p>{method.instructions}</p>
                                             <div className="font-mono bg-white p-3 rounded-lg space-y-2">
                                                 {Object.entries(method.details).map(([key, value]) => (

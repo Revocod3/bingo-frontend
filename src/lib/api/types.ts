@@ -192,3 +192,14 @@ export interface AdminUserStats {
   new_users_today: number;
   new_users_this_week: number;
 }
+
+// Payment method types
+export interface ApiPaymentMethod {
+  id?: string;
+  name?: string;
+  payment_method?: string;
+  instructions?: string;
+  details: Record<string, string>;
+  is_active: boolean;
+  order?: number;
+}
