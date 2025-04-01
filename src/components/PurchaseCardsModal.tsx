@@ -113,7 +113,7 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
           <p className="mb-1 text-sm">Balance actual:</p>
           <div className="flex items-center bg-[#7C3AED]/20 rounded-full px-4 py-2">
             <FaCoins className="text-yellow-500 mr-2" />
-            <span className="font-bold">{coinBalance?.balance || 0} USDB</span>
+            <span className="font-bold">{coinBalance?.balance || 0} USD</span>
           </div>
           {!hasEnoughCoins && (
             <div className="flex flex-col items-center mt-2">
@@ -162,11 +162,11 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
         <div className="border-t pt-4 mt-4">
           <div className="flex justify-between">
             <span>Costo del carton:</span>
-            <span>{costPerCard.toFixed(2)} USDB</span>
+            <span>{costPerCard.toFixed(2)} USD</span>
           </div>
           <div className="flex justify-between font-bold text-lg mt-2">
             <span>Total ({quantity}) :</span>
-            <span>{totalCost.toFixed(2)} USDB</span>
+            <span>{totalCost.toFixed(2)} USD</span>
           </div>
         </div>
 

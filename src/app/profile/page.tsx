@@ -54,7 +54,7 @@ export default function ProfilePage() {
         <div className="container py-8 px-4 md:py-12 max-w-6xl mx-auto">
             <h1 className="text-2xl font-bold mb-8 text-left">Tu Perfil</h1>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6">
                 {/* Main Profile Information */}
                 <Card className='pt-2 bg-gradient-to-r from-indigo-200 border-0 to-purple-500 shadow-lg'>
                     <CardHeader className="px-4">
@@ -76,92 +76,91 @@ export default function ProfilePage() {
                         </div>
                     </CardContent>
                 </Card>
-                <div className="md:col-span-2">
-                    <Card>
-                        <CardHeader className="pb-4">
-                            <div className="flex justify-between items-center">
-                                <CardTitle className="text-xl md:text-2xl">Información Personal</CardTitle>
+                <Card>
+                    <CardHeader className="pb-4">
+                        <div className="flex justify-between items-center">
+                            <CardTitle className="text-xl md:text-2xl">Información Personal</CardTitle>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-muted-foreground hover:text-primary"
+                                onClick={() => setIsEditing(!isEditing)}
+                            >
+                                <FaEdit className="mr-2" />
+                                {isEditing ? 'Cancelar' : 'Editar'}
+                            </Button>
+                        </div>
+                        <CardDescription>
+                            Administra tus datos personales y cuenta
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="pb-6 space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-1">
+                                <div className="text-sm text-muted-foreground flex items-center">
+                                    <FaUser className="mr-2 text-primary" />
+                                    Nombre
+                                </div>
+                                <div className="font-medium">
+                                    {user.first_name || 'No especificado'} {user.last_name || ''}
+                                </div>
+                            </div>
+
+                            <div className="space-y-1">
+                                <div className="text-sm text-muted-foreground flex items-center">
+                                    <FaEnvelope className="mr-2 text-primary" />
+                                    Correo Electrónico
+                                </div>
+                                <div className="font-medium">
+                                    {user.email}
+                                </div>
+                            </div>
+
+                            <div className="space-y-1">
+                                <div className="text-sm text-muted-foreground flex items-center">
+                                    <FaCalendarAlt className="mr-2 text-primary" />
+                                    Miembro desde
+                                </div>
+                                <div className="font-medium">
+                                    {formattedDate}
+                                </div>
+                            </div>
+
+                            <div className="space-y-1">
+                                <div className="text-sm text-muted-foreground flex items-center">
+                                    <FaCrown className="mr-2 text-primary" />
+                                    Tipo de cuenta
+                                </div>
+                                <div className="font-medium">
+                                    {user.is_staff ?
+                                        <Badge variant="secondary" className="bg-purple-100 text-purple-800 hover:bg-purple-200">Administrador</Badge> :
+                                        <Badge variant="secondary" className="bg-blue-100 text-blue-800 hover:bg-blue-200">Jugador</Badge>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </CardContent>
+                    <CardFooter>
+                        {isEditing ? (
+                            <div className="w-full space-y-4">
+                                <p className="text-muted-foreground text-sm">
+                                    La edición de perfil se implementará pronto. Podrás cambiar tu nombre, contraseña y más.
+                                </p>
                                 <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="text-muted-foreground hover:text-primary"
-                                    onClick={() => setIsEditing(!isEditing)}
+                                    className="w-full"
+                                    onClick={() => setIsEditing(false)}
                                 >
-                                    <FaEdit className="mr-2" />
-                                    {isEditing ? 'Cancelar' : 'Editar'}
+                                    Guardar Cambios
                                 </Button>
                             </div>
-                            <CardDescription>
-                                Administra tus datos personales y cuenta
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="pb-6 space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-1">
-                                    <div className="text-sm text-muted-foreground flex items-center">
-                                        <FaUser className="mr-2 text-primary" />
-                                        Nombre
-                                    </div>
-                                    <div className="font-medium">
-                                        {user.first_name || 'No especificado'} {user.last_name || ''}
-                                    </div>
-                                </div>
+                        ) : (
+                            <p className="text-muted-foreground text-sm">
+                                Tu información está segura y es privada. Solo tú puedes verla y editarla.
+                            </p>
+                        )}
+                    </CardFooter>
+                </Card>
 
-                                <div className="space-y-1">
-                                    <div className="text-sm text-muted-foreground flex items-center">
-                                        <FaEnvelope className="mr-2 text-primary" />
-                                        Correo Electrónico
-                                    </div>
-                                    <div className="font-medium">
-                                        {user.email}
-                                    </div>
-                                </div>
-
-                                <div className="space-y-1">
-                                    <div className="text-sm text-muted-foreground flex items-center">
-                                        <FaCalendarAlt className="mr-2 text-primary" />
-                                        Miembro desde
-                                    </div>
-                                    <div className="font-medium">
-                                        {formattedDate}
-                                    </div>
-                                </div>
-
-                                <div className="space-y-1">
-                                    <div className="text-sm text-muted-foreground flex items-center">
-                                        <FaCrown className="mr-2 text-primary" />
-                                        Tipo de cuenta
-                                    </div>
-                                    <div className="font-medium">
-                                        {user.is_staff ?
-                                            <Badge variant="secondary" className="bg-purple-100 text-purple-800 hover:bg-purple-200">Administrador</Badge> :
-                                            <Badge variant="secondary" className="bg-blue-100 text-blue-800 hover:bg-blue-200">Jugador</Badge>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        </CardContent>
-                        <CardFooter>
-                            {isEditing ? (
-                                <div className="w-full space-y-4">
-                                    <p className="text-muted-foreground text-sm">
-                                        La edición de perfil se implementará pronto. Podrás cambiar tu nombre, contraseña y más.
-                                    </p>
-                                    <Button
-                                        className="w-full"
-                                        onClick={() => setIsEditing(false)}
-                                    >
-                                        Guardar Cambios
-                                    </Button>
-                                </div>
-                            ) : (
-                                <p className="text-muted-foreground text-sm">
-                                    Tu información está segura y es privada. Solo tú puedes verla y editarla.
-                                </p>
-                            )}
-                        </CardFooter>
-                    </Card>
-                </div>
 
                 {/* Stats and Account Info */}
                 <div className="space-y-6">

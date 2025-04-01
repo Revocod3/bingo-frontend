@@ -16,7 +16,7 @@ export const TestCoinBadge: React.FC = () => {
           </div>
         </TooltipTrigger>
         <TooltipContent>
-          <p>Cargando balance de monedas de prueba USDB</p>
+          <p>Cargando balance de monedas de prueba USD</p>
         </TooltipContent>
       </Tooltip>
     );
@@ -32,7 +32,7 @@ export const TestCoinBadge: React.FC = () => {
           </div>
         </TooltipTrigger>
         <TooltipContent>
-          <p>Error al cargar el balance de monedas de prueba USDB</p>
+          <p>Error al cargar el balance de monedas de prueba USD</p>
         </TooltipContent>
       </Tooltip>
     );
@@ -42,14 +42,14 @@ export const TestCoinBadge: React.FC = () => {
     <Tooltip>
       <TooltipTrigger asChild>
         <div className="flex items-center px-3 py-1 bg-[#1E1B4B] text-white rounded-full border border-[#7C3AED]">
-          <span className="font-thin mr-2">USDB</span>
+          <span className="font-thin mr-2">USD</span>
           <FaCoins className="mr-2 text-[#E4EB21]" />
           <span className="font-bold">${balance.balance}</span>
         </div>
       </TooltipTrigger>
       <TooltipContent>
         <p className='w-[200px] md:w-auto text-center'>
-          USDB: La moneda de nuestra plataforma, equivalente a un dolar americano</p>
+          USD: La moneda de nuestra plataforma, equivalente a un dolar americano</p>
       </TooltipContent>
     </Tooltip>
   );
