@@ -4,8 +4,18 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { FaCoins, FaMoneyBillWave, FaClipboard, FaCheck, FaBackspace } from 'react-icons/fa';
+import { FaCoins, FaMoneyBillWave, FaClipboard, FaCheck, FaBackspace, FaCreditCard, FaMobile, FaOtter, FaPaypal } from 'react-icons/fa';
 import { useDepositRequest, useDepositConfirm } from '@/hooks/api/useTestCoins';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+
+// Define payment method interface
+interface PaymentMethod {
+    id: string;
+    name: string;
+    icon: React.ReactNode;
+    instructions: string;
+    details: Record<string, string>;
+}
 
 interface RechargeModalProps {
     isOpen: boolean;
@@ -22,6 +32,47 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
     // Use the mutation hooks
     const depositRequest = useDepositRequest();
     const depositConfirm = useDepositConfirm();
+
+    // Add state for the active payment method
+    const [activePaymentMethod, setActivePaymentMethod] = useState<string>('bank');
+
+    // Define payment methods
+    const paymentMethods: PaymentMethod[] = [
+        {
+            id: 'mobile',
+            name: 'Pago Móvil',
+            icon: <FaMobile className="text-purple-500" />,
+            instructions: 'Usa tu aplicación de pago móvil y proporciona el número de la transacción.',
+            details: {
+                'Banco': 'Banesco (0134)',
+                'Teléfono': '+58 412-123-4567',
+                'Nombre': 'Bingo Platform',
+                'Monto en bolívares': 'Bs. 100.000',
+            }
+        },
+        {
+            id: 'bank',
+            name: 'Transferencia',
+            icon: <FaMoneyBillWave className="text-green-500" />,
+            instructions: 'Realiza la transferencia bancaria y proporciona el número de referencia.',
+            details: {
+                'Banco': 'Banesco (0134)',
+                'Cuenta': '0134-0342273423083891',
+                'Titular': 'Bingo Platform Inc.',
+                'Documento': 'C.I. 12345678',
+                'Monto en bolívares': 'Bs. 100.000',
+            }
+        },
+        {
+            id: 'other',
+            name: 'Otros',
+            icon: <FaPaypal className="text-blue-500" />,
+            instructions: 'Realiza el pago con tu tarjeta de crédito y proporciona el número de autorización.',
+            details: {
+                'link': 'wa.me/584121234567?text=Hola%20quiero%20recargar%20mi%20bingo',
+            }
+        },
+    ];
 
     // Copy to clipboard function
     const copyToClipboard = (text: string) => {
@@ -224,21 +275,58 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
                                 </div>
                             </div>
 
-                            <div className="space-y-4 text-sm my-4">
-                                <h4 className="font-semibold flex items-center gap-2">
-                                    Metodos de Pago <FaMoneyBillWave className="text-green-500" />
-                                </h4>
-                                <ol className="list-decimal pl-5 space-y-2">
-                                    <li>Realiza una transferencia bancaria por ${amountStr} a la siguiente cuenta:
-                                        <div className="font-mono bg-white p-2 rounded mt-1">
-                                            <p>Banco: Bitcoin Bank</p>
-                                            <p>Cuenta: 123456789</p>
-                                            <p>Titular: Bingo Platform Inc.</p>
-                                        </div>
-                                    </li>
-                                    <li>Incluye el código único <b>{uniqueCode}</b> en el concepto de la transferencia.</li>
-                                    <li>Una vez realizado el pago, introduce el número de referencia de la transacción.</li>
-                                </ol>
+                            <div className="space-y-2 text-sm">
+                                <h4 className="font-semibold px-2">Métodos de Pago</h4>
+
+                                {/* Replace custom tabs with Tabs component */}
+                                <Tabs defaultValue="bank" value={activePaymentMethod} onValueChange={setActivePaymentMethod}>
+                                    <TabsList className="w-full">
+                                        {paymentMethods.map(method => (
+                                            <TabsTrigger key={method.id} value={method.id} className="flex items-center cursor-pointer">
+                                                {method.icon}
+                                                <span>{method.name}</span>
+                                            </TabsTrigger>
+                                        ))}
+                                    </TabsList>
+
+                                    {paymentMethods.map(method => (
+                                        <TabsContent key={method.id} value={method.id} className="mt-3">
+                                            <p>{method.instructions}</p>
+                                            <div className="font-mono bg-white p-3 rounded-lg space-y-2">
+                                                {Object.entries(method.details).map(([key, value]) => (
+                                                    <div key={key} className="flex items-center justify-between">
+                                                        <span className="font-medium text-gray-700">{key}:</span>
+                                                        <div className="flex items-center">
+                                                            {key === 'link' ? (
+                                                                <a
+                                                                    href={`https://${value}`}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="text-blue-600 hover:underline"
+                                                                >
+                                                                    WhatsApp
+                                                                </a>
+                                                            ) : (
+                                                                <span className="text-gray-800">{value}</span>
+                                                            )}
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                className="ml-2 h-6 w-6 rounded-full hover:bg-gray-100 p-1"
+                                                                onClick={() => copyToClipboard(value)}
+                                                                title={`Copiar ${key}`}
+                                                            >
+                                                                <FaClipboard className="h-3 w-3 text-gray-500" />
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <p>Monto a pagar: <b>${amountStr}</b></p>
+                                            <p>Incluye el código único <b>{uniqueCode}</b> en el concepto de la transacción.</p>
+                                        </TabsContent>
+                                    ))}
+                                </Tabs>
                             </div>
                         </div>
 
