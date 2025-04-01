@@ -2,9 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { FaCoins, FaMoneyBillWave, FaClipboard, FaCheck, FaBackspace, FaCreditCard, FaMobile, FaOtter, FaPaypal } from 'react-icons/fa';
+import { FaCoins, FaMoneyBillWave, FaClipboard, FaCheck, FaBackspace, FaMobile, FaPaypal } from 'react-icons/fa';
 import { useDepositRequest, useDepositConfirm } from '@/hooks/api/useTestCoins';
 import { useActivePaymentMethods } from '@/hooks/api/usePaymentMethods';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -42,7 +41,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
             case 'Otros':
                 return <FaPaypal className="text-blue-500" />;
             case 'Nequi':
-                return <FaCreditCard className="text-red-500" />;
+                return <FaMobile className="text-red-500" />;
             default:
                 return <FaCoins className="text-yellow-400" />;
         }
@@ -169,10 +168,18 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
 
         return (
             <div className="mt-4">
-                <div className="w-full mb-4 flex justify-center border p-4 border-gray-300 pb-2 rounded-md">
-                    <div className="text-5xl font-bold flex items-center">
-                        <span className="text-gray-500 text-2xl">$</span>
-                        <span>{amountStr || '0'}</span>
+                {/* MUI-style floating label for amount display */}
+                <div className="relative mb-4">
+                    <div className="border border-[#e5e7eb] bg-white rounded-lg py-3 px-4 shadow-sm relative group focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 hover:border-gray-400 transition-colors">
+                        <label className="absolute text-xs font-medium text-gray-500 left-2 -top-2 bg-white px-1 transition-all">
+                            Monto a recargar:
+                        </label>
+                        <div className="flex justify-center">
+                            <div className="text-5xl font-bold flex items-center">
+                                <span className="text-gray-500 text-2xl">$</span>
+                                <span>{amountStr || '0'}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -213,7 +220,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
                     <Button
                         onClick={handleSubmitAmount}
                         disabled={isLoading || !amountStr}
-                        className="w-full h-14"
+                        className="w-full h-14 bg-purple-600 hover:bg-purple-700 text-white"
                     >
                         {isLoading ? 'Procesando...' : 'Continuar'}
                     </Button>
@@ -224,13 +231,13 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
 
     return (
         <Dialog open={isOpen} onOpenChange={handleClose}>
-            <DialogContent className="sm:max-w-[425px] text-gray-800">
+            <DialogContent className="sm:max-w-[425px] text-gray-800 bg-white rounded-xl shadow-md">
                 <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
-                        <FaCoins className="text-yellow-400" />
+                    <DialogTitle className="flex items-center gap-2 text-xl font-medium">
                         {currentStep === 1 && "Recargar Monedas USD"}
                         {currentStep === 2 && "Información de Pago"}
                         {currentStep === 3 && "Recarga Exitosa"}
+                        <FaCoins className="text-yellow-500" />
                     </DialogTitle>
                     <DialogDescription>
                         {currentStep === 1 && "Ingresa el monto que deseas recargar en tu cuenta."}
@@ -246,48 +253,51 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
                 )}
 
                 {currentStep === 1 && (
-                    <div className="grid gap-4 py-4">
-                        <Label className="text-center text-lg font-medium">
-                            Monto a recargar
-                        </Label>
+                    <div className="grid gap-4">
                         {renderNumericKeypad()}
                     </div>
                 )}
 
                 {currentStep === 2 && (
-                    <div className="grid gap-4 py-4">
-                        <div className="bg-slate-100 p-4 rounded-md">
-                            <div className="flex flex-col space-y-3 mb-4">
-                                <div className="text-center">
-                                    <Label className="text-sm text-gray-600:">Código Único</Label>
-                                </div>
-
-                                <div className="border border-[#7C3AED] bg-[#7C3AED]/10 rounded-lg p-2 shadow-md relative overflow-hidden">
-                                    <div className="relative flex items-center justify-center">
-                                        <code className="text-[#1E1B4B] text-xl font-mono font-bold tracking-wider">
-                                            {uniqueCode}
-                                        </code>
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            className="ml-4 h-8 w-8 rounded-xl bg-[#7C3AED]/10 hover:bg-[#7C3AED]/30 text-[#1E1B4B] cursor-pointer"
-                                            onClick={() => copyToClipboard(uniqueCode)}
-                                            title="Copiar código único"
-                                        >
-                                            <FaClipboard />
-                                        </Button>
+                    <div className="grid gap-3">
+                        <div className="bg-white rounded-md">
+                            {/* Unique Code Section - MUI style floating label */}
+                            <div className="mb-6 mt-2">
+                                <div className="relative">
+                                    <div className="border border-[#e5e7eb] bg-white rounded-lg p-3 pt-3 pb-3 shadow-sm relative group focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 hover:border-gray-400 transition-colors">
+                                        <label className="absolute text-xs font-medium text-gray-500 left-2 -top-2 bg-white px-1 transition-all">
+                                            Código Único:
+                                        </label>
+                                        <div className="flex items-center justify-between">
+                                            <code className="text-[#111827] text-xl font-mono font-semibold tracking-wider">
+                                                {uniqueCode}
+                                            </code>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className="ml-2 p-1 h-8 rounded-md bg-[#f3f4f6] hover:bg-[#e5e7eb] text-[#4b5563] cursor-pointer"
+                                                onClick={() => copyToClipboard(uniqueCode)}
+                                                title="Copiar"
+                                            >
+                                                <FaClipboard className="mr-1 h-3 w-3" /> Copiar
+                                            </Button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="space-y-2 text-sm">
-                                <h4 className="font-semibold px-2">Métodos de Pago</h4>
+                            {/* Payment Methods */}
+                            <div className="space-y-3">
+                                <h4 className="font-medium text-gray-700">Métodos de Pago</h4>
 
-                                {/* Replace custom tabs with Tabs component */}
                                 <Tabs defaultValue="bank" value={activePaymentMethod} onValueChange={setActivePaymentMethod}>
-                                    <TabsList className="w-full">
+                                    <TabsList className="w-full bg-[#f9fafb] p-1 rounded-xl">
                                         {paymentMethods.map(method => (
-                                            <TabsTrigger key={method.id} value={method.id ?? ''} className="flex items-center cursor-pointer">
+                                            <TabsTrigger
+                                                key={method.id}
+                                                value={method.id ?? ''}
+                                                className="flex items-center gap-2 text-sm py-2 rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm cursor-pointer"
+                                            >
                                                 {method.icon}
                                                 <span>{method.name}</span>
                                             </TabsTrigger>
@@ -295,9 +305,9 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
                                     </TabsList>
 
                                     {paymentMethods.map(method => (
-                                        <TabsContent key={method.id} value={method.id ?? ''} className="mt-3">
-                                            <p>{method.instructions}</p>
-                                            <div className="font-mono bg-white p-3 rounded-lg space-y-2">
+                                        <TabsContent key={method.id} value={method.id ?? ''}>
+                                            <p className="text-sm text-gray-600 mb-3">{method.instructions}</p>
+                                            <div className="font-mono bg-[#f9fafb] p-4 rounded-xl space-y-3 shadow-sm border border-[#e5e7eb]">
                                                 {Object.entries(method.details).map(([key, value]) => (
                                                     <div key={key} className="flex items-center justify-between">
                                                         <span className="font-medium text-gray-700">{key}:</span>
@@ -317,51 +327,60 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
                                                             <Button
                                                                 variant="ghost"
                                                                 size="sm"
-                                                                className="ml-2 h-6 w-6 rounded-full hover:bg-gray-100 p-1"
+                                                                className="ml-2 h-6 w-6 rounded-full hover:bg-gray-200 p-1"
                                                                 onClick={() => copyToClipboard(value)}
                                                                 title={`Copiar ${key}`}
                                                             >
-                                                                <FaClipboard className="h-3 w-3 text-gray-500" />
+                                                                <FaClipboard className="h-3 w-3 text-gray-500 cursor-pointer" />
                                                             </Button>
                                                         </div>
                                                     </div>
                                                 ))}
                                             </div>
-                                            <p>Monto a pagar: <b>${amountStr}</b></p>
-                                            <p>Incluye el código único <b>{uniqueCode}</b> en el concepto de la transacción.</p>
+                                            <div className="mt-3 text-sm px-4">
+                                                <p>Monto a pagar: <span className="font-semibold">${amountStr}</span></p>
+                                                <p className="text-gray-600 text-xs mt-1">Incluye el código único <span className="font-semibold">{uniqueCode}</span> en el concepto de la transacción.</p>
+                                            </div>
                                         </TabsContent>
                                     ))}
                                 </Tabs>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-4 items-center gap-4 mt-2">
-                            <Label htmlFor="reference" className="text-right">
-                                Referencia
-                            </Label>
-                            <Input
-                                id="reference"
-                                className="col-span-3"
-                                value={reference}
-                                onChange={(e) => setReference(e.target.value)}
-                                placeholder="Número de referencia de tu pago"
-                            />
+                        {/* Reference Input - also update to match MUI style */}
+                        <div className="mt-2">
+                            <div className="relative ">
+                                <Input
+                                    id="reference"
+                                    className="w-full h-14 px-4 pt-2 rounded-lg border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                                    value={reference}
+                                    onChange={(e) => setReference(e.target.value)}
+                                    placeholder=" "
+                                />
+                                <label
+                                    htmlFor="reference"
+                                    className="absolute text-xs font-medium text-gray-500 left-3 -top-2 bg-white px-1 transition-all pointer-events-none"
+                                >
+                                    Referencia de tu pago
+                                </label>
+                            </div>
                         </div>
 
-                        <div className="flex justify-end mt-4">
-                            <Button
-                                variant="outline"
-                                onClick={() => setCurrentStep(1)}
-                                className="mr-2"
-                                disabled={isLoading}
-                            >
-                                Atrás
-                            </Button>
+                        <div className="flex flex-col gap-3 mt-4">
                             <Button
                                 onClick={handleSubmitReference}
                                 disabled={isLoading}
+                                className="w-full h-14 bg-purple-600 hover:bg-purple-700 text-white"
                             >
                                 {isLoading ? 'Procesando...' : 'Confirmar Pago'}
+                            </Button>
+                            <Button
+                                variant="outline"
+                                onClick={() => setCurrentStep(1)}
+                                className="w-full h-12 text-gray-600 border-gray-300"
+                                disabled={isLoading}
+                            >
+                                Atrás
                             </Button>
                         </div>
                     </div>
@@ -383,15 +402,18 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
                             Tu balance ha sido actualizado y ya puedes usar tus monedas para comprar cartones de bingo.
                         </p>
 
-                        <div className="flex justify-end mt-4">
-                            <Button onClick={handleClose}>
+                        <div className="flex justify-center mt-4">
+                            <Button
+                                onClick={handleClose}
+                                className="w-full h-14 bg-purple-600 hover:bg-purple-700 text-white"
+                            >
                                 Cerrar
                             </Button>
                         </div>
                     </div>
                 )}
             </DialogContent>
-        </Dialog >
+        </Dialog>
     );
 };
 
