@@ -218,10 +218,11 @@ export const testCoinService = {
     return response.data;
   },
   
-  confirmDeposit: async (uniqueCode: string, reference: string): Promise<DepositConfirmResponse> => {
+  confirmDeposit: async (uniqueCode: string, reference: string, paymentMethodId?: string): Promise<DepositConfirmResponse> => {
     const response = await apiClient.post('/api/test-coins/deposit/confirm_deposit/', { 
       unique_code: uniqueCode, 
-      reference 
+      reference,
+      payment_method_id: paymentMethodId
     } as DepositConfirmRequest);
     return response.data;
   },

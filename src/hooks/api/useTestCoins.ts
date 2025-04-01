@@ -32,6 +32,7 @@ interface DepositConfirmResponse {
 interface DepositConfirmRequest {
   unique_code: string;
   reference: string;
+  payment_method_id?: string; // Añadimos el ID del método de pago
 }
 interface Deposit {
   id: string;
@@ -89,8 +90,20 @@ export function useDepositRequest() {
 
 export function useDepositConfirm() {
   return useMutation({
-    mutationFn: async ({ uniqueCode, reference }: { uniqueCode: string; reference: string }): Promise<DepositConfirmResponse> => {
-      const response = await apiClient.post('/api/test-coins/deposit/confirm_deposit/', { unique_code: uniqueCode, reference } as DepositConfirmRequest);
+    mutationFn: async ({ 
+      uniqueCode, 
+      reference, 
+      paymentMethodId 
+    }: { 
+      uniqueCode: string; 
+      reference: string; 
+      paymentMethodId?: string 
+    }): Promise<DepositConfirmResponse> => {
+      const response = await apiClient.post('/api/test-coins/deposit/confirm_deposit/', { 
+        unique_code: uniqueCode, 
+        reference,
+        payment_method_id: paymentMethodId
+      } as DepositConfirmRequest);
       return response.data;
     },
   });

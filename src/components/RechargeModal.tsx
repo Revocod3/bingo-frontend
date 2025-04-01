@@ -151,7 +151,11 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
         setError(null);
 
         try {
-            await depositConfirm.mutateAsync({ uniqueCode, reference });
+            await depositConfirm.mutateAsync({
+                uniqueCode,
+                reference,
+                paymentMethodId: activePaymentMethod
+            });
             setCurrentStep(3);
         } catch (err) {
             setError('Error al confirmar la recarga. Verifica el número de referencia e intenta de nuevo.');
@@ -387,29 +391,39 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
                 )}
 
                 {currentStep === 3 && (
-                    <div className="grid gap-4 py-4">
-                        <div className="bg-green-50 border border-green-200 rounded-md p-4 flex items-center gap-3">
-                            <div className="bg-green-100 rounded-full p-2">
-                                <FaCheck className="text-green-600" />
-                            </div>
-                            <div>
-                                <h4 className="font-semibold text-green-800">¡Recarga Exitosa!</h4>
-                                <p className="text-green-700 text-sm">Tu recarga de ${amountStr} ha sido procesada correctamente.</p>
-                            </div>
+                    <div className="py-4 flex flex-col items-center">
+                        <div className="mb-4 bg-green-50 p-4 rounded-full">
+                            <FaCheck className="h-12 w-12 text-green-500" />
                         </div>
-
-                        <p className="text-sm text-gray-500 mt-2">
-                            Tu balance ha sido actualizado y ya puedes usar tus monedas para comprar cartones de bingo.
+                        <h3 className="text-xl font-medium mb-2 text-center">
+                            ¡Pago confirmado!
+                        </h3>
+                        <p className="text-gray-600 text-center mb-4">
+                            Tu solicitud de recarga se ha enviado correctamente.
+                            Recibirás los fondos en tu cuenta tan pronto como se verifique el pago.
                         </p>
-
-                        <div className="flex justify-center mt-4">
-                            <Button
-                                onClick={handleClose}
-                                className="w-full h-14 bg-purple-600 hover:bg-purple-700 text-white"
-                            >
-                                Cerrar
-                            </Button>
+                        <div className="w-full bg-gray-50 p-4 rounded-lg">
+                            <div className="flex justify-between mb-2">
+                                <span className="text-gray-600">Monto:</span>
+                                <span className="font-medium">${amountStr} USD</span>
+                            </div>
+                            <div className="flex justify-between mb-2">
+                                <span className="text-gray-600">Referencia:</span>
+                                <span className="font-medium">{reference}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-600">Método de pago:</span>
+                                <span className="font-medium">
+                                    {paymentMethods.find(m => m.id === activePaymentMethod)?.name || 'Transferencia'}
+                                </span>
+                            </div>
                         </div>
+                        <Button
+                            onClick={handleClose}
+                            className="w-full h-14 mt-6 bg-purple-600 hover:bg-purple-700 text-white"
+                        >
+                            Cerrar
+                        </Button>
                     </div>
                 )}
             </DialogContent>
