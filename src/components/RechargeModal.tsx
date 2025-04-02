@@ -3,10 +3,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { FaCoins, FaMoneyBillWave, FaClipboard, FaCheck, FaBackspace, FaMobile, FaPaypal } from 'react-icons/fa';
+import { FaCoins, FaMoneyBillWave, FaClipboard, FaCheck, FaBackspace, FaMobile, FaPaypal, FaInfo, FaInfoCircle } from 'react-icons/fa';
 import { useDepositRequest, useDepositConfirm } from '@/hooks/api/useTestCoins';
 import { useActivePaymentMethods } from '@/hooks/api/usePaymentMethods';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { useCurrentExchangeRates } from '../hooks/api/useExchangeRates';
 
 interface RechargeModalProps {
     isOpen: boolean;
@@ -27,8 +28,12 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
     // Fetch payment methods from API
     const { data: apiPaymentMethods, isLoading: isLoadingPaymentMethods } = useActivePaymentMethods();
 
+    // Fetch exchange rates
+    const { data: exchangeRates } = useCurrentExchangeRates();
+
+    console.log('Exchange Rates:', Object.entries(exchangeRates?.rates || {}));
     // Add state for the active payment method
-    const [activePaymentMethod, setActivePaymentMethod] = useState<string>('bank');
+    const [activePaymentMethod, setActivePaymentMethod] = useState<string>(apiPaymentMethods?.[0]?.id || 'bank');
 
     // Map icon types to actual icon components
     const getIconComponent = (iconType: string): React.ReactNode => {
@@ -46,6 +51,19 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
                 return <FaCoins className="text-yellow-400" />;
         }
     };
+
+    const localAmount = (amount: number, paymentMethod: string) => {
+        // Convert the amount to the local currency based on the payment method
+
+        const rates = Object.entries(exchangeRates?.rates || {});
+        if (!rates.length) return amount;
+        console.log('Rates:', rates);
+        console.log('Payment Method:', paymentMethod);
+        const rate = rates.find(([key]) => paymentMethod === 'Nequi' ? key === 'COP' : key === 'VEF');
+        if (!rate) return amount;
+        const [_, rateValue] = rate;
+        return (amount * Number(rateValue)).toFixed(2);
+    }
 
     // Transform API payment methods to the format used by the component
     const paymentMethods = useMemo(() => {
@@ -240,7 +258,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
                     <DialogTitle className="flex items-center gap-2 text-xl font-medium">
                         {currentStep === 1 && "Recargar Monedas USD"}
                         {currentStep === 2 && "Información de Pago"}
-                        {currentStep === 3 && "Recarga Exitosa"}
+                        {currentStep === 3 && "Solicitud de Recarga Exitosa"}
                         <FaCoins className="text-yellow-500" />
                     </DialogTitle>
                     <DialogDescription>
@@ -331,7 +349,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
                                                             <Button
                                                                 variant="ghost"
                                                                 size="sm"
-                                                                className="ml-2 h-6 w-6 rounded-full hover:bg-gray-200 p-1"
+                                                                className="ml-2 h-6 w-6 rounded-full hover:bg-gray-200 p-1 cursor-pointer"
                                                                 onClick={() => copyToClipboard(value)}
                                                                 title={`Copiar ${key}`}
                                                             >
@@ -341,9 +359,42 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
                                                     </div>
                                                 ))}
                                             </div>
-                                            <div className="mt-3 text-sm px-4">
-                                                <p>Monto a pagar: <span className="font-semibold">${amountStr}</span></p>
-                                                <p className="text-gray-600 text-xs mt-1">Incluye el código único <span className="font-semibold">{uniqueCode}</span> en el concepto de la transacción.</p>
+                                            <div className="mt-3 text-sm">
+                                                <div className="bg-[#f9fafb] p-3 rounded-lg border border-[#e5e7eb] mt-3">
+
+                                                    <div className="relative mb-3">
+                                                        <div className="border border-[#e5e7eb] bg-white rounded-lg p-3 shadow-sm relative group">
+                                                            <label className="absolute text-xs font-medium text-gray-500 left-2 -top-2 bg-white px-1">
+                                                                Monto a pagar:
+                                                            </label>
+                                                            <div className="flex items-center justify-between">
+                                                                <span className="text-lg font-bold text-purple-700">
+                                                                    {localAmount(Number(amountStr), method.name as string)}
+                                                                    {
+                                                                        method.name === 'Nequi'
+                                                                            ? ' COP'
+                                                                            : ' VEF'
+                                                                    }
+                                                                </span>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    className="ml-2 p-1 h-8 rounded-md bg-[#f3f4f6] hover:bg-[#e5e7eb] text-[#4b5563] cursor-pointer"
+                                                                    onClick={() => copyToClipboard(String(localAmount(Number(amountStr), method.name as string)))}
+                                                                    title="Copiar monto"
+                                                                >
+                                                                    <FaClipboard className="mr-1 h-3 w-3" /> Copiar
+                                                                </Button>
+                                                            </div>
+                                                            <p className="text-xs text-gray-600 mb-2 font-thin">Monto de la recarga: <span className="font-semibold">${amountStr} USD</span></p>
+                                                        </div>
+                                                    </div>
+
+                                                    <p className="text-gray-600 text-xs rounded-lg p-2 bg-gradient-to-r from-yellow-100 to-yellow-50">
+                                                        <FaInfoCircle className="inline-block mr-1" />
+                                                        No olvides incluir el código único <span className="font-semibold">{uniqueCode}</span> en el concepto de la transacción.
+                                                    </p>
+                                                </div>
                                             </div>
                                         </TabsContent>
                                     ))}
@@ -374,14 +425,14 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
                             <Button
                                 onClick={handleSubmitReference}
                                 disabled={isLoading}
-                                className="w-full h-14 bg-purple-600 hover:bg-purple-700 text-white"
+                                className="w-full h-14 bg-purple-600 hover:bg-purple-700 text-white cursor-pointer"
                             >
                                 {isLoading ? 'Procesando...' : 'Confirmar Pago'}
                             </Button>
                             <Button
                                 variant="outline"
                                 onClick={() => setCurrentStep(1)}
-                                className="w-full h-12 text-gray-600 border-gray-300"
+                                className="w-full text-gray-600 border-gray-300 cursor-pointer hover:bg-gray-100"
                                 disabled={isLoading}
                             >
                                 Atrás
@@ -396,11 +447,14 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
                             <FaCheck className="h-12 w-12 text-green-500" />
                         </div>
                         <h3 className="text-xl font-medium mb-2 text-center">
-                            ¡Pago confirmado!
+                            ¡Solicitud confirmada!
                         </h3>
                         <p className="text-gray-600 text-center mb-4">
                             Tu solicitud de recarga se ha enviado correctamente.
                             Recibirás los fondos en tu cuenta tan pronto como se verifique el pago.
+                        </p>
+                        <p className="text-gray-400 text-xs text-center mb-4">
+                            Por lo general se verifica en minutos, pero hay casos que puede tardar hasta 24 horas.
                         </p>
                         <div className="w-full bg-gray-50 p-4 rounded-lg">
                             <div className="flex justify-between mb-2">
@@ -420,7 +474,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
                         </div>
                         <Button
                             onClick={handleClose}
-                            className="w-full h-14 mt-6 bg-purple-600 hover:bg-purple-700 text-white"
+                            className="w-full h-14 mt-6 bg-purple-600 hover:bg-purple-700 text-white cursor-pointer"
                         >
                             Cerrar
                         </Button>
