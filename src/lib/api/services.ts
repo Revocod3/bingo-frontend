@@ -222,7 +222,8 @@ export const testCoinService = {
     const response = await apiClient.post('/api/test-coins/deposit/confirm_deposit/', { 
       unique_code: uniqueCode, 
       reference,
-      payment_method_id: paymentMethodId
+      payment_method_id: paymentMethodId,
+      payment_method: paymentMethodId
     } as DepositConfirmRequest);
     return response.data;
   },

@@ -102,12 +102,15 @@ export function useDepositConfirm() {
       const response = await apiClient.post('/api/test-coins/deposit/confirm_deposit/', { 
         unique_code: uniqueCode, 
         reference,
-        payment_method_id: paymentMethodId
+        // Envía ambos campos para mayor compatibilidad mientras se resuelve la discrepancia
+        payment_method_id: paymentMethodId,
+        payment_method: paymentMethodId
       } as DepositConfirmRequest);
       return response.data;
     },
   });
 }
+
 export function useMyDeposits() {
   return useQuery({
     queryKey: ['myDeposits'],

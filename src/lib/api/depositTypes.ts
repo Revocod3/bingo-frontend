@@ -24,7 +24,8 @@ export interface DepositResponse {
 export interface DepositConfirmRequest {
   unique_code: string;
   reference: string;
-  payment_method_id?: string; // Añadimos el ID del método de pago
+  payment_method_id?: string; // ID del método de pago
+  payment_method?: string;    // Nombre del método de pago
 }
 
 export interface DepositConfirmResponse {
