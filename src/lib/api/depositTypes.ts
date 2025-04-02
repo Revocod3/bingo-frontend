@@ -46,6 +46,8 @@ export interface Deposit {
 
 // Admin specific fields 
 export interface AdminDeposit extends Deposit {
+  paymentMethod: string;
+  payment_method_id?: string;
   user_email?: string;
   user_full_name?: string;
   admin_notes?: string;
