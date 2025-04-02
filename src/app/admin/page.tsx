@@ -6,7 +6,7 @@ import AdminRouteGuard from '@/components/AdminRouteGuard';
 import { Card, CardContent, CardDescription, CardHeader, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { FaCalendarAlt, FaUsers, FaChartBar, FaPuzzlePiece, FaCogs, FaArrowLeft } from 'react-icons/fa';
+import { FaCalendarAlt, FaUsers, FaChartBar, FaPuzzlePiece, FaCogs, FaArrowLeft, FaMoneyBillWave } from 'react-icons/fa';
 import EventManagementPanel from '@/components/admin/EventManagementPanel';
 import WinningPatternsPanel from '@/components/admin/WinningPatternsPanel';
 import { useCurrentUser } from '@/hooks/api/useUsers';
@@ -48,6 +48,10 @@ export default function AdminPage() {
                             <span className="sm:inline"><FaPuzzlePiece /></span>
                             <span className="text-xs sm:text-sm">Patrones</span>
                         </TabsTrigger>
+                        <TabsTrigger value="deposits" className="flex items-center gap-1 sm:gap-2 flex-1 cursor-pointer">
+                            <span className="sm:inline"><FaMoneyBillWave /></span>
+                            <span className="text-xs sm:text-sm">Depósitos</span>
+                        </TabsTrigger>
                         <TabsTrigger value="users" className="flex items-center gap-1 sm:gap-2 flex-1 cursor-pointer">
                             <span className="sm:inline"><FaUsers /></span>
                             <span className="text-xs sm:text-sm">Usuarios</span>
@@ -66,6 +70,38 @@ export default function AdminPage() {
                     <TabsContent value="patterns" className="space-y-4">
                         <h2 className="text-xl md:text-2xl font-bold">Gestión de Patrones</h2>
                         <WinningPatternsPanel />
+                    </TabsContent>
+
+                    <TabsContent value="deposits" className="space-y-4">
+                        <h2 className="text-xl md:text-2xl font-bold">Gestión de Depósitos</h2>
+                        <Card className="overflow-hidden shadow-md hover:shadow-lg gap-4 transition-shadow pt-0 border-0 rounded-lg">
+                            <div className="relative h-28 bg-gradient-to-r from-emerald-700 to-green-700 rounded-t-lg opacity-80">
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <h3 className="text-2xl font-bold text-white">Depósitos y Transacciones</h3>
+                                </div>
+                            </div>
+                            <CardHeader>
+                                <CardDescription>
+                                    Administra los depósitos y transacciones de los usuarios
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="rounded-lg bg-emerald-50 py-3 px-4 dark:bg-emerald-950/50 flex flex-row justify-between items-center mb-4">
+                                    <div className="flex items-center gap-2">
+                                        <FaMoneyBillWave className="h-4 w-4 text-emerald-500" />
+                                        <h4 className="text-emerald-600 text-sm font-semibold dark:text-emerald-400">Gestión de Pagos</h4>
+                                    </div>
+                                    <p className="text-gray-500">Ver y administrar los depósitos</p>
+                                </div>
+                            </CardContent>
+                            <CardFooter>
+                                <Link href="/admin/deposits" passHref>
+                                    <Button className="w-full bg-emerald-600 hover:bg-emerald-700 gap-1 cursor-pointer">
+                                        <FaMoneyBillWave className="h-3 w-3" /> Ver Depósitos
+                                    </Button>
+                                </Link>
+                            </CardFooter>
+                        </Card>
                     </TabsContent>
 
                     <TabsContent value="users" className="space-y-4">
