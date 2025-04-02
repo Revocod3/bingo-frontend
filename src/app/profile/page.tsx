@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import TestCoinBadge from '@/components/TestCoinBadge';
-import { FaUser, FaEnvelope, FaCalendarAlt, FaEdit, FaCrown, FaGamepad, FaReceipt, FaTrophy, FaPlusCircle } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaCalendarAlt, FaEdit, FaCrown, FaGamepad, FaReceipt, FaTrophy, FaPlusCircle, FaHistory } from 'react-icons/fa';
 
 export default function ProfilePage() {
     const router = useRouter();
@@ -56,7 +56,7 @@ export default function ProfilePage() {
 
             <div className="grid grid-cols-1 gap-6">
                 {/* Main Profile Information */}
-                <Card className='pt-2 bg-gradient-to-r from-indigo-200 border-0 to-purple-500 shadow-lg'>
+                <Card className='pt-2 bg-gradient-to-l from-yellow-50 border-0 to-purple-100 shadow-lg'>
                     <CardHeader className="px-4">
                         <CardTitle className="text-lg m-0 p-0">Saldo de Cuenta</CardTitle>
                     </CardHeader>
@@ -66,11 +66,11 @@ export default function ProfilePage() {
                             <Button
                                 variant="outline"
                                 size="sm"
-                                className="cursor-pointer rounded-full border-[#7C3AED] transition-colors"
+                                className="rounded-lg hover:bg-purple-100 cursor-pointer"
                                 onClick={() => router.push('/deposits')}
                             >
-                                <span className="text-sm flex items-center gap-1 text-gray-800">
-                                    Recargar <FaPlusCircle className="text-[#7C3AED]" />
+                                <span className="flex items-center gap-1.5 text-gray-800">
+                                    Depósitos <FaHistory size={14} />
                                 </span>
                             </Button>
                         </div>

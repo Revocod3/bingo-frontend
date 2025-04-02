@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,9 +12,10 @@ import { useCurrentExchangeRates } from '../hooks/api/useExchangeRates';
 interface RechargeModalProps {
     isOpen: boolean;
     onClose: () => void;
+    initialAmount?: number;
 }
 
-const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
+const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialAmount }) => {
     const [currentStep, setCurrentStep] = useState(1);
     const [amountStr, setAmountStr] = useState<string>('');
     const [uniqueCode, setUniqueCode] = useState('');
@@ -31,7 +32,13 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose }) => {
     // Fetch exchange rates
     const { data: exchangeRates } = useCurrentExchangeRates();
 
-    console.log('Exchange Rates:', Object.entries(exchangeRates?.rates || {}));
+    // Set initial amount when provided and modal opens
+    useEffect(() => {
+        if (isOpen && initialAmount && initialAmount > 0) {
+            setAmountStr(initialAmount.toString());
+        }
+    }, [isOpen, initialAmount]);
+
     // Add state for the active payment method
     const [activePaymentMethod, setActivePaymentMethod] = useState<string>(apiPaymentMethods?.[0]?.id || 'bank');
 

@@ -3,54 +3,52 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCurrentUser } from '@/hooks/api/useUsers';
-import { useTestCoinBalance } from '@/src/hooks/api/useTestCoins';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import TestCoinBadge from '@/components/TestCoinBadge';
-import { FaArrowLeft, FaCreditCard, FaCoins, FaHistory, FaInfoCircle, FaCashRegister, FaDollarSign } from 'react-icons/fa';
-import { toast } from 'sonner';
+import { FaArrowLeft, FaCoins, FaHistory, FaInfoCircle, FaDollarSign } from 'react-icons/fa';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/src/components/ui/tooltip';
-
-// Mock function for adding test coins - this should be replaced with a real API call
-const mockAddCoins = async (amount: number) => {
-    return new Promise<void>((resolve) => {
-        setTimeout(() => {
-            resolve();
-        }, 1500);
-    });
-};
+import RechargeModal from '@/components/RechargeModal';
+import { useCurrentExchangeRates } from '@/hooks/api/useExchangeRates';
 
 export default function DepositsPage() {
     const router = useRouter();
     const { isLoading } = useCurrentUser();
-    const { refetch: refetchBalance } = useTestCoinBalance();
     const [amount, setAmount] = useState<number>(10);
-    const [isPending, setIsPending] = useState(false);
-    const tasaVEF = 100;
+    const [isRechargeModalOpen, setIsRechargeModalOpen] = useState(false);
+    const { data: exchangeRates } = useCurrentExchangeRates();
 
-    // Mock deposit amounts
+    // Calculate exchange rate from API or use fallback
+    const getExchangeRate = (currency: string) => {
+        if (!exchangeRates || !exchangeRates.rates) return 100; // Fallback rate
+        return Object.entries(exchangeRates.rates).reduce((acc, [key, value]) => {
+            if (key === currency) {
+                return parseFloat(value);
+            }
+            return acc;
+        }
+            , 0);
+
+    };
+
+    const vefRate = getExchangeRate('VEF');
+
+    // Deposit options with dynamic exchange rates
     const depositOptions = [
-        { amount: 1, label: '1 USD', price: `${(1 * tasaVEF).toFixed(2)} VEF` },
-        { amount: 5, label: '5 USD', price: `${(5 * tasaVEF).toFixed(2)} VEF` },
-        { amount: 10, label: '10 USD', price: `${(10 * tasaVEF).toFixed(2)} VEF` },
-        { amount: 100, label: '100 USD', price: `${(100 * tasaVEF).toFixed(2)} VEF` },
-
+        { amount: 1, label: '1 USD', price: `${(1 * vefRate).toFixed(2)} VEF` },
+        { amount: 5, label: '5 USD', price: `${(5 * vefRate).toFixed(2)} VEF` },
+        { amount: 10, label: '10 USD', price: `${(10 * vefRate).toFixed(2)} VEF` },
+        { amount: 100, label: '100 USD', price: `${(100 * vefRate).toFixed(2)} VEF` },
     ];
 
-    const handleDeposit = async () => {
-        try {
-            setIsPending(true);
-            await mockAddCoins(amount);
-            await refetchBalance();
-            toast.success(`¡Has añadido ${amount} USD a tu cuenta!`);
-            setAmount(10);
-        } catch (error) {
-            toast.error('Ha ocurrido un error al procesar tu depósito');
-            console.error(error);
-        } finally {
-            setIsPending(false);
+    // Open modal with pre-selected amount
+    const handleOpenRechargeModal = (preselectedAmount?: number) => {
+        if (preselectedAmount) {
+            // The modal will use this amount if needed
+            setAmount(preselectedAmount);
         }
+        setIsRechargeModalOpen(true);
     };
 
     if (isLoading) {
@@ -76,8 +74,8 @@ export default function DepositsPage() {
 
             <div className="grid grid-cols-1 gap-6">
                 {/* Balance Card */}
-                <Card className='p-2 bg-gradient-to-r from-purple-200 to-purple-100 border gap-1 border-gray-200 shadow-xl'>
-                    <CardTitle className="text-sm text-center">Saldo Actual</CardTitle>
+                <Card className='p-4 bg-gradient-to-l from-yellow-50 to-purple-100 border shadow-lg'>
+                    <CardTitle className="text-sm text-gray-700">Saldo Actual</CardTitle>
                     <div className="flex justify-center flex-row items-center gap-2">
                         <TestCoinBadge />
                     </div>
@@ -97,10 +95,10 @@ export default function DepositsPage() {
                                 <div
                                     key={option.amount}
                                     className={`
-                                                p-4 rounded-lg border cursor-pointer transition-all
-                                                ${amount === option.amount
-                                            ? 'border-[#7C3AED] bg-purple-50 shadow-md'
-                                            : 'border-gray-200 hover:border-purple-300 hover:bg-purple-50/50'
+                                        p-4 rounded-lg border cursor-pointer transition-all
+                                        ${amount === option.amount
+                                            ? 'border-indigo-500 bg-indigo-50 shadow-md'
+                                            : 'border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/50'
                                         }
                                     `}
                                     onClick={() => setAmount(option.amount)}
@@ -119,7 +117,7 @@ export default function DepositsPage() {
                         </CardContent>
 
                         <CardFooter className="flex flex-col space-y-4">
-                            <div className="w-full bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <div className="w-full bg-slate-50 p-4 rounded-lg border border-slate-200">
                                 <div className="flex items-center mb-2">
                                     <FaInfoCircle className="text-blue-500 mr-2" />
                                     <h3 className="font-medium">Información de pago</h3>
@@ -130,7 +128,7 @@ export default function DepositsPage() {
                                 <div className="flex flex-col items-start justify-between">
                                     <div className="flex items-center justify-between w-full mb-2">
                                         <span className="font-semibold">Total a pagar en dolares:</span>
-                                        <span className="font-semibold text-[#7C3AED]">
+                                        <span className="font-semibold text-indigo-600">
                                             ${amount.toFixed(2)} USD
                                         </span>
                                     </div>
@@ -141,7 +139,7 @@ export default function DepositsPage() {
                                                 <TooltipTrigger>
                                                     <span className="text-xs flex items-center gap-2 font-thin text-mute-foreground text-gray-500">
                                                         <FaInfoCircle className="text-gray-400 ml-2" />
-                                                        ({tasaVEF} VEF/USD)
+                                                        ({vefRate.toFixed(2)} VEF/USD)
                                                     </span>
                                                 </TooltipTrigger>
                                                 <TooltipContent>
@@ -150,22 +148,20 @@ export default function DepositsPage() {
                                                     </p>
                                                 </TooltipContent>
                                             </Tooltip>
-                                            <span className="font-bold text-[#7C3AED]">
-                                                ${(amount * tasaVEF).toFixed(2)} VEF
+                                            <span className="font-bold text-indigo-600">
+                                                ${(amount * vefRate).toFixed(2)} VEF
                                             </span>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
 
                             <Button
-                                onClick={handleDeposit}
-                                disabled={isPending}
-                                className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white cursor-pointer"
+                                onClick={() => handleOpenRechargeModal(amount)}
+                                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white cursor-pointer"
                             >
-                                <FaDollarSign />
-                                {isPending ? 'Procesando...' : 'Completar Pago'}
+                                <FaDollarSign className="mr-2" />
+                                Completar Pago
                             </Button>
                         </CardFooter>
                     </Card>
@@ -189,6 +185,13 @@ export default function DepositsPage() {
                     </CardContent>
                 </Card>
             </div>
+
+            {/* Use the RechargeModal component */}
+            <RechargeModal
+                isOpen={isRechargeModalOpen}
+                onClose={() => setIsRechargeModalOpen(false)}
+                initialAmount={amount}
+            />
         </div>
     );
 }

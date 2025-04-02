@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTestCoinBalance } from '@/hooks/api/useTestCoins';
-import { FaCoins, FaPlus } from 'react-icons/fa';
+import { FaCoins, FaPlus, FaPlusCircle } from 'react-icons/fa';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
 import RechargeModal from '@/components/RechargeModal';
@@ -13,13 +13,12 @@ export const TestCoinBadge: React.FC = () => {
     return (
       <Tooltip>
         <TooltipTrigger asChild>
-          <div className="flex items-center px-3 py-1 bg-gray-700 text-white rounded-full animate-pulse">
-            <FaCoins className="mr-2 text-yellow-400" />
-            <span>Cargando...</span>
+          <div className="flex items-center px-3 py-1.5 bg-slate-800/90 text-white rounded-lg animate-pulse backdrop-blur-sm">
+            <div className="h-4 w-20 bg-slate-600 rounded animate-pulse"></div>
           </div>
         </TooltipTrigger>
         <TooltipContent>
-          <p>Cargando balance de monedas de prueba USD</p>
+          <p>Cargando balance de monedas USD</p>
         </TooltipContent>
       </Tooltip>
     );
@@ -29,42 +28,50 @@ export const TestCoinBadge: React.FC = () => {
     return (
       <Tooltip>
         <TooltipTrigger asChild>
-          <div className="flex items-center px-3 py-1 bg-red-700 text-white rounded-full">
+          <div className="flex items-center px-3 py-1.5 bg-red-700/90 text-white rounded-lg backdrop-blur-sm">
             <FaCoins className="mr-2 text-yellow-400" />
             <span>Error</span>
           </div>
         </TooltipTrigger>
         <TooltipContent>
-          <p>Error al cargar el balance de monedas de prueba USD</p>
+          <p>Error al cargar el balance de monedas USD</p>
         </TooltipContent>
       </Tooltip>
     );
   }
+
+  // Format the balance with 2 decimal places
+  const formattedBalance = parseFloat(String(balance.balance)).toFixed(2);
 
   return (
     <>
       <div className="flex items-center gap-2">
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="flex items-center px-3 py-1 bg-[#1E1B4B] text-white rounded-full border border-[#7C3AED]">
-              <span className="font-thin mr-2">USD</span>
-              <FaCoins className="mr-2 text-[#E4EB21]" />
-              <span className="font-bold">${balance.balance}</span>
+            <div className="flex items-center px-3 py-1.5 bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-lg shadow-md border border-slate-700/50 backdrop-blur-sm hover:shadow-lg transition-all duration-200">
+              <div className="flex items-center gap-1.5">
+                <FaCoins className="text-amber-400" size={14} />
+                <span className="font-medium tracking-tight">
+                  <span className="text-xs text-slate-400 mr-1">USD</span>
+                  <span>${formattedBalance}</span>
+                </span>
+              </div>
             </div>
           </TooltipTrigger>
           <TooltipContent>
-            <p className='w-[200px] md:w-auto text-center'>
-              USD: La moneda de nuestra plataforma, equivalente a un dolar americano</p>
+            <p className="w-[200px] md:w-auto text-center">
+              USD: La moneda de nuestra plataforma, equivalente a un dolar americano
+            </p>
           </TooltipContent>
         </Tooltip>
 
         <Button
           variant="outline"
           size="sm"
-          className="h-8 px-2 rounded-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white border-none"
+          className="h-8 px-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white hover:text-white border-none shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer"
           onClick={() => setIsRechargeModalOpen(true)}
         >
-          <FaPlus className="mr-1" size={12} />
+          <FaPlusCircle className="mr-1" size={10} />
           <span className="text-xs">Recargar</span>
         </Button>
       </div>
@@ -72,6 +79,7 @@ export const TestCoinBadge: React.FC = () => {
       <RechargeModal
         isOpen={isRechargeModalOpen}
         onClose={() => setIsRechargeModalOpen(false)}
+        initialAmount={undefined}
       />
     </>
   );
