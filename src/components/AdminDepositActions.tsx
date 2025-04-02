@@ -69,7 +69,7 @@ export function AdminDepositActions({
         const { details } = deposit.payment_method_details;
 
         return (
-            <div className="mt-4 p-3 bg-gray-50 rounded-md border">
+            <div className="mt-4 p-3 bg-gray-50 rounded-md border text-gray-700">
                 <h4 className="font-medium text-gray-700 mb-2">Detalles del método de pago:</h4>
                 <div className="grid grid-cols-2 gap-2 text-sm">
                     {Object.entries(details).map(([key, value]) => (
@@ -85,7 +85,7 @@ export function AdminDepositActions({
 
     return (
         <Dialog open={true} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-md text-gray-800">
                 <DialogHeader>
                     <DialogTitle>Gestionar Depósito</DialogTitle>
                     <DialogDescription>

@@ -62,55 +62,55 @@ export default function AdminDepositsPage() {
     return (
         <div className="container py-8 px-4 md:py-12 max-w-6xl mx-auto">
             <div className="flex justify-between items-center mb-8">
-                <Button variant="ghost" onClick={handleBackClick} className="p-2">
-                    <FaArrowLeft className="mr-2" />
+                <Button variant="ghost" onClick={handleBackClick} className="hover:bg-accent hover:text-accent-foreground">
+                    <FaArrowLeft className="mr-2 h-4 w-4" />
                     Volver
                 </Button>
                 <h1 className="text-2xl font-bold">Gestión de Depósitos</h1>
             </div>
 
-            <Card>
+            <Card className="border shadow-sm">
                 <CardHeader className="pb-2">
                     <CardTitle>Depósitos Pendientes</CardTitle>
-                    <CardDescription>
+                    <CardDescription className="text-muted-foreground">
                         Gestiona las solicitudes de depósito pendientes de los usuarios
                     </CardDescription>
                 </CardHeader>
 
                 <CardContent>
                     {isLoading ? (
-                        <div className="flex justify-center py-8 text-gray-500">
+                        <div className="flex justify-center py-8 text-muted-foreground">
                             <Spinner />
                         </div>
                     ) : deposits && deposits.length > 0 ? (
                         <div className="overflow-x-auto">
                             <table className="w-full border-collapse">
                                 <thead>
-                                    <tr className="border-b">
-                                        <th className="text-left p-3">Usuario</th>
-                                        <th className="text-left p-3">Fecha</th>
-                                        <th className="text-left p-3">Monto</th>
-                                        <th className="text-left p-3">Método</th>
-                                        <th className="text-left p-3">Referencia</th>
-                                        <th className="text-left p-3">Estado</th>
-                                        <th className="text-right p-3">Acciones</th>
+                                    <tr className="border-b border-border">
+                                        <th className="text-left p-3 text-sm font-medium text-muted-foreground">Usuario</th>
+                                        <th className="text-left p-3 text-sm font-medium text-muted-foreground">Fecha</th>
+                                        <th className="text-left p-3 text-sm font-medium text-muted-foreground">Monto</th>
+                                        <th className="text-left p-3 text-sm font-medium text-muted-foreground">Método</th>
+                                        <th className="text-left p-3 text-sm font-medium text-muted-foreground">Referencia</th>
+                                        <th className="text-left p-3 text-sm font-medium text-muted-foreground">Estado</th>
+                                        <th className="text-right p-3 text-sm font-medium text-muted-foreground">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {deposits.map((deposit) => (
-                                        <tr key={deposit.id} className="border-b hover:bg-gray-50">
-                                            <td className="p-3">{getUserIdentifier(deposit)}</td>
-                                            <td className="p-3">{new Date(deposit.created_at).toLocaleString()}</td>
-                                            <td className="p-3">${deposit.amount.toFixed(2)} USD</td>
-                                            <td className="p-3">
+                                        <tr key={deposit.id} className="border-b border-border hover:bg-accent/5 transition-colors">
+                                            <td className="p-3 text-foreground">{getUserIdentifier(deposit)}</td>
+                                            <td className="p-3 text-foreground">{new Date(deposit.created_at).toLocaleString()}</td>
+                                            <td className="p-3 text-foreground font-medium">${deposit.amount.toFixed(2)} USD</td>
+                                            <td className="p-3 text-foreground">
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
                                                         <span className="flex items-center gap-1 cursor-help">
                                                             {getPaymentMethod(deposit)}
-                                                            <FaInfoCircle className="text-gray-400" size={14} />
+                                                            <FaInfoCircle className="text-muted-foreground" size={14} />
                                                         </span>
                                                     </TooltipTrigger>
-                                                    <TooltipContent className="max-w-xs">
+                                                    <TooltipContent className="max-w-xs bg-popover text-popover-foreground">
                                                         <div className="text-sm">
                                                             {deposit.payment_method_details?.details &&
                                                                 Object.entries(deposit.payment_method_details.details).map(([key, value]) => (
@@ -124,7 +124,7 @@ export default function AdminDepositsPage() {
                                                     </TooltipContent>
                                                 </Tooltip>
                                             </td>
-                                            <td className="p-3">{deposit.reference || 'N/A'}</td>
+                                            <td className="p-3 text-foreground">{deposit.reference || 'N/A'}</td>
                                             <td className="p-3">
                                                 <Badge
                                                     variant={
@@ -142,8 +142,9 @@ export default function AdminDepositsPage() {
                                                     <div className="flex justify-end gap-2">
                                                         <Button
                                                             size="sm"
-                                                            variant="outline"
+                                                            variant="secondary"
                                                             onClick={() => setSelectedDepositId(deposit.id)}
+                                                            className="text-xs"
                                                         >
                                                             Gestionar
                                                         </Button>
@@ -156,7 +157,7 @@ export default function AdminDepositsPage() {
                             </table>
                         </div>
                     ) : (
-                        <div className="text-center py-8 text-gray-500">
+                        <div className="text-center py-8 text-muted-foreground">
                             <p>No hay depósitos pendientes en este momento.</p>
                         </div>
                     )}
