@@ -155,9 +155,15 @@ export const bingoCardService = {
   },
   
   downloadTransactionCards: async (transactionId: string): Promise<Blob> => {
-    const response = await apiClient.post(
-      '/api/cards/download_transaction_cards/', 
-      { transaction_id: transactionId },
+    // Validate transactionId to prevent 'undefined' value
+    if (!transactionId) {
+      throw new Error('ID de transacción inválido o no proporcionado');
+    }
+    
+    // Check the backend endpoint - might need to be 'transaction-cards' or something else
+    // Try both with transaction_id and transaction-id if needed
+    const response = await apiClient.get(
+      `/api/cards/download_transaction_cards/?transaction_id=${transactionId}`, 
       { responseType: 'blob' }
     );
     return response.data;

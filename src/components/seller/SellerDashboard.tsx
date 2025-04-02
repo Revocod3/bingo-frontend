@@ -122,14 +122,15 @@ export default function SellerDashboard() {
     const handleDownloadTransactionCards = async (transactionId: string) => {
         setError(null);
         setSuccess(null);
-
         try {
+            console.log('Downloading transaction cards with ID:', transactionId); // Debug log
             await downloadTransactionCardsMutation.mutateAsync({
                 transaction_id: transactionId
             });
             setSuccess('PDF descargado exitosamente');
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Error al descargar el PDF');
+            console.error('Error downloading transaction cards:', err); // Debug log
+            setError(err.message || err.response?.data?.message || 'Error al descargar el PDF');
         }
     };
 
@@ -396,17 +397,19 @@ export default function SellerDashboard() {
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
-                                            {transactions.map((transaction) => (
-                                                <TableRow key={transaction.id}>
+                                            {transactions.map((transaction, i) => (
+                                                <TableRow key={i}>
                                                     <TableCell>
-                                                        {format(new Date(transaction.date), 'dd/MM/yyyy HH:mm')}
+                                                        {transaction.generated_at
+                                                            ? format(new Date(transaction.generated_at), 'dd/MM/yyyy HH:mm')
+                                                            : 'Fecha no disponible'}
                                                     </TableCell>
                                                     <TableCell>{transaction.event_name}</TableCell>
-                                                    <TableCell>{transaction.card_count} cartones</TableCell>
+                                                    <TableCell>{transaction.batch_size} cartones</TableCell>
                                                     <TableCell>
                                                         <Button
                                                             size="sm"
-                                                            onClick={() => handleDownloadTransactionCards(transaction.id)}
+                                                            onClick={() => handleDownloadTransactionCards(transaction.transaction_id)}
                                                             disabled={downloadTransactionCardsMutation.isPending}
                                                         >
                                                             Descargar PDF

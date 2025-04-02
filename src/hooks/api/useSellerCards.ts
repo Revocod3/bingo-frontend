@@ -22,6 +22,9 @@ interface EmailCardsRequest {
 
 // New interface for transaction data
 interface Transaction {
+  batch_size: number;
+  transaction_id: string;
+  generated_at: string | number | Date;
   id: string;
   date: string;
   card_count: number;
@@ -91,9 +94,15 @@ export function useListTransactions() {
 export function useDownloadTransactionCards() {
   return useMutation({
     mutationFn: async (data: DownloadTransactionCardsRequest) => {
-      const response = await apiClient.post('/api/cards/download_transaction_cards/', data, {
-        responseType: 'blob', // Important for handling PDF file response
-      });
+      // Validate transaction_id to prevent 'undefined' value
+      if (!data.transaction_id) {
+        throw new Error('ID de transacción inválido o no proporcionado');
+      }
+      
+      const response = await apiClient.get(
+        `/api/cards/download_transaction_cards/?transaction_id=${data.transaction_id}`, 
+        { responseType: 'blob' }
+      );
       
       // Create a download link for the PDF
       const url = window.URL.createObjectURL(new Blob([response.data]));
