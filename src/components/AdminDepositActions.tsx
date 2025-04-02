@@ -63,6 +63,26 @@ export function AdminDepositActions({
         }
     };
 
+    const renderPaymentMethodDetails = () => {
+        if (!deposit?.payment_method_details) return null;
+
+        const { details } = deposit.payment_method_details;
+
+        return (
+            <div className="mt-4 p-3 bg-gray-50 rounded-md border">
+                <h4 className="font-medium text-gray-700 mb-2">Detalles del método de pago:</h4>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                    {Object.entries(details).map(([key, value]) => (
+                        <div key={key} className="contents">
+                            <div className="font-medium text-gray-500">{key}:</div>
+                            <div>{value}</div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    };
+
     return (
         <Dialog open={true} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-md">
@@ -81,20 +101,28 @@ export function AdminDepositActions({
                     <div className="space-y-4">
                         <div className="grid grid-cols-2 gap-2 text-sm">
                             <div className="font-medium text-gray-500">Usuario:</div>
-                            <div>{deposit.user.email}</div>
+                            <div>{typeof deposit.user === 'object' ? deposit.user.email : `ID: ${deposit.user}`}</div>
 
                             <div className="font-medium text-gray-500">Monto:</div>
                             <div>${deposit.amount.toFixed(2)} USD</div>
 
                             <div className="font-medium text-gray-500">Método de pago:</div>
-                            <div>{deposit.paymentMethod}</div>
+                            <div>{deposit.payment_method_details?.payment_method || 'Transferencia'}</div>
 
                             <div className="font-medium text-gray-500">Referencia:</div>
                             <div>{deposit.reference || 'N/A'}</div>
 
+                            <div className="font-medium text-gray-500">Código único:</div>
+                            <div>{deposit.unique_code}</div>
+
                             <div className="font-medium text-gray-500">Fecha:</div>
-                            <div>{new Date(deposit.createdAt).toLocaleString()}</div>
+                            <div>{new Date(deposit.created_at).toLocaleString()}</div>
+
+                            <div className="font-medium text-gray-500">Estado:</div>
+                            <div>{deposit.status_display || deposit.status}</div>
                         </div>
+
+                        {renderPaymentMethodDetails()}
 
                         <div className="space-y-2">
                             <label htmlFor="adminNotes" className="text-sm font-medium">

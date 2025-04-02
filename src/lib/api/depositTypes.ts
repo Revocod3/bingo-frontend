@@ -34,26 +34,47 @@ export interface DepositConfirmResponse {
   deposit_id?: string;
 }
 
+export interface PaymentMethodDetails {
+  id: string;
+  payment_method: string;
+  details: Record<string, string>;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UserDetails {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  is_email_verified: boolean;
+  phone_number?: string | null;
+  is_staff: boolean;
+  is_seller: boolean;
+  uuid: string;
+  date_joined: string;
+}
+
 export interface Deposit {
   id: string;
-  user: number;
+  user: UserDetails | number;
   amount: number;
-  status: 'pending' | 'approved' | 'rejected';
-  reference: string;
   unique_code: string;
+  reference: string;
+  status: 'pending' | 'approved' | 'rejected';
+  status_display?: string;
   created_at: string;
-  updated_at?: string;
+  updated_at: string;
+  approved_by?: number | null;
+  admin_notes?: string | null;
+  payment_method: string;
+  payment_method_details?: PaymentMethodDetails;
 }
 
 // Admin specific fields 
-export interface AdminDeposit extends Deposit {
-  paymentMethod: string;
-  payment_method_id?: string;
-  user_email?: string;
-  user_full_name?: string;
-  admin_notes?: string;
-  approved_by?: number;
-  rejected_by?: number;
+export interface AdminDeposit extends Omit<Deposit, 'user'> {
+  user: UserDetails;
 }
 
 export interface DepositApproveRequest {

@@ -6,11 +6,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAdminDeposits } from '@/hooks/api/useAdminDeposits';
-import { FaArrowLeft } from 'react-icons/fa';
+import { FaArrowLeft, FaUser, FaMoneyBill, FaCalendar, FaExchangeAlt, FaInfoCircle } from 'react-icons/fa';
 import { Spinner } from '@/components/ui/spinner';
 import { AdminDepositActions } from '@/components/AdminDepositActions';
 import { useCurrentUser } from '@/hooks/api/useUsers';
 import { toast } from 'sonner';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 export default function AdminDepositsPage() {
     const router = useRouter();
@@ -36,6 +37,26 @@ export default function AdminDepositsPage() {
 
     const handleBackClick = () => {
         router.push('/admin');
+    };
+
+    // Helper to get user name or email
+    const getUserIdentifier = (deposit: any) => {
+        if (typeof deposit.user === 'object' && deposit.user !== null) {
+            const { first_name, last_name, email } = deposit.user;
+            if (first_name && last_name) {
+                return `${first_name} ${last_name}`;
+            }
+            return email;
+        }
+        return `User ID: ${deposit.user}`;
+    };
+
+    // Helper to get payment method name
+    const getPaymentMethod = (deposit: any) => {
+        if (deposit.payment_method_details?.payment_method) {
+            return deposit.payment_method_details.payment_method;
+        }
+        return 'Transferencia';
     };
 
     return (
@@ -70,6 +91,7 @@ export default function AdminDepositsPage() {
                                         <th className="text-left p-3">Fecha</th>
                                         <th className="text-left p-3">Monto</th>
                                         <th className="text-left p-3">Método</th>
+                                        <th className="text-left p-3">Referencia</th>
                                         <th className="text-left p-3">Estado</th>
                                         <th className="text-right p-3">Acciones</th>
                                     </tr>
@@ -77,10 +99,32 @@ export default function AdminDepositsPage() {
                                 <tbody>
                                     {deposits.map((deposit) => (
                                         <tr key={deposit.id} className="border-b hover:bg-gray-50">
-                                            {/* <td className="p-3">{typeof deposit.user === 'object' && deposit.user !== null && 'email' in deposit.user ? deposit.user.email : `User ID: ${deposit.user}`}</td> */}
+                                            <td className="p-3">{getUserIdentifier(deposit)}</td>
                                             <td className="p-3">{new Date(deposit.created_at).toLocaleString()}</td>
                                             <td className="p-3">${deposit.amount.toFixed(2)} USD</td>
-                                            <td className="p-3">{deposit.paymentMethod}</td>
+                                            <td className="p-3">
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <span className="flex items-center gap-1 cursor-help">
+                                                            {getPaymentMethod(deposit)}
+                                                            <FaInfoCircle className="text-gray-400" size={14} />
+                                                        </span>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent className="max-w-xs">
+                                                        <div className="text-sm">
+                                                            {deposit.payment_method_details?.details &&
+                                                                Object.entries(deposit.payment_method_details.details).map(([key, value]) => (
+                                                                    <div key={key} className="flex justify-between gap-2">
+                                                                        <span className="font-medium">{key}:</span>
+                                                                        <span>{value}</span>
+                                                                    </div>
+                                                                ))
+                                                            }
+                                                        </div>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </td>
+                                            <td className="p-3">{deposit.reference || 'N/A'}</td>
                                             <td className="p-3">
                                                 <Badge
                                                     variant={
@@ -88,8 +132,9 @@ export default function AdminDepositsPage() {
                                                             deposit.status === 'approved' ? 'secondary' : 'destructive'
                                                     }
                                                 >
-                                                    {deposit.status === 'pending' ? 'Pendiente' :
-                                                        deposit.status === 'approved' ? 'Aprobado' : 'Rechazado'}
+                                                    {deposit.status_display ||
+                                                        (deposit.status === 'pending' ? 'Pendiente' :
+                                                            deposit.status === 'approved' ? 'Aprobado' : 'Rechazado')}
                                                 </Badge>
                                             </td>
                                             <td className="p-3 text-right">

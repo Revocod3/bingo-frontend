@@ -2,23 +2,6 @@ import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { testCoinService } from '@/lib/api/services';
 
-export interface Deposit {
-  id: string;
-  userId: string;
-  amount: number;
-  paymentMethod: string;
-  reference?: string;
-  status: 'PENDING' | 'APPROVED' | 'REJECTED';
-  adminNotes?: string;
-  createdAt: string;
-  updatedAt: string;
-  user: {
-    id: string;
-    email: string;
-    name?: string;
-  };
-}
-
 // Hook to fetch all pending deposits
 export function useAdminDeposits() {
   const { data, isLoading, error, refetch } = useQuery({
@@ -40,7 +23,7 @@ export function useDepositDetails(depositId: string) {
     queryKey: ['admin', 'deposit', depositId],
     queryFn: async () => {
       const response = await testCoinService.getPendingDeposits();
-      return response.find(deposit => deposit.id === depositId) as unknown as Deposit;
+      return response.find(deposit => deposit.id === depositId);
     },
     enabled: !!depositId
   });
