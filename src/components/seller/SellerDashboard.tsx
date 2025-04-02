@@ -11,13 +11,17 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
     useGenerateBulkCards,
     useDownloadCardsPdf,
-    useEmailCards
+    useEmailCards,
+    useListTransactions,
+    useDownloadTransactionCards
 } from '@/hooks/api/useSellerCards';
 import { FaSpinner, FaFileDownload, FaEnvelope, FaIdCard } from 'react-icons/fa';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { BingoCard } from '@/src/lib/api/types';
 import CardPreview from './CardPreview';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { format } from 'date-fns';
 
 export default function SellerDashboard() {
     const { data: events, isLoading: isLoadingEvents } = useEvents();
@@ -30,10 +34,13 @@ export default function SellerDashboard() {
     const [activeTab, setActiveTab] = useState<string>('generate');
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
+    const [transactionId, setTransactionId] = useState<string | null>(null);
 
     const generateCardsMutation = useGenerateBulkCards();
     const downloadPdfMutation = useDownloadCardsPdf();
     const emailCardsMutation = useEmailCards();
+    const { data: transactions, isLoading: isLoadingTransactions } = useListTransactions();
+    const downloadTransactionCardsMutation = useDownloadTransactionCards();
 
     const handleGenerateCards = async () => {
         if (!selectedEventId) {
@@ -55,8 +62,9 @@ export default function SellerDashboard() {
                 quantity: cardQuantity
             });
 
-            setGeneratedCards(response);
-            setSuccess(`Se han generado ${response.length} cartones exitosamente`);
+            setGeneratedCards(response.cards);
+            setTransactionId(response.transaction_id);
+            setSuccess(`Se han generado ${response.cards.length} cartones exitosamente con ID de transacción: ${response.transaction_id}`);
             setActiveTab('download');
         } catch (err: any) {
             setError(err.response?.data?.message || 'Error al generar los cartones');
@@ -108,6 +116,20 @@ export default function SellerDashboard() {
             setSuccess('Cartones enviados por correo exitosamente');
         } catch (err: any) {
             setError(err.response?.data?.message || 'Error al enviar los cartones por correo');
+        }
+    };
+
+    const handleDownloadTransactionCards = async (transactionId: string) => {
+        setError(null);
+        setSuccess(null);
+
+        try {
+            await downloadTransactionCardsMutation.mutateAsync({
+                transaction_id: transactionId
+            });
+            setSuccess('PDF descargado exitosamente');
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Error al descargar el PDF');
         }
     };
 
@@ -176,6 +198,10 @@ export default function SellerDashboard() {
                         <TabsTrigger value="email" className="flex items-center gap-2" disabled={generatedCards.length === 0}>
                             <FaEnvelope className="h-4 w-4" />
                             <span>Enviar</span>
+                        </TabsTrigger>
+                        <TabsTrigger value="transactions" className="flex items-center gap-2">
+                            <FaFileDownload className="h-4 w-4" />
+                            <span>Transacciones</span>
                         </TabsTrigger>
                     </TabsList>
 
@@ -334,6 +360,66 @@ export default function SellerDashboard() {
                                     )}
                                 </Button>
                             </CardFooter>
+                        </Card>
+                    </TabsContent>
+
+                    <TabsContent value="transactions" className="space-y-4 mt-6">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Mis Transacciones</CardTitle>
+                                <CardDescription>
+                                    Historial de cartones generados para eventos
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                {error && (
+                                    <Alert variant="destructive" className="mb-4">
+                                        <AlertDescription>{error}</AlertDescription>
+                                    </Alert>
+                                )}
+                                {success && (
+                                    <Alert className="mb-4 bg-green-50 text-green-800 border-green-200">
+                                        <AlertDescription>{success}</AlertDescription>
+                                    </Alert>
+                                )}
+
+                                {isLoadingTransactions ? (
+                                    <div className="text-center py-4">Cargando transacciones...</div>
+                                ) : transactions && transactions.length > 0 ? (
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>Fecha</TableHead>
+                                                <TableHead>Evento</TableHead>
+                                                <TableHead>Cantidad</TableHead>
+                                                <TableHead>Acciones</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {transactions.map((transaction) => (
+                                                <TableRow key={transaction.id}>
+                                                    <TableCell>
+                                                        {format(new Date(transaction.date), 'dd/MM/yyyy HH:mm')}
+                                                    </TableCell>
+                                                    <TableCell>{transaction.event_name}</TableCell>
+                                                    <TableCell>{transaction.card_count} cartones</TableCell>
+                                                    <TableCell>
+                                                        <Button
+                                                            size="sm"
+                                                            onClick={() => handleDownloadTransactionCards(transaction.id)}
+                                                            disabled={downloadTransactionCardsMutation.isPending}
+                                                        >
+                                                            Descargar PDF
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                ) : (
+                                    <div className="text-center py-4">No hay transacciones disponibles</div>
+                                )}
+                            </CardContent>
                         </Card>
                     </TabsContent>
                 </Tabs>

@@ -144,6 +144,25 @@ export const bingoCardService = {
     return response.data;
   },
   
+  generateBulkCards: async (data: { event_id: string; quantity: number }): Promise<{ cards: BingoCard[], transaction_id: string }> => {
+    const response = await apiClient.post('/api/cards/generate_bulk/', data);
+    return response.data;
+  },
+  
+  getMyTransactions: async (): Promise<any[]> => {
+    const response = await apiClient.get('/api/cards/my_transactions/');
+    return response.data;
+  },
+  
+  downloadTransactionCards: async (transactionId: string): Promise<Blob> => {
+    const response = await apiClient.post(
+      '/api/cards/download_transaction_cards/', 
+      { transaction_id: transactionId },
+      { responseType: 'blob' }
+    );
+    return response.data;
+  },
+  
   markNumber: async (cardId: number, number: number): Promise<{ status: string }> => {
     const response = await apiClient.post<{ status: string }>(`/api/cards/${cardId}/mark_number/`, { number });
     return response.data;

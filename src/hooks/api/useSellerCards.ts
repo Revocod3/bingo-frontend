@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import apiClient from '@/src/lib/api/client';
 import { BingoCard } from '@/src/lib/api/types';
 
@@ -18,6 +18,20 @@ interface EmailCardsRequest {
   cards: BingoCard[];
   subject?: string;
   message?: string;
+}
+
+// New interface for transaction data
+interface Transaction {
+  id: string;
+  date: string;
+  card_count: number;
+  event_id: string;
+  event_name: string;
+}
+
+// New interface for downloading transaction cards
+interface DownloadTransactionCardsRequest {
+  transaction_id: string;
 }
 
 // Hook to generate multiple cards at once
@@ -58,6 +72,39 @@ export function useEmailCards() {
     mutationFn: async (data: EmailCardsRequest) => {
       const response = await apiClient.post('/api/cards/email_cards/', data);
       return response.data;
+    },
+  });
+}
+
+// New hook to list seller's transactions
+export function useListTransactions() {
+  return useQuery({
+    queryKey: ['sellerTransactions'],
+    queryFn: async () => {
+      const response = await apiClient.get('/api/cards/my_transactions/');
+      return response.data as Transaction[];
+    },
+  });
+}
+
+// New hook to download cards for a specific transaction
+export function useDownloadTransactionCards() {
+  return useMutation({
+    mutationFn: async (data: DownloadTransactionCardsRequest) => {
+      const response = await apiClient.post('/api/cards/download_transaction_cards/', data, {
+        responseType: 'blob', // Important for handling PDF file response
+      });
+      
+      // Create a download link for the PDF
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `bingo-cards-transaction-${data.transaction_id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      
+      return { success: true };
     },
   });
 }
