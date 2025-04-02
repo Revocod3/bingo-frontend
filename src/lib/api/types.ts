@@ -37,6 +37,7 @@ export interface User {
   is_email_verified: boolean;
   is_staff: boolean;
   is_superuser: boolean;
+  is_seller: boolean; // Add this field
   uuid: string;
   last_login?: string;
   date_joined?: string;
