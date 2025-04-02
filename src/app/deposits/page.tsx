@@ -7,10 +7,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import TestCoinBadge from '@/components/TestCoinBadge';
-import { FaArrowLeft, FaCoins, FaHistory, FaInfoCircle, FaDollarSign } from 'react-icons/fa';
+import { FaArrowLeft, FaCoins, FaHistory, FaInfoCircle, FaDollarSign, FaCheck, FaTimes, FaClock } from 'react-icons/fa';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/src/components/ui/tooltip';
 import RechargeModal from '@/components/RechargeModal';
 import { useCurrentExchangeRates } from '@/hooks/api/useExchangeRates';
+import { useMyDeposits } from '@/hooks/api/useTestCoins';
 
 export default function DepositsPage() {
     const router = useRouter();
@@ -18,6 +19,8 @@ export default function DepositsPage() {
     const [amount, setAmount] = useState<number>(10);
     const [isRechargeModalOpen, setIsRechargeModalOpen] = useState(false);
     const { data: exchangeRates } = useCurrentExchangeRates();
+    // Fetch user's deposit history
+    const { data: deposits, isLoading: isLoadingDeposits } = useMyDeposits();
 
     // Calculate exchange rate from API or use fallback
     const getExchangeRate = (currency: string) => {
@@ -58,6 +61,30 @@ export default function DepositsPage() {
             </div>
         );
     }
+
+    // Helper function to get status badge for deposits
+    const getStatusBadge = (status: string) => {
+        switch (status) {
+            case 'approved':
+                return <Badge className="bg-green-100 text-green-800 flex items-center gap-1"><FaCheck size={10} /> Aprobado</Badge>;
+            case 'rejected':
+                return <Badge variant="destructive" className="flex items-center gap-1"><FaTimes size={10} /> Rechazado</Badge>;
+            case 'pending':
+            default:
+                return <Badge variant="outline" className="flex items-center gap-1"><FaClock size={10} /> Pendiente</Badge>;
+        }
+    };
+
+    // Format date to a more readable format
+    const formatDate = (dateString: string) => {
+        return new Date(dateString).toLocaleDateString('es', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
 
     return (
         <div className="container py-8 px-4 md:py-12 max-w-6xl mx-auto">
@@ -176,12 +203,41 @@ export default function DepositsPage() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-center py-8 text-gray-500">
-                            <p>No hay transacciones recientes.</p>
-                            <p className="text-sm mt-2">
-                                Las transacciones aparecerán aquí una vez que hayas realizado depósitos o compras.
-                            </p>
-                        </div>
+                        {isLoadingDeposits ? (
+                            <div className="flex justify-center py-4">
+                                <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-[#7C3AED]"></div>
+                            </div>
+                        ) : deposits && deposits.length > 0 ? (
+                            <div className="overflow-x-auto">
+                                <table className="w-full">
+                                    <thead>
+                                        <tr className="border-b text-sm text-gray-500">
+                                            <th className="text-left p-2">Fecha</th>
+                                            <th className="text-left p-2">Monto</th>
+                                            <th className="text-left p-2">Referencia</th>
+                                            <th className="text-left p-2">Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {deposits.map((deposit) => (
+                                            <tr key={deposit.id} className="border-b hover:bg-gray-50">
+                                                <td className="p-2 text-sm">{formatDate(deposit.created_at)}</td>
+                                                <td className="p-2 font-medium">${deposit.amount.toFixed(2)} USD</td>
+                                                <td className="p-2 text-sm text-gray-600">{deposit.reference || 'N/A'}</td>
+                                                <td className="p-2">{getStatusBadge(deposit.status)}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        ) : (
+                            <div className="text-center py-8 text-gray-500">
+                                <p>No hay transacciones recientes.</p>
+                                <p className="text-sm mt-2">
+                                    Las transacciones aparecerán aquí una vez que hayas realizado depósitos o compras.
+                                </p>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
             </div>
