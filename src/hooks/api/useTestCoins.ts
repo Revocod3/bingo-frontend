@@ -133,7 +133,9 @@ export function usePendingDeposits() {
 export function useApproveDeposit() {
   return useMutation({
     mutationFn: async ({ depositId, adminNotes }: { depositId: string; adminNotes?: string }): Promise<DepositApproveResponse> => {
-      const response = await apiClient.post(`/api/test-coins/deposit/approve/`, { deposit_id: depositId, admin_notes: adminNotes } as DepositApproveRequest);
+      const response = await apiClient.post(`/api/test-coins/deposit/${depositId}/approve/`, { 
+        admin_notes: adminNotes 
+      } as DepositApproveRequest);
       return response.data;
     },
   });
@@ -141,12 +143,15 @@ export function useApproveDeposit() {
 
 export function useRejectDeposit() {
   return useMutation({
-    mutationFn: async ({ depositId, adminNotes }: { depositId: string; adminNotes?: string }): Promise<any> => {
-      const response = await apiClient.post(`/api/test-coins/deposit/${depositId}/reject/`, { admin_notes: adminNotes });
+    mutationFn: async ({ depositId, adminNotes }: { depositId: string; adminNotes?: string }): Promise<DepositApproveResponse> => {
+      const response = await apiClient.post(`/api/test-coins/deposit/${depositId}/reject/`, { 
+        admin_notes: adminNotes 
+      } as DepositApproveRequest);
       return response.data;
     },
   });
 }
+
 export function useCardPrice() {
   return useQuery({
     queryKey: ['cardPrice'],

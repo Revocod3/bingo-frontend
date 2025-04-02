@@ -240,8 +240,8 @@ export const testCoinService = {
   },
   
   approveDeposit: async (depositId: string, adminNotes?: string): Promise<DepositApproveResponse> => {
-    const response = await apiClient.post(`/api/test-coins/deposit/approve/`, 
-      { deposit_id: depositId, admin_notes: adminNotes } as DepositApproveRequest);
+    const response = await apiClient.post(`/api/test-coins/deposit/${depositId}/approve/`,
+      { admin_notes: adminNotes } as DepositApproveRequest);
     return response.data;
   },
   
