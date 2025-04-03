@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function LoginPage() {
-  const { status, data: session } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   // Redirigir si ya está autenticado
