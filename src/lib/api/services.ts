@@ -73,6 +73,11 @@ export const authService = {
   getCurrentUser: async (): Promise<User> => {
     const response = await apiClient.get<User>('/api/auth/user/');
     return response.data;
+  },
+
+  googleLogin: async (data: { email: string; name?: string; google_id: string }) => {
+    const response = await apiClient.post('/api/auth/google-login/', data);
+    return response.data;
   }
 };
 

@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { FaGoogle, FaFacebook } from "react-icons/fa"
+import { FaGoogle } from "react-icons/fa"
 import { signIn } from "next-auth/react"
 
 export function LoginForm({
@@ -127,18 +127,18 @@ export function LoginForm({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid gap-3">
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full border-[#7C3AED] text-[#8B5CF6] hover:bg-[#2D2658] hover:text-white cursor-pointer"
+                    className="w-full border-[#7C3AED] text-[#8B5CF6] hover:bg-[#7C3AED]/50 hover:text-white cursor-pointer"
                     disabled={isLoading}
-                    onClick={() => signIn("google")}
+                    onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
                   >
                     <FaGoogle />
                     Google
                   </Button>
-                  <Button
+                  {/* <Button
                     type="button"
                     variant="outline"
                     className="w-full border-[#7C3AED] text-[#8B5CF6] hover:bg-[#2D2658] hover:text-white cursor-pointer"
@@ -146,7 +146,7 @@ export function LoginForm({
                   >
                     <FaFacebook />
                     Facebook
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             </div>

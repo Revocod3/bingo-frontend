@@ -73,7 +73,7 @@ export default function DashboardPage() {
           {user &&
             <div className="flex items-center gap-2">
               <TestCoinBadge />
-              {balance && balance?.balance < 1 ?
+              {/* {balance && balance?.balance < 1 ?
                 <Button
                   variant="outline"
                   size="sm"
@@ -84,7 +84,7 @@ export default function DashboardPage() {
                     Recargar <FaPlusCircle className="text-[#7C3AED]" />
                   </span>
                 </Button>
-                : null}
+                : null} */}
             </div>}
         </div>
       </div>
