@@ -10,17 +10,17 @@ import {
     CardFooter,
     CardHeader,
 } from '@/components/ui/card';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import {
-    Dialog,
-    ResponsiveDialogContent,
-    ResponsiveDialogHeader,
-    ResponsiveDialogFooter,
-    DialogTitle,
-    DialogDescription
-} from '@/components/ui/responsive-dialog';
 import { FaPlus, FaEdit, FaTrash, FaEye, FaPuzzlePiece, FaCalendarAlt, FaClock, FaTrophy } from 'react-icons/fa';
 import { toast } from 'sonner';
 import Link from 'next/link';
@@ -189,80 +189,74 @@ export default function EventManagementPanel() {
 
             {/* Create Event Modal */}
             <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-                <ResponsiveDialogContent className='max-w-[90vw] sm:max-w-[425px]'>
-                    <ResponsiveDialogHeader>
+                <DialogContent className="sm:max-w-[500px]">
+                    <DialogHeader>
                         <DialogTitle>Crear Nuevo Evento</DialogTitle>
                         <DialogDescription>
                             Completa los datos para crear un nuevo evento de bingo
                         </DialogDescription>
-                    </ResponsiveDialogHeader>
-                    <div className="grid 2xs:gap-2 xs:gap-3 gap-4 2xs:py-2 xs:py-3 py-4">
-                        <div className="grid 2xs:gap-1 gap-2">
-                            <Label htmlFor="name" className="2xs:text-xs">Nombre del Evento</Label>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                        <div className="grid gap-2">
+                            <Label htmlFor="name">Nombre del Evento</Label>
                             <Input
                                 id="name"
                                 value={newEvent.name}
                                 onChange={(e) => setNewEvent({ ...newEvent, name: e.target.value })}
                                 placeholder="Ej: Bingo Solidario"
-                                className="2xs:text-xs 2xs:p-2"
                             />
                         </div>
-                        <div className="grid 2xs:gap-1 gap-2">
-                            <Label htmlFor="prize" className="2xs:text-xs">Premio (USD)</Label>
+                        <div className="grid gap-2">
+                            <Label htmlFor="prize">Premio (USD)</Label>
                             <Input
                                 id="prize"
                                 type="number"
                                 value={newEvent.prize}
                                 onChange={(e) => setNewEvent({ ...newEvent, prize: Number(e.target.value) })}
                                 placeholder="Ej: 500"
-                                className="2xs:text-xs 2xs:p-2"
                             />
                         </div>
-                        <div className="grid 2xs:gap-1 gap-2">
-                            <Label htmlFor="start_date" className="2xs:text-xs">Fecha y Hora de Inicio</Label>
+                        <div className="grid gap-2">
+                            <Label htmlFor="start_date">Fecha y Hora de Inicio</Label>
                             <Input
                                 id="start"
                                 type="datetime-local"
                                 value={newEvent.start}
                                 onChange={(e) => setNewEvent({ ...newEvent, start: e.target.value })}
-                                className="2xs:text-xs 2xs:p-2"
                             />
                         </div>
-                        <div className="grid 2xs:gap-1 gap-2">
-                            <Label htmlFor="end_date" className="2xs:text-xs">Fecha y Hora de Fin (opcional)</Label>
+                        <div className="grid gap-2">
+                            <Label htmlFor="end_date">Fecha y Hora de Fin (opcional)</Label>
                             <Input
                                 id="end"
                                 type="datetime-local"
                                 value={newEvent.end_date || ''}
                                 onChange={(e) => setNewEvent({ ...newEvent, end_date: e.target.value })}
-                                className="2xs:text-xs 2xs:p-2"
                             />
                         </div>
-                        <div className="grid 2xs:gap-1 gap-2">
-                            <Label htmlFor="description" className="2xs:text-xs">Descripción</Label>
+                        <div className="grid gap-2">
+                            <Label htmlFor="description">Descripción</Label>
                             <Textarea
                                 id="description"
                                 value={newEvent.description || ''}
                                 onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
                                 placeholder="Describe el evento..."
-                                className="2xs:text-xs 2xs:p-2 2xs:min-h-[60px]"
                             />
                         </div>
                     </div>
-                    <ResponsiveDialogFooter>
-                        <Button variant="outline" onClick={() => setIsCreateModalOpen(false)}
-                            className="2xs:text-xs 2xs:py-1 2xs:h-8">
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsCreateModalOpen(false)}>
                             Cancelar
                         </Button>
                         <Button
                             onClick={handleCreateEvent}
-                            className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white 2xs:text-xs 2xs:py-1 2xs:h-8"
+                            className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white"
                             disabled={!newEvent.name || newEvent.prize <= 0 || !newEvent.start}
                         >
                             Crear Evento
                         </Button>
-                    </ResponsiveDialogFooter>
-                </ResponsiveDialogContent>
+                    </DialogFooter>
+                </DialogContent>
             </Dialog>
         </div>
     );

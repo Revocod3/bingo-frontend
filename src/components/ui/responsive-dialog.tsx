@@ -21,14 +21,14 @@ export function ResponsiveDialogContent({
         <DialogContent
             className={cn(
                 // Improve padding for very small screens
-                "2xs:p-2 xs:p-3 p-4 sm:p-6",
+                "xs:p-3 p-4 sm:p-6",
                 // Adjust max width and width constraints
-                "w-[calc(100%-12px)] 2xs:max-w-[98vw] max-h-[calc(100vh-16px)]",
+                "w-[calc(100%-16px)] max-h-[calc(100vh-16px)]",
                 "xs:max-w-[95vw] sm:max-w-[425px]",
                 // Add scrolling support for tall content
                 "overflow-y-auto",
                 // Additional text sizing for very small screens
-                "2xs:text-xs xs:text-sm sm:text-base text-gray-700",
+                "xs:text-sm sm:text-base",
                 className
             )}
             {...props}
@@ -47,8 +47,8 @@ export function ResponsiveDialogHeader({
     return (
         <DialogHeader
             className={cn(
-                "2xs:space-y-1 xs:space-y-1 sm:space-y-2",
-                "2xs:pb-1 xs:pb-2 sm:pb-4",
+                "xs:space-y-1 sm:space-y-2",
+                "xs:pb-2 sm:pb-4",
                 className
             )}
             {...props}
@@ -67,9 +67,9 @@ export function ResponsiveDialogFooter({
     return (
         <DialogFooter
             className={cn(
-                "2xs:flex-col xs:flex-col xs:space-y-2 sm:flex-row sm:space-y-0",
-                "2xs:mt-1 xs:mt-2 sm:mt-4",
-                "2xs:gap-1 gap-2",
+                "xs:flex-col xs:space-y-2 sm:flex-row sm:space-y-0",
+                "xs:mt-2 sm:mt-4",
+                "gap-2",
                 className
             )}
             {...props}
