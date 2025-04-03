@@ -1,5 +1,6 @@
 import NextAuth, { AuthOptions, SessionStrategy } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
 import { authService } from '@/lib/api/services';
 
 const authOptions: AuthOptions = {
@@ -34,7 +35,11 @@ const authOptions: AuthOptions = {
           return null;
         }
       }
-    })
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
   ],
   callbacks: {
     async jwt({ token, user }) {
