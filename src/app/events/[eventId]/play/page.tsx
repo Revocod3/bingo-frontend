@@ -316,7 +316,7 @@ export default function GamePlayPage() {
                   <BingoCard
                     cardId={String(card.id)} // Convertir a string
                     numbers={getCardNumbers(card)} // Asegurar que esta función devuelve string[][]
-                    active={false} // Disable automatic verification
+                    active={true} // Changed from false to true to enable marking
                     eventId={eventId}
                     calledNumbers={calledNumbers}
                     autoMarkEnabled={autoMarkEnabled} // Add this prop
