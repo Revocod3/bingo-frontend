@@ -118,7 +118,7 @@ export default function DashboardPage() {
 
                 return (
                   <Card key={eventId} className="overflow-hidden shadow-md hover:shadow-lg gap-4 transition-shadow pt-0 border-0 rounder-lg">
-                    <div className="relative h-28 bg-gradient-to-r from-purple-700 to-indigo-700 rounded-t-lg opacity-80">
+                    <div className="relative h-16 bg-gradient-to-r from-purple-700 to-indigo-700 rounded-t-lg opacity-80">
                       <div className="absolute inset-0 flex items-center justify-center">
                         <h3 className="text-2xl font-bold text-white">{event.name}</h3>
                       </div>
