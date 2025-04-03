@@ -71,7 +71,7 @@ export default function BingoCard({
 
   // Add effect to automatically mark called numbers when autoMarkEnabled is true
   useEffect(() => {
-    if (!autoMarkEnabled || !active) return;
+    if (!autoMarkEnabled) return;
 
     // Only proceed if auto-marking is enabled
     setMarkedNumbers(prev => {
@@ -94,7 +94,7 @@ export default function BingoCard({
 
       return newSet;
     });
-  }, [autoMarkEnabled, calledNumbers, numbers, active]);
+  }, [autoMarkEnabled, calledNumbers, numbers]);
 
   // Marcar un número en el cartón
   const toggleNumber = (num: string) => {
