@@ -6,12 +6,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAdminDeposits } from '@/hooks/api/useAdminDeposits';
-import { FaArrowLeft, FaUser, FaMoneyBill, FaCalendar, FaExchangeAlt, FaInfoCircle } from 'react-icons/fa';
+import { FaArrowLeft, FaInfoCircle } from 'react-icons/fa';
 import { Spinner } from '@/components/ui/spinner';
 import { AdminDepositActions } from '@/components/AdminDepositActions';
 import { useCurrentUser } from '@/hooks/api/useUsers';
 import { toast } from 'sonner';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Deposit } from '@/src/lib/api/depositTypes';
 
 export default function AdminDepositsPage() {
     const router = useRouter();
@@ -40,7 +41,7 @@ export default function AdminDepositsPage() {
     };
 
     // Helper to get user name or email
-    const getUserIdentifier = (deposit: any) => {
+    const getUserIdentifier = (deposit: Deposit) => {
         if (typeof deposit.user === 'object' && deposit.user !== null) {
             const { first_name, last_name, email } = deposit.user;
             if (first_name && last_name) {
@@ -52,7 +53,7 @@ export default function AdminDepositsPage() {
     };
 
     // Helper to get payment method name
-    const getPaymentMethod = (deposit: any) => {
+    const getPaymentMethod = (deposit: Deposit) => {
         if (deposit.payment_method_details?.payment_method) {
             return deposit.payment_method_details.payment_method;
         }

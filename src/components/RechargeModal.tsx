@@ -65,7 +65,8 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
         if (!rates.length) return amount;
         const rate = rates.find(([key]) => paymentMethod === 'Nequi' ? key === 'COP' : key === 'VEF');
         if (!rate) return amount;
-        const [_, rateValue] = rate;
+        const [rateKey, rateValue] = rate;
+        rateKey === 'COP' ? true : false;
         return (amount * Number(rateValue)).toFixed(2);
     }
 

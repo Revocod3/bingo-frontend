@@ -3,7 +3,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useCurrentUser } from '@/hooks/api/useUsers';
-import { FaHome, FaCoins, FaTicketAlt, FaUser, FaStore } from 'react-icons/fa';
+import { FaHome, FaCoins, FaUser, FaStore } from 'react-icons/fa';
 
 export function DashboardNav() {
     const pathname = usePathname();

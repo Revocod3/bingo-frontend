@@ -36,7 +36,6 @@ export default function SellerDashboard() {
     const [activeTab, setActiveTab] = useState<string>('generate');
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
-    const [_, setTransactionId] = useState<string | null>(null);
 
     const generateCardsMutation = useGenerateBulkCards();
     const downloadPdfMutation = useDownloadCardsPdf();
@@ -67,13 +66,16 @@ export default function SellerDashboard() {
             });
 
             setGeneratedCards(response.cards);
-            setTransactionId(response.transaction_id);
             setSuccess(`Se han generado ${response.cards.length} cartones exitosamente con ID de transacción: ${response.transaction_id}`);
             setActiveTab('download');
 
             queryClient.invalidateQueries({ queryKey: ['testCoinBalance'] });
-        } catch (err: any) {
-            setError(err.response?.data?.message || 'Error al generar los cartones');
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError('Error al generar los cartones');
+            }
         }
     };
 
@@ -92,8 +94,12 @@ export default function SellerDashboard() {
                 cards: generatedCards
             });
             setSuccess('PDF descargado exitosamente');
-        } catch (err: any) {
-            setError(err.response?.data?.message || 'Error al descargar el PDF');
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError('Error al descargar el PDF');
+            }
         }
     };
 
@@ -120,8 +126,12 @@ export default function SellerDashboard() {
                 message: emailMessage || undefined
             });
             setSuccess('Cartones enviados por correo exitosamente');
-        } catch (err: any) {
-            setError(err.response?.data?.message || 'Error al enviar los cartones por correo');
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError('Error al enviar los cartones por correo');
+            }
         }
     };
 
@@ -133,8 +143,12 @@ export default function SellerDashboard() {
                 transaction_id: transactionId
             });
             setSuccess('PDF descargado exitosamente');
-        } catch (err: any) {
-            setError(err.message || err.response?.data?.message || 'Error al descargar el PDF');
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError('Error al descargar el PDF de la transacción');
+            }
         }
     };
 

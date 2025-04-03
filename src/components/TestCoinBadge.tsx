@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTestCoinBalance } from '@/hooks/api/useTestCoins';
-import { FaCoins, FaPlus, FaPlusCircle } from 'react-icons/fa';
+import { FaCoins, FaPlusCircle } from 'react-icons/fa';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
 import RechargeModal from '@/components/RechargeModal';

@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import TestCoinBadge from '@/components/TestCoinBadge';
-import { FaUser, FaEnvelope, FaCalendarAlt, FaEdit, FaCrown, FaGamepad, FaReceipt, FaTrophy, FaPlusCircle, FaHistory } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaCalendarAlt, FaEdit, FaCrown, FaGamepad, FaReceipt, FaTrophy, FaHistory } from 'react-icons/fa';
 
 export default function ProfilePage() {
     const router = useRouter();

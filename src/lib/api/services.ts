@@ -149,7 +149,7 @@ export const bingoCardService = {
     return response.data;
   },
   
-  getMyTransactions: async (): Promise<any[]> => {
+  getMyTransactions: async (): Promise<{ transaction_id: string; event_id: string; quantity: number; created_at: string }[]> => {
     const response = await apiClient.get('/api/cards/my_transactions/');
     return response.data;
   },
@@ -270,7 +270,7 @@ export const testCoinService = {
     return response.data;
   },
   
-  rejectDeposit: async (depositId: string, adminNotes?: string): Promise<any> => {
+  rejectDeposit: async (depositId: string, adminNotes?: string): Promise<DepositApproveResponse> => {
     const response = await apiClient.post(`/api/test-coins/deposit/${depositId}/reject/`, {
       admin_notes: adminNotes
     });
@@ -285,7 +285,7 @@ export const adminService = {
     return response.data.card_price;
   },
   
-  updateCardPrice: async (price: number): Promise<any> => {
+  updateCardPrice: async (price: number): Promise<{ card_price: number }> => {
     const response = await apiClient.post('/api/cards/card_price/', { 
       card_price: price 
     });

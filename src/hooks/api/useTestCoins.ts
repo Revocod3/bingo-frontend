@@ -166,7 +166,7 @@ export function useCardPrice() {
 
 export function useUpdateCardPrice() {
   return useMutation({
-    mutationFn: async (price: number): Promise<any> => {
+    mutationFn: async (price: number): Promise<number> => {
       const response = await apiClient.post('/api/cards/card_price/', { card_price: price });
       return response.data;
     },

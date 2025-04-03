@@ -168,7 +168,7 @@ export default function DepositsPage() {
                                                 </TooltipTrigger>
                                                 <TooltipContent>
                                                     <p className="text-sm line-clamp-4 text-center max-w-[300px]">
-                                                        El tipo de cambio puede variar. Si oprimes el botón de "Completar Pago", se congelará el tipo de cambio actual por 2 horas.
+                                                        El tipo de cambio puede variar. Si oprimes el botón de 'Completar Pago', se congelará el tipo de cambio actual por 2 horas.
                                                     </p>
                                                 </TooltipContent>
                                             </Tooltip>
