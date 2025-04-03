@@ -65,8 +65,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
         if (!rates.length) return amount;
         const rate = rates.find(([key]) => paymentMethod === 'Nequi' ? key === 'COP' : key === 'VEF');
         if (!rate) return amount;
-        const [rateKey, rateValue] = rate;
-        rateKey === 'COP' ? true : false;
+        const [, rateValue] = rate;
         return (amount * Number(rateValue)).toFixed(2);
     }
 
@@ -74,6 +73,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
     const paymentMethods = useMemo(() => {
         if (!apiPaymentMethods || isLoadingPaymentMethods) {
             return [{
+
                 id: 'bank',
                 name: 'Transferencia',
                 icon: <FaMoneyBillWave className="text-green-500" />,
