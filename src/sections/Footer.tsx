@@ -132,6 +132,9 @@ function Footer() {
                         <Link href="/terms" className="hover:text-white transition-colors">
                             Términos de Servicio
                         </Link>
+                        <Link href="/data-deletion" className="hover:text-white transition-colors">
+                            Eliminación de Datos
+                        </Link>
                     </div>
                 </div>
             </div>
