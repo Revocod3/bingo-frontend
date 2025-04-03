@@ -90,12 +90,9 @@ export default function DepositsPage() {
         <div className="container py-8 px-4 md:py-12 max-w-6xl mx-auto">
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-2xl font-bold">Recargar saldo</h1>
-                <Button
-                    variant="outline"
-                    onClick={() => router.back()}
-                    className="gap-2 text-gray-600 cursor-pointer"
-                >
-                    <FaArrowLeft size={14} /> Volver
+                <Button variant="ghost" onClick={() => router.back()} className="hover:bg-accent hover:text-accent-foreground">
+                    <FaArrowLeft className="mr-2 h-4 w-4" />
+                    Volver
                 </Button>
             </div>
 

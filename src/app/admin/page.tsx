@@ -28,11 +28,9 @@ export default function AdminPage() {
 
                     <div className="mt-2 md:mt-0">
                         <Link href="/dashboard" passHref>
-                            <Button
-                                variant="outline"
-                                className="gap-2 text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800"
-                            >
-                                <FaArrowLeft className="h-3 w-3" /> Dashboard
+                            <Button variant="ghost" className="hover:bg-accent hover:text-accent-foreground">
+                                <FaArrowLeft className="mr-2 h-4 w-4" />
+                                Dashboard
                             </Button>
                         </Link>
                     </div>

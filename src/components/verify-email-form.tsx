@@ -23,7 +23,7 @@ function EmailFromParams({ setEmail }: { setEmail: (email: string) => void }) {
   const searchParams = useSearchParams()
 
   useEffect(() => {
-    const emailParam = searchParams.get('email')
+    const emailParam = searchParams?.get('email')
     if (emailParam) {
       setEmail(emailParam)
     }
