@@ -60,7 +60,7 @@ export default function ProfilePage() {
                         <CardTitle className="text-lg m-0 p-0">Saldo de Cuenta</CardTitle>
                     </CardHeader>
                     <CardContent className='pb-6 m-0'>
-                        <div className="flex justify-center flex-row items-center gap-2">
+                        <div className="flex justify-center flex-col md:flex-row items-center gap-2">
                             <TestCoinBadge />
                             <Button
                                 variant="outline"

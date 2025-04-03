@@ -22,6 +22,8 @@ import { BingoCard } from '@/src/lib/api/types';
 import CardPreview from './CardPreview';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { format } from 'date-fns';
+import TestCoinBadge from '../TestCoinBadge';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function SellerDashboard() {
     const { data: events, isLoading: isLoadingEvents } = useEvents();
@@ -34,13 +36,15 @@ export default function SellerDashboard() {
     const [activeTab, setActiveTab] = useState<string>('generate');
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
-    const [transactionId, setTransactionId] = useState<string | null>(null);
+    const [_, setTransactionId] = useState<string | null>(null);
 
     const generateCardsMutation = useGenerateBulkCards();
     const downloadPdfMutation = useDownloadCardsPdf();
     const emailCardsMutation = useEmailCards();
     const { data: transactions, isLoading: isLoadingTransactions } = useListTransactions();
     const downloadTransactionCardsMutation = useDownloadTransactionCards();
+
+    const queryClient = useQueryClient();
 
     const handleGenerateCards = async () => {
         if (!selectedEventId) {
@@ -66,6 +70,8 @@ export default function SellerDashboard() {
             setTransactionId(response.transaction_id);
             setSuccess(`Se han generado ${response.cards.length} cartones exitosamente con ID de transacción: ${response.transaction_id}`);
             setActiveTab('download');
+
+            queryClient.invalidateQueries({ queryKey: ['testCoinBalance'] });
         } catch (err: any) {
             setError(err.response?.data?.message || 'Error al generar los cartones');
         }
@@ -134,8 +140,10 @@ export default function SellerDashboard() {
 
     return (
         <div className="container py-8 px-4 md:py-12 max-w-5xl mx-auto">
-            <h1 className="text-3xl font-bold mb-6">Panel de Vendedor</h1>
-
+            <div className="flex flex-col md:flex-row justify-between mb-6">
+                <h1 className="text-xl md:2xl font-bold mb-6">Panel de Vendedor</h1>
+                <TestCoinBadge />
+            </div>
             {error && (
                 <Alert variant="destructive" className="mb-4">
                     <AlertDescription>{error}</AlertDescription>

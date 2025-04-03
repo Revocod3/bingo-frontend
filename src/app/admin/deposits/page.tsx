@@ -62,11 +62,11 @@ export default function AdminDepositsPage() {
     return (
         <div className="container py-8 px-4 md:py-12 max-w-6xl mx-auto">
             <div className="flex justify-between items-center mb-8">
+                <h1 className="text-xl sm:text-2xl font-bold">Gestión de Depósitos</h1>
                 <Button variant="ghost" onClick={handleBackClick} className="hover:bg-accent hover:text-accent-foreground">
                     <FaArrowLeft className="mr-2 h-4 w-4" />
                     Volver
                 </Button>
-                <h1 className="text-2xl font-bold">Gestión de Depósitos</h1>
             </div>
 
             <Card className="border shadow-sm">

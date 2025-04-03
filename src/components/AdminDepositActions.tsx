@@ -3,10 +3,7 @@
 import { useState } from 'react';
 import {
     Dialog,
-    DialogContent,
     DialogDescription,
-    DialogFooter,
-    DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -15,6 +12,7 @@ import { useDepositDetails, useAdminDepositActions } from '@/hooks/api/useAdminD
 import { Spinner } from '@/components/ui/spinner';
 import { toast } from 'sonner';
 import { FaCheck, FaTimes } from 'react-icons/fa';
+import { ResponsiveDialogContent, ResponsiveDialogFooter, ResponsiveDialogHeader } from './ui/responsive-dialog';
 
 interface AdminDepositActionsProps {
     depositId: string;
@@ -73,25 +71,26 @@ export function AdminDepositActions({
                 <h4 className="font-medium text-gray-700 mb-2">Detalles del método de pago:</h4>
                 <div className="grid grid-cols-2 gap-2 text-sm">
                     {Object.entries(details).map(([key, value]) => (
-                        <div key={key} className="contents">
+                        <div key={key} className="contents text-xs md:text-sm">
                             <div className="font-medium text-gray-500">{key}:</div>
-                            <div>{value}</div>
+                            < div > {value}</div>
                         </div>
-                    ))}
-                </div>
-            </div>
+                    ))
+                    }
+                </div >
+            </div >
         );
     };
 
     return (
         <Dialog open={true} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-md text-gray-800">
-                <DialogHeader>
+            <ResponsiveDialogContent className="sm:max-w-md text-gray-800">
+                <ResponsiveDialogHeader>
                     <DialogTitle>Gestionar Depósito</DialogTitle>
                     <DialogDescription>
                         Revisar y gestionar la solicitud de depósito
                     </DialogDescription>
-                </DialogHeader>
+                </ResponsiveDialogHeader>
 
                 {isLoading ? (
                     <div className="flex justify-center py-4">
@@ -99,7 +98,7 @@ export function AdminDepositActions({
                     </div>
                 ) : deposit ? (
                     <div className="space-y-4">
-                        <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div className="grid grid-cols-2 gap-2 text-xs md:text-sm">
                             <div className="font-medium text-gray-500">Usuario:</div>
                             <div>{typeof deposit.user === 'object' ? deposit.user.email : `ID: ${deposit.user}`}</div>
 
@@ -143,7 +142,7 @@ export function AdminDepositActions({
                     </div>
                 )}
 
-                <DialogFooter className="flex sm:justify-between">
+                <ResponsiveDialogFooter className="flex sm:justify-between">
                     <Button
                         type="button"
                         variant="outline"
@@ -152,13 +151,13 @@ export function AdminDepositActions({
                     >
                         Cancelar
                     </Button>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 sm:flex-row flex-col">
                         <Button
                             type="button"
                             variant="destructive"
                             onClick={handleReject}
                             disabled={isLoading || isPending || !deposit}
-                            className="flex items-center gap-2"
+                            className="flex items-center gap-2 w-full sm:w-auto"
                         >
                             {isPending ? <Spinner size="sm" /> : <FaTimes size={14} />}
                             Rechazar
@@ -167,14 +166,14 @@ export function AdminDepositActions({
                             type="button"
                             onClick={handleApprove}
                             disabled={isLoading || isPending || !deposit}
-                            className="flex items-center gap-2"
+                            className="flex items-center gap-2 w-full sm:w-auto"
                         >
                             {isPending ? <Spinner size="sm" /> : <FaCheck size={14} />}
                             Aprobar
                         </Button>
                     </div>
-                </DialogFooter>
-            </DialogContent>
+                </ResponsiveDialogFooter>
+            </ResponsiveDialogContent>
         </Dialog>
     );
 }
