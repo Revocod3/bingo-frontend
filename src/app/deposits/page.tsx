@@ -153,19 +153,19 @@ export default function DepositsPage() {
                                     Una vez inicialices el pago, tendras un maximo de <strong>2:00 horas</strong> para completar la transacción. De lo contrario, se cancelará automáticamente.
                                 </p>
                                 <div className="flex flex-col items-start justify-between">
-                                    <div className="flex items-center justify-between w-full mb-2">
+                                    <div className="flex items-center flex-col sm:flex-row justify-between w-full mb-2">
                                         <span className="font-semibold">Total a pagar en dolares:</span>
                                         <span className="font-semibold text-indigo-600">
                                             ${amount.toFixed(2)} USD
                                         </span>
                                     </div>
-                                    <div className="flex items-center justify-between w-full">
+                                    <div className="flex items-center justify-between flex-col sm:flex-row w-full">
                                         <span className="font-bold">Total a pagar en Bolívares:</span>
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex flex-col sm:flex-row items-center gap-2">
                                             <Tooltip>
                                                 <TooltipTrigger>
-                                                    <span className="text-xs flex items-center gap-2 font-thin text-mute-foreground text-gray-500">
-                                                        <FaInfoCircle className="text-gray-400 ml-2" />
+                                                    <span className="text-xs flex items-center mt-2 sm:mt-0 gap-2 font-thin text-mute-foreground text-gray-500">
+                                                        <FaInfoCircle className="text-gray-400 sm:ml-2" />
                                                         ({vefRate.toFixed(2)} VEF/USD)
                                                     </span>
                                                 </TooltipTrigger>
