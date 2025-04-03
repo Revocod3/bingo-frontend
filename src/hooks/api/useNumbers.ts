@@ -7,7 +7,7 @@ export function useNumbersByEvent(eventId: string) {
     queryKey: ['numbers', eventId],
     queryFn: () => numberService.getNumbersByEvent(eventId),
     enabled: !!eventId,
-    refetchInterval: 5000, // Refrescar cada 5 segundos
+    refetchInterval: 20000, // Refrescar cada 5 segundos
     refetchIntervalInBackground: true // Refrescar incluso cuando la página no está activa
   });
 }

@@ -10,7 +10,6 @@ import { useBingoStore } from '@/lib/stores/bingo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FaArrowLeft } from 'react-icons/fa';
-import { useQueryClient } from '@tanstack/react-query';
 import BingoPatternsDisplay from '@/src/components/BingoPatternsDisplay';
 import BingoCard from '@/components/BingoCard';
 import { getCardNumbers } from '@/src/lib/utils';
@@ -30,7 +29,6 @@ export default function GamePlayPage() {
   const { data: event, isLoading: eventLoading } = useEvent(eventId);
   const { data: cards, isLoading: cardsLoading } = useBingoCards();
   const { data: calledNumbersData, isLoading: numbersLoading } = useNumbersByEvent(eventId);
-  const queryClient = useQueryClient();
 
   // State for tracking last number for notifications
   const [lastCalledNumber, setLastCalledNumber] = useState<number | null>(null);
@@ -39,9 +37,7 @@ export default function GamePlayPage() {
   const [isAnimating, setIsAnimating] = useState(false);
   // Auto-marking toggle state - default to false
   const [autoMarkEnabled, setAutoMarkEnabled] = useState(false);
-  // Remove verificationEnabled state since we'll verify only on button press
-  // Auto-refresh interval reference
-  const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
   // Track if new numbers have been added since last poll
   const lastNumbersCountRef = useRef<number>(0);
 
@@ -59,44 +55,9 @@ export default function GamePlayPage() {
     localStorage.setItem('bingoAutoMarkPreference', enabled.toString());
   };
 
-  // Use ReactQuery with optimized polling for real-time updates
-  useEffect(() => {
-    // Clear any existing interval first
-    if (refreshIntervalRef.current) {
-      clearInterval(refreshIntervalRef.current);
-    }
-
-    // Set up less aggressive polling (10 seconds instead of 3)
-    refreshIntervalRef.current = setInterval(() => {
-      // Only poll if we're on the page and only for numbers
-      if (document.visibilityState === 'visible') {
-        queryClient.invalidateQueries({ queryKey: ['numbers', eventId] });
-      }
-    }, 10000); // Reduced frequency to 10 seconds
-
-    // Add visibility change listener to pause polling when tab is not visible
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        // Force refresh when coming back to the tab
-        queryClient.invalidateQueries({ queryKey: ['numbers', eventId] });
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    // Cleanup interval on unmount
-    return () => {
-      if (refreshIntervalRef.current) {
-        clearInterval(refreshIntervalRef.current);
-      }
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [eventId, queryClient]);
-
   const {
     calledNumbers,
     initializeGame,
-    isConnected,
     addCalledNumber
   } = useBingoStore();
 
@@ -110,6 +71,9 @@ export default function GamePlayPage() {
 
   // Filter cards for the current event
   const eventCards = cards?.filter(card => card.event === eventId) || [];
+
+  // Check if the game is live
+  const isLive = event?.is_live;
 
   // Process called numbers from API to ensure proper synchronization
   useEffect(() => {
@@ -215,7 +179,7 @@ export default function GamePlayPage() {
         <h1 className="text-2xl sm:text-3xl font-bold">{event.name}</h1>
         <div className="flex flex-wrap gap-2 text-gray-500">
           <Link href="/dashboard" passHref>
-            <Button variant="ghost" className="hover:bg-accent hover:text-accent-foreground">
+            <Button variant="ghost" className="hover:text-accent-foreground">
               <FaArrowLeft className="mr-2 h-4 w-4" />
               Dashboard
             </Button>
@@ -224,15 +188,24 @@ export default function GamePlayPage() {
       </div>
 
       {/* Estado y último número prominentes */}
-      <div className="flex flex-col sm:flex-row justify-between items-center bg-gradient-to-r from-purple-50 to-indigo-50 p-3 sm:p-4 rounded-lg shadow mb-4">
-        <div className="flex flex-col items-center sm:items-start mb-3 sm:mb-0">
+      <div className="flex flex-col sm:flex-row justify-between items-ceenter bg-gradient-to-r from-purple-50 to-indigo-50 p-3 sm:p-4 rounded-lg shadow mb-4">
+        <div className="flex flex-row items-center gap-2">
           <p className="text-xs sm:text-sm text-gray-500">Estado del juego:</p>
-          <span className={`font-bold text-sm sm:text-lg ${!isConnected ? 'text-green-600' : 'text-red-600'}`}>
-            {!isConnected ? '✓ Conectado' : '✗ Desconectado'}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className={`font-medium text-sm sm:text-lg ${isLive
+              ? 'text-indigo-700'
+              : 'text-red-600'
+              }`}>
+              {isLive ? 'En vivo' : 'Desconectado'}
+            </span>
+            <div className={`h-3 w-3 rounded-full ${isLive
+              ? 'bg-gradient-to-r from-purple-500 to-green-400 animate-pulse shadow-sm'
+              : 'bg-gradient-to-r from-red-500 to-orange-400 shadow-sm'
+              }`}></div>
+          </div>
         </div>
 
-        <div className="flex flex-col items-center">
+        <div className="flex flex-row items-center gap-2">
           <p className="text-xs sm:text-sm text-gray-500">Último número llamado:</p>
           {lastCalledNumber ? (
             <div className="relative">
@@ -256,13 +229,17 @@ export default function GamePlayPage() {
               )}
             </div>
           ) : (
-            <span className="text-base sm:text-lg font-medium text-gray-400">Ninguno aún</span>
+            <span className="text-xs font-medium text-gray-400">Ninguno aún</span>
           )}
         </div>
 
-        <div className="flex flex-col items-center sm:items-end mt-3 sm:mt-0">
+        <div className="flex flex-row items-center gap-2">
           <p className="text-xs sm:text-sm text-gray-500">Números cantados:</p>
-          <span className="font-bold text-base sm:text-lg text-indigo-700">{calledNumbers.length}/75</span>
+          <div className="flex items-center gap-2">
+            <span className="font-medium text-sm sm:text-lg text-indigo-700">
+              {calledNumbers.length}/75
+            </span>
+          </div>
         </div>
       </div>
       {/* Lista de números cantados en versión compacta */}
