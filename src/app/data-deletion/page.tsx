@@ -31,7 +31,7 @@ export default function DataDeletionPage() {
                             <FaEnvelope className="mr-2" /> Por correo electrónico
                         </h3>
                         <p className="text-gray-600 dark:text-gray-300 mb-4">
-                            Envía un correo electrónico a <a href="mailto:privacidad@bingoenvivo.casino" className="text-purple-600 dark:text-purple-400 font-semibold hover:underline">privacidad@bingoenvivo.casino</a> con el asunto "Solicitud de eliminación de datos" e incluye la siguiente información:
+                            Envía un correo electrónico a <a href="mailto:privacidad@bingoenvivo.casino" className="text-purple-600 dark:text-purple-400 font-semibold hover:underline">privacidad@bingoenvivo.casino</a> {'con el asunto "Solicitud de eliminación de datos" e incluye la siguiente información:'}
                         </p>
                         <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
                             <li>Tu nombre completo</li>
