@@ -48,7 +48,7 @@ export interface User {
 export interface Event {
   start?: string | number | Date;
   end?: string | number | Date;
-  id: number;
+  id: number | string;
   name: string;
   prize: number;
   start_date: string; 

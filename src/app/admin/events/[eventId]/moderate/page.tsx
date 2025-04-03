@@ -186,7 +186,7 @@ export default function ModerateEventPage() {
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6">
                     <h1 className="text-xl sm:text-3xl font-bold mb-2 sm:mb-0">Moderar: {event.name}</h1>
                     <Link href="/admin" passHref>
-                        <Button variant="outline" size="sm" className="gap-2 text-gray-600">
+                        <Button variant="ghost" size="sm" className="gap-2 text-gray-300">
                             <FaArrowLeft size={14} /> Volver
                         </Button>
                     </Link>

@@ -50,7 +50,7 @@ export default function EditEventPage() {
 
         try {
             await updateEventMutation.mutateAsync({
-                id: Number(eventId),
+                id: eventId,
                 data: {
                     name: formData.name,
                     prize: Number(formData.prize),
@@ -95,12 +95,12 @@ export default function EditEventPage() {
 
     return (
         <AdminRouteGuard>
-            <div className="container mx-auto py-24 px-4">
+            <div className="container mx-auto py-8 px-auto">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-3xl font-bold">Editar Evento</h1>
                     <Link href="/admin" passHref>
-                        <Button variant="outline" className="gap-2 text-gray-600">
-                            <FaArrowLeft size={14} /> Volver al Panel
+                        <Button variant="ghost" className="flex items-center text-gray-300">
+                            <FaArrowLeft size={14} /> Volver
                         </Button>
                     </Link>
                 </div>
@@ -149,16 +149,6 @@ export default function EditEventPage() {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="end_date">Fecha y Hora de Fin (opcional)</Label>
-                                <Input
-                                    id="end_date"
-                                    type="datetime-local"
-                                    value={formData.end_date || ''}
-                                    onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
-                                />
-                            </div>
-
-                            <div className="grid gap-2">
                                 <Label htmlFor="description">Descripción</Label>
                                 <Textarea
                                     id="description"
@@ -170,7 +160,7 @@ export default function EditEventPage() {
                             </div>
                         </CardContent>
 
-                        <CardFooter className="flex justify-between">
+                        <CardFooter className="flex justify-between mt-4">
                             <Button type="button" variant="outline" onClick={() => router.push('/admin')}>
                                 Cancelar
                             </Button>

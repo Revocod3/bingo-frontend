@@ -112,12 +112,12 @@ export const eventService = {
     return response.data;
   },
   
-  updateEvent: async (id: number, data: Partial<CreateEventRequest>): Promise<Event> => {
+  updateEvent: async (id: string, data: Partial<CreateEventRequest>): Promise<Event> => {
     const response = await apiClient.patch<Event>(`/api/events/${id}/`, data);
     return response.data;
   },
   
-  deleteEvent: async (id: number): Promise<void> => {
+  deleteEvent: async (id: string): Promise<void> => {
     await apiClient.delete(`/api/events/${id}/`);
   }
 };

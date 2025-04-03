@@ -56,7 +56,7 @@ export default function EventManagementPanel() {
         }
     };
 
-    const handleDeleteEvent = async (id: number) => {
+    const handleDeleteEvent = async (id: string) => {
         if (confirm('¿Estás seguro que deseas eliminar este evento? Esta acción no se puede deshacer.')) {
             try {
                 await deleteEventMutation.mutateAsync(id);
@@ -102,7 +102,7 @@ export default function EventManagementPanel() {
                 {events && events.length > 0 ? (
                     events.map((event) => (
                         <Card key={event.id} className="overflow-hidden shadow-md hover:shadow-lg gap-4 transition-shadow pt-0 border-0 rounded-lg">
-                            <div className="relative h-28 bg-gradient-to-r from-purple-700 to-indigo-700 rounded-t-lg opacity-80">
+                            <div className="relative h-16 bg-gradient-to-r from-purple-700 to-indigo-700 rounded-t-lg opacity-80">
                                 <div className="absolute inset-0 flex items-center justify-center">
                                     <h3 className="text-2xl font-bold text-white">{event.name}</h3>
                                 </div>
@@ -148,28 +148,30 @@ export default function EventManagementPanel() {
                                 )}
                             </CardContent>
                             <CardFooter className="flex gap-2 flex-wrap">
-                                <Link href={`/admin/events/${event.id}/moderate`} passHref className="flex-1">
-                                    <Button variant="outline" className="w-full flex items-center justify-center gap-2 cursor-pointer">
-                                        <FaEye className="h-4 w-4" /> Moderar
+                                <div className="grid grid-cols-2 gap-2 w-full">
+                                    <Link href={`/admin/events/${event.id}/moderate`} passHref>
+                                        <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                                            <FaEye className="h-4 w-4" /> Moderar
+                                        </Button>
+                                    </Link>
+                                    <Link href={`/admin/events/${event.id}/patterns`} passHref>
+                                        <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                                            <FaPuzzlePiece className="h-4 w-4" /> Patrones
+                                        </Button>
+                                    </Link>
+                                    <Link href={`/admin/events/${event.id}/edit`} passHref>
+                                        <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                                            <FaEdit className="h-4 w-4" /> Editar
+                                        </Button>
+                                    </Link>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full flex items-center justify-center gap-2 text-red-500 hover:bg-red-50 hover:text-red-600"
+                                        onClick={() => handleDeleteEvent(String(event.id))}
+                                    >
+                                        <FaTrash className="h-4 w-4" /> Eliminar
                                     </Button>
-                                </Link>
-                                <Link href={`/admin/events/${event.id}/patterns`} passHref className="flex-1">
-                                    <Button variant="outline" className="w-full flex items-center justify-center gap-2 cursor-pointer">
-                                        <FaPuzzlePiece className="h-4 w-4" /> Patrones
-                                    </Button>
-                                </Link>
-                                <Link href={`/admin/events/${event.id}/edit`} passHref className="flex-1">
-                                    <Button variant="outline" className="w-full flex items-center justify-center gap-2 cursor-pointer">
-                                        <FaEdit className="h-4 w-4" /> Editar
-                                    </Button>
-                                </Link>
-                                <Button
-                                    variant="outline"
-                                    className="text-red-500 border-red-500 hover:bg-red-50 p-2 h-10 w-10 flex items-center justify-center cursor-pointer"
-                                    onClick={() => handleDeleteEvent(event.id)}
-                                >
-                                    <FaTrash />
-                                </Button>
+                                </div>
                             </CardFooter>
                         </Card>
                     ))
@@ -223,15 +225,6 @@ export default function EventManagementPanel() {
                                 type="datetime-local"
                                 value={newEvent.start}
                                 onChange={(e) => setNewEvent({ ...newEvent, start: e.target.value })}
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="end_date">Fecha y Hora de Fin (opcional)</Label>
-                            <Input
-                                id="end"
-                                type="datetime-local"
-                                value={newEvent.end_date || ''}
-                                onChange={(e) => setNewEvent({ ...newEvent, end_date: e.target.value })}
                             />
                         </div>
                         <div className="grid gap-2">

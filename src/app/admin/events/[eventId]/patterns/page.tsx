@@ -50,6 +50,7 @@ export default function EventPatternsPage() {
         try {
             await setEventPatternsMutation.mutateAsync(selectedPatterns);
             toast.success('Patrones del evento actualizados correctamente');
+            router.back();
         } catch (error) {
             toast.error('Error al actualizar los patrones del evento');
             console.error('Error updating event patterns:', error);

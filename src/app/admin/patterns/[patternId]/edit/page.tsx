@@ -22,8 +22,8 @@ export default function EditPatternPage() {
     const patternId = params?.patternId;
     const router = useRouter();
 
-    const { data: pattern, isLoading } = useWinningPattern(patternId);
-    const updatePatternMutation = useUpdateWinningPattern(patternId);
+    const { data: pattern, isLoading } = useWinningPattern(patternId ?? '')
+    const updatePatternMutation = useUpdateWinningPattern(patternId ?? '');
 
     const [formData, setFormData] = useState({
         name: '',
@@ -48,6 +48,7 @@ export default function EditPatternPage() {
         try {
             await updatePatternMutation.mutateAsync(formData);
             toast.success('Patrón actualizado correctamente');
+            router.back();
         } catch (error) {
             toast.error('Error al actualizar el patrón');
             console.error('Error updating pattern:', error);
@@ -104,9 +105,9 @@ export default function EditPatternPage() {
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 mt-6">
                     <div className="flex items-center gap-2">
                         <Button
-                            variant="outline"
+                            variant="ghost"
                             size="icon"
-                            className='text-gray-600 cursor-pointer'
+                            className='text-gray-300 cursor-pointer'
                             onClick={() => router.push('/admin?tab=patterns')}
                         >
                             <FaArrowLeft className="h-4 w-4" />

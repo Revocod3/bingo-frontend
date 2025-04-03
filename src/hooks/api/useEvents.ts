@@ -32,7 +32,7 @@ export function useUpdateEvent() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<CreateEventRequest> }) => 
+    mutationFn: ({ id, data }: { id: string; data: Partial<CreateEventRequest> }) => 
       eventService.updateEvent(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['events'] });

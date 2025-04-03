@@ -72,30 +72,35 @@ export default function AdminPage() {
 
                     <TabsContent value="deposits" className="space-y-4">
                         <h2 className="text-xl md:text-2xl font-bold">Gestión de Depósitos</h2>
-                        <Card className="overflow-hidden shadow-md hover:shadow-lg gap-4 transition-shadow pt-0 border-0 rounded-lg">
-                            <div className="relative h-28 bg-gradient-to-r from-emerald-700 to-green-700 rounded-t-lg opacity-80">
+                        <Card className="overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 rounded-xl">
+                            <div className="relative h-16 bg-gradient-to-r from-[#7C3AED] to-[#6D28D9] rounded-t-xl">
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                    <h3 className="text-2xl font-bold text-white">Depósitos y Transacciones</h3>
+                                    <FaMoneyBillWave className="absolute opacity-10 h-32 w-32 text-white/20" />
+                                    <h3 className="text-2xl font-bold text-white drop-shadow-md">Depósitos y Transacciones</h3>
                                 </div>
                             </div>
-                            <CardHeader>
-                                <CardDescription>
-                                    Administra los depósitos y transacciones de los usuarios
+                            <CardHeader className="pb-2">
+                                <CardDescription className="text-sm">
+                                    Supervisa y gestiona todos los movimientos económicos dentro de la plataforma
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <div className="rounded-lg bg-emerald-50 py-3 px-4 dark:bg-emerald-950/50 flex flex-row justify-between items-center mb-4">
-                                    <div className="flex items-center gap-2">
-                                        <FaMoneyBillWave className="h-4 w-4 text-emerald-500" />
-                                        <h4 className="text-emerald-600 text-sm font-semibold dark:text-emerald-400">Gestión de Pagos</h4>
+                                <div className="rounded-lg bg-[#DDD6FE]/20 py-4 px-4 flex flex-row justify-between items-center mb-4 border border-[#DDD6FE]/50">
+                                    <div className="flex items-center gap-3">
+                                        <div className="bg-[#7C3AED] p-2 rounded-lg">
+                                            <FaMoneyBillWave className="h-5 w-5 text-white" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-[#7C3AED] text-base font-semibold">Gestión de Pagos</h4>
+                                            <p className="text-gray-500 text-sm">Revisa y aprueba las solicitudes de depósito</p>
+                                        </div>
                                     </div>
-                                    <p className="text-gray-500">Ver y administrar los depósitos</p>
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Link href="/admin/deposits" passHref>
-                                    <Button className="w-full bg-emerald-600 hover:bg-emerald-700 gap-1 cursor-pointer">
-                                        <FaMoneyBillWave className="h-3 w-3" /> Ver Depósitos
+                                <Link href="/admin/deposits" passHref className="w-full">
+                                    <Button className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] gap-2 py-5 font-medium transition-all">
+                                        <FaMoneyBillWave className="h-4 w-4" /> Administrar Depósitos
                                     </Button>
                                 </Link>
                             </CardFooter>
@@ -104,59 +109,69 @@ export default function AdminPage() {
 
                     <TabsContent value="users" className="space-y-4">
                         <h2 className="text-2xl font-bold mb-4">Gestión de Usuarios</h2>
-                        <Card className="overflow-hidden shadow-md hover:shadow-lg gap-4 transition-shadow pt-0 border-0 rounded-lg">
-                            <div className="relative h-28 bg-gradient-to-r from-blue-700 to-cyan-700 rounded-t-lg opacity-80">
+                        <Card className="overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 rounded-xl">
+                            <div className="relative h-16 bg-gradient-to-r from-[#7C3AED] to-[#6D28D9] rounded-t-xl">
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                    <h3 className="text-2xl font-bold text-white">Usuarios del Sistema</h3>
+                                    <FaUsers className="absolute opacity-10 h-32 w-32 text-white/20" />
+                                    <h3 className="text-2xl font-bold text-white drop-shadow-md">Usuarios del Sistema</h3>
                                 </div>
                             </div>
-                            <CardHeader>
-                                <CardDescription>
-                                    Administra los usuarios de la plataforma, permisos y roles
+                            <CardHeader className="pb-2">
+                                <CardDescription className="text-sm">
+                                    Administra los usuarios, sus permisos y monitorea la actividad en la plataforma
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <div className="rounded-lg bg-blue-50 py-3 px-4 dark:bg-blue-950/50 flex flex-row justify-between items-center mb-4">
-                                    <div className="flex items-center gap-2">
-                                        <FaUsers className="h-4 w-4 text-blue-500" />
-                                        <h4 className="text-blue-600 text-sm font-semibold dark:text-blue-400">Usuarios Activos</h4>
+                                <div className="rounded-lg bg-[#DDD6FE]/20 py-4 px-4 flex flex-row justify-between items-center mb-4 border border-[#DDD6FE]/50">
+                                    <div className="flex items-center gap-3">
+                                        <div className="bg-[#7C3AED] p-2 rounded-lg">
+                                            <FaUsers className="h-5 w-5 text-white" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-[#7C3AED] text-base font-semibold">Usuarios Activos</h4>
+                                            <p className="text-gray-500 text-sm">Gestiona roles y permisos del sistema</p>
+                                        </div>
                                     </div>
-                                    <p className="text-gray-500">Funcionalidad en desarrollo</p>
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button disabled className="bg-blue-600 hover:bg-blue-700 gap-1 cursor-pointer">
-                                    <FaCogs className="h-3 w-3" /> Configurar Usuarios
+                                <Button disabled className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] opacity-70 gap-2 py-5 font-medium transition-all">
+                                    <FaCogs className="h-4 w-4" /> Configurar Usuarios
                                 </Button>
                             </CardFooter>
                         </Card>
                     </TabsContent>
 
                     <TabsContent value="stats" className="space-y-4">
-                        <h2 className="text-2xl font-bold mb-4">Estadísticas del Sistema</h2>
-                        <Card className="overflow-hidden shadow-md hover:shadow-lg gap-4 transition-shadow pt-0 border-0 rounded-lg">
-                            <div className="relative h-28 bg-gradient-to-r from-green-700 to-emerald-700 rounded-t-lg opacity-80">
+                        <h2 className="text-2xl font-bold">Estadísticas del Sistema</h2>
+                        <Card className="overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 rounded-xl">
+                            <div className="relative h-16 bg-gradient-to-r from-[#7C3AED] to-[#6D28D9] rounded-t-xl">
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                    <h3 className="text-2xl font-bold text-white">Métricas y Analíticas</h3>
+                                    <FaChartBar className="absolute opacity-10 h-32 w-32 text-white/20" />
+                                    <h3 className="text-2xl font-bold text-white drop-shadow-md">Métricas y Analíticas</h3>
                                 </div>
                             </div>
-                            <CardHeader>
-                                <CardDescription>
-                                    Visualiza estadísticas de uso y rendimiento de la plataforma
+                            <CardHeader className="pb-2">
+                                <CardDescription className="text-sm">
+                                    Visualiza estadísticas detalladas del rendimiento y uso de la plataforma
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <div className="rounded-lg bg-green-50 py-3 px-4 dark:bg-green-950/50 flex flex-row justify-between items-center mb-4">
-                                    <div className="flex items-center gap-2">
-                                        <FaChartBar className="h-4 w-4 text-green-500" />
-                                        <h4 className="text-green-600 text-sm font-semibold dark:text-green-400">Estadísticas Avanzadas</h4>
+                                <div className="rounded-lg bg-[#DDD6FE]/20 py-4 px-4 flex flex-row justify-between items-center mb-4 border border-[#DDD6FE]/50">
+                                    <div className="flex items-center gap-3">
+                                        <div className="bg-[#7C3AED] p-2 rounded-lg">
+                                            <FaChartBar className="h-5 w-5 text-white" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-[#7C3AED] text-base font-semibold">Estadísticas Avanzadas</h4>
+                                            <p className="text-gray-500 text-sm">Analiza el comportamiento y rendimiento</p>
+                                        </div>
                                     </div>
-                                    <p className="text-gray-500">Funcionalidad en desarrollo</p>
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button disabled className="bg-green-600 hover:bg-green-700 gap-1 cursor-pointer">
-                                    <FaChartBar className="h-3 w-3" /> Ver Estadísticas
+                                <Button disabled className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] opacity-70 gap-2 py-5 font-medium transition-all">
+                                    <FaChartBar className="h-4 w-4" /> Ver Estadísticas
                                 </Button>
                             </CardFooter>
                         </Card>
