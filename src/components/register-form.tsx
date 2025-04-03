@@ -16,8 +16,9 @@ import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { useRegister } from "@/hooks/api/useAuth"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { FaGoogle, FaFacebook } from "react-icons/fa"
+import { FaGoogle } from "react-icons/fa"
 import { ApiError } from "@/lib/api/types"
+import { signIn } from "next-auth/react"
 
 export function RegisterForm({
   className,
@@ -176,23 +177,24 @@ export function RegisterForm({
                     <span className="bg-card px-2 text-muted-foreground">o continuar con</span>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid gap-3">
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full border-[#7C3AED] text-[#8B5CF6] hover:bg-[#2D2658] hover:text-white cursor-pointer"
+                    className="w-full border-[#7C3AED] text-[#8B5CF6] hover:bg-[#7C3AED]/50 hover:text-white cursor-pointer"
+                    onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
                   >
                     <FaGoogle />
                     Google
                   </Button>
-                  <Button
+                  {/* <Button
                     type="button"
                     variant="outline"
                     className="w-full border-[#7C3AED] text-[#8B5CF6] hover:bg-[#2D2658] hover:text-white cursor-pointer"
                   >
                     <FaFacebook />
                     Facebook
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             </div>
