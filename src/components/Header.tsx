@@ -10,11 +10,12 @@ import { useLogout } from '../hooks/api';
 import { signOut } from 'next-auth/react';
 import { SettingsGearIcon } from './ui/settings-gear';
 import { UserIcon } from './ui/user';
+import { CircleDollarSignIcon } from './ui/circle-dollar-sign';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { isAuthenticated, isAdmin } = useAuthStatus();
+  const { isAuthenticated, isAdmin, isSeller } = useAuthStatus();
   const logoutAPI = useLogout(); // Renamed to avoid confusion
 
   // Check if current route is an auth page
@@ -108,34 +109,45 @@ export default function Header() {
 
 
           {/* Mostrar diferentes opciones según autenticación */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-1 md:space-x-4">
             {isAuthenticated ? (
               <>
                 {isAdmin && (
                   <Link
                     href="/admin"
-                    className="flex items-center space-x-2 text-white hover:bg-white/2 transition-colors cursor-pointer rounded-lg pl-2 md:px-4"
+                    className="flex items-center space-x-1 text-white hover:bg-white/2 transition-colors cursor-pointer rounded-lg md:pl-2 md:px-4"
                   >
-                    <SettingsGearIcon size={20} />
+                    <SettingsGearIcon size={18} />
                     <span className='hidden md:block'>Admin</span>
                   </Link>
                 )}
                 {
+                  isSeller && (
+                    <Link
+                      href="/seller"
+                      className="flex items-center space-x-1 text-white hover:bg-white/2 transition-colors cursor-pointer rounded-lg md:pl-2 md:px-4"
+                    >
+                      <CircleDollarSignIcon size={18} />
+                      <span className='hidden md:block'>Vender</span>
+                    </Link>
+                  )
+                }
+                {
                   <Link
                     href="/profile"
-                    className="flex items-center space-x-2 text-white hover:bg-white/2 transition-colors cursor-pointer rounded-lg pl-2 md:px-4"
+                    className="flex items-center space-x-1 text-white hover:bg-white/2 transition-colors cursor-pointer rounded-lg md:pl-2 md:px-4"
                   >
-                    <UserIcon size={20} />
+                    <UserIcon size={18} />
                     <span className='hidden md:block'>Perfil</span>
                   </Link>
                 }
                 {/* Corregido: Ahora usa handleLogout en lugar de logout directamente */}
                 <button
                   onClick={handleLogout}
-                  className="flex items-center space-x-2 text-white hover:bg-white/2 transition-colors cursor-pointer rounded-lg pl-2 md:px-4"
+                  className="flex items-center space-x-1 text-white hover:bg-white/2 transition-colors cursor-pointer rounded-lg md:pl-2 md:px-4"
                   type="button"
                 >
-                  <LogoutIcon size={20} />
+                  <LogoutIcon size={18} />
                   <span className='hidden md:block'>Salir</span>
                 </button>
               </>
