@@ -17,7 +17,9 @@ module.exports = {
         },
       },
       screens: {
-        'xs': {'max': '375px'}, // Target very small screens specifically
+        '2xs': {'max': '374px'},      // Extra extra small devices (smaller than iPhone SE)
+        'xs': {'min': '375px', 'max': '639px'}, // Small phones to larger phones
+        // sm starts at 640px by default in Tailwind
       },
     },
   },

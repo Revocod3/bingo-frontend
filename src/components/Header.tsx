@@ -10,11 +10,13 @@ import { useLogout } from '../hooks/api';
 import { signOut } from 'next-auth/react';
 import { SettingsGearIcon } from './ui/settings-gear';
 import { UserIcon } from './ui/user';
+import { CircleDollarSignIcon } from './ui/circle-dollar-sign';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { isAuthenticated, isAdmin } = useAuthStatus();
+  const { isAuthenticated, isAdmin, isSeller } = useAuthStatus();
+
   const logoutAPI = useLogout(); // Renamed to avoid confusion
 
   // Check if current route is an auth page
@@ -28,6 +30,7 @@ export default function Header() {
     { name: 'Como jugar', href: '#how-to-play' },
     { name: 'Contacto', href: 'https://wa.me/+57322031537' },
   ];
+
 
   // Toggle menu for mobile
   const toggleMenu = () => {
@@ -120,6 +123,17 @@ export default function Header() {
                     <span className='hidden md:block'>Admin</span>
                   </Link>
                 )}
+                {
+                  isSeller && (
+                    <Link
+                      href="/seller"
+                      className="flex items-center space-x-2 text-white hover:bg-white/2 transition-colors cursor-pointer rounded-lg pl-2 md:px-4"
+                    >
+                      <CircleDollarSignIcon size={20} />
+                      <span className='hidden md:block'>Vendedor</span>
+                    </Link>
+                  )
+                }
                 {
                   <Link
                     href="/profile"
