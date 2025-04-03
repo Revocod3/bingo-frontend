@@ -1,7 +1,13 @@
 'use client';
 
 import { useBingoStore } from '@/lib/stores/bingo';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import {
+    Dialog,
+    ResponsiveDialogContent,
+    ResponsiveDialogHeader,
+    ResponsiveDialogFooter,
+    DialogTitle
+} from '@/components/ui/responsive-dialog';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { FaTrophy } from 'react-icons/fa';
@@ -48,24 +54,24 @@ export function WinModal() {
             if (!open) handleClose();
             else setIsOpen(true);
         }}>
-            <DialogContent className="sm:max-w-[500px] max-w-[95vw]">
-                <DialogHeader className="flex items-center flex-col">
-                    <FaTrophy className="text-yellow-400 text-5xl mb-4" />
-                    <DialogTitle className="text-2xl text-center">¡BINGO!</DialogTitle>
-                </DialogHeader>
-                <div className="py-6 text-center">
-                    <p className="text-lg mb-2">¡Felicidades, has completado un patrón ganador!</p>
-                    <p className="text-sm text-gray-600">Tu victoria ha sido verificada y registrada.</p>
+            <ResponsiveDialogContent>
+                <ResponsiveDialogHeader className="flex items-center flex-col">
+                    <FaTrophy className="text-yellow-400 xs:text-3xl sm:text-5xl mb-4" />
+                    <DialogTitle className="xs:text-xl sm:text-2xl text-center">¡BINGO!</DialogTitle>
+                </ResponsiveDialogHeader>
+                <div className="py-4 xs:py-2 text-center">
+                    <p className="xs:text-base sm:text-lg mb-2">¡Felicidades, has completado un patrón ganador!</p>
+                    <p className="xs:text-xs sm:text-sm text-gray-600">Tu victoria ha sido verificada y registrada.</p>
                 </div>
-                <DialogFooter>
+                <ResponsiveDialogFooter>
                     <Button
                         onClick={handleClose}
-                        className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-lg py-6"
+                        className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white xs:text-base xs:py-3 sm:text-lg sm:py-6"
                     >
                         ¡Genial!
                     </Button>
-                </DialogFooter>
-            </DialogContent>
+                </ResponsiveDialogFooter>
+            </ResponsiveDialogContent>
         </Dialog>
     );
 }

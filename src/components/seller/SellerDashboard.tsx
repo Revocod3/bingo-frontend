@@ -123,13 +123,11 @@ export default function SellerDashboard() {
         setError(null);
         setSuccess(null);
         try {
-            console.log('Downloading transaction cards with ID:', transactionId); // Debug log
             await downloadTransactionCardsMutation.mutateAsync({
                 transaction_id: transactionId
             });
             setSuccess('PDF descargado exitosamente');
         } catch (err: any) {
-            console.error('Error downloading transaction cards:', err); // Debug log
             setError(err.message || err.response?.data?.message || 'Error al descargar el PDF');
         }
     };

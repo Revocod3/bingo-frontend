@@ -16,6 +16,9 @@ module.exports = {
           light: '#3B0764',
         },
       },
+      screens: {
+        'xs': {'max': '375px'}, // Target very small screens specifically
+      },
     },
   },
   plugins: [],

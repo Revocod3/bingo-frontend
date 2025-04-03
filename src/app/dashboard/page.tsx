@@ -116,8 +116,6 @@ export default function DashboardPage() {
                 const eventCards = cardsByEvent[eventId] || [];
                 const isLive = event.is_active ? event.is_active && event.is_live : false;
 
-                console.log('event', event, isLive);
-
                 return (
                   <Card key={eventId} className="overflow-hidden shadow-md hover:shadow-lg gap-4 transition-shadow pt-0 border-0 rounder-lg">
                     <div className="relative h-28 bg-gradient-to-r from-purple-700 to-indigo-700 rounded-t-lg opacity-80">

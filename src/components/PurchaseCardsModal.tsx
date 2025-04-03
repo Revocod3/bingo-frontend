@@ -4,12 +4,12 @@ import { useTestCoinBalance } from '@/hooks/api/useTestCoins';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
+  ResponsiveDialogContent,
+  ResponsiveDialogHeader,
+  ResponsiveDialogFooter,
   DialogTitle,
-} from '@/components/ui/dialog';
+  DialogDescription
+} from '@/components/ui/responsive-dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FaCoins, FaPlus, FaMinus } from 'react-icons/fa';
 import Link from 'next/link';
@@ -89,31 +89,31 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
         onClose();
       }
     }}>
-      <DialogContent className="sm:max-w-[425px] text-gray-800">
-        <DialogHeader>
-          <DialogTitle>Compra tus cartones</DialogTitle>
-          <DialogDescription>
+      <ResponsiveDialogContent className="text-gray-800">
+        <ResponsiveDialogHeader>
+          <DialogTitle className="xs:text-lg">Compra tus cartones</DialogTitle>
+          <DialogDescription className="xs:text-xs">
             Selecciona el numero de cartones que quieres comprar para este evento.
           </DialogDescription>
-        </DialogHeader>
+        </ResponsiveDialogHeader>
 
         {errorMessage && (
           <Alert variant="destructive">
-            <AlertDescription>{errorMessage}</AlertDescription>
+            <AlertDescription className="xs:text-xs">{errorMessage}</AlertDescription>
           </Alert>
         )}
 
         {successMessage && (
           <Alert className="bg-green-50 text-green-800 border-green-200">
-            <AlertDescription>{successMessage}</AlertDescription>
+            <AlertDescription className="xs:text-xs">{successMessage}</AlertDescription>
           </Alert>
         )}
 
         <div className="my-1 flex flex-col items-center">
-          <p className="mb-1 text-sm">Balance actual:</p>
+          <p className="mb-1 text-sm xs:text-xs">Balance actual:</p>
           <div className="flex items-center bg-[#7C3AED]/20 rounded-full px-4 py-2">
-            <FaCoins className="text-yellow-500 mr-2" />
-            <span className="font-bold">{coinBalance?.balance || 0} USD</span>
+            <FaCoins className="text-yellow-500 mr-2 xs:text-xs" />
+            <span className="font-bold xs:text-sm">{coinBalance?.balance || 0} USD</span>
           </div>
           {!hasEnoughCoins && (
             <div className="flex flex-col items-center mt-2">
@@ -170,24 +170,24 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
           </div>
         </div>
 
-        <DialogFooter className="mt-4">
+        <ResponsiveDialogFooter className="mt-4">
           <Button
             variant="outline"
             onClick={onClose}
             disabled={purchaseCardsMutation.isPending}
-            className="border-gray-300 text-gray-700 hover:bg-gray-100 cursor-pointer"
+            className="border-gray-300 text-gray-700 hover:bg-gray-100 cursor-pointer xs:text-xs xs:py-1"
           >
             Cancelar
           </Button>
           <Button
             onClick={handlePurchase}
             disabled={!hasEnoughCoins || purchaseCardsMutation.isPending}
-            className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white cursor-pointer"
+            className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white cursor-pointer xs:text-xs xs:py-1"
           >
             {purchaseCardsMutation.isPending ? 'Procesando...' : 'Comprar'}
           </Button>
-        </DialogFooter>
-      </DialogContent>
+        </ResponsiveDialogFooter>
+      </ResponsiveDialogContent>
     </Dialog>
   );
 };

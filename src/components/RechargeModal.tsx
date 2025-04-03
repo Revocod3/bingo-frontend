@@ -1,9 +1,9 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, ResponsiveDialogContent, ResponsiveDialogHeader, ResponsiveDialogFooter, DialogTitle, DialogDescription } from '@/components/ui/responsive-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { FaCoins, FaMoneyBillWave, FaClipboard, FaCheck, FaBackspace, FaMobile, FaPaypal, FaInfo, FaInfoCircle } from 'react-icons/fa';
+import { FaCoins, FaMoneyBillWave, FaClipboard, FaCheck, FaBackspace, FaMobile, FaPaypal, FaInfoCircle } from 'react-icons/fa';
 import { useDepositRequest, useDepositConfirm } from '@/hooks/api/useTestCoins';
 import { useActivePaymentMethods } from '@/hooks/api/usePaymentMethods';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -44,7 +44,6 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
 
     // Map icon types to actual icon components
     const getIconComponent = (iconType: string): React.ReactNode => {
-        console.log('Icon Type:', iconType);
         switch (iconType) {
             case 'Pago Movil':
                 return <FaMobile className="text-purple-500" />;
@@ -64,8 +63,6 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
 
         const rates = Object.entries(exchangeRates?.rates || {});
         if (!rates.length) return amount;
-        console.log('Rates:', rates);
-        console.log('Payment Method:', paymentMethod);
         const rate = rates.find(([key]) => paymentMethod === 'Nequi' ? key === 'COP' : key === 'VEF');
         if (!rate) return amount;
         const [_, rateValue] = rate;
@@ -260,24 +257,24 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
 
     return (
         <Dialog open={isOpen} onOpenChange={handleClose}>
-            <DialogContent className="sm:max-w-[425px] text-gray-800 bg-white rounded-xl shadow-md">
-                <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2 text-xl font-medium">
+            <ResponsiveDialogContent className="text-gray-800 bg-white rounded-xl shadow-md">
+                <ResponsiveDialogHeader>
+                    <DialogTitle className="flex items-center gap-2 text-xl xs:text-lg font-medium">
                         {currentStep === 1 && "Recargar Monedas USD"}
                         {currentStep === 2 && "Información de Pago"}
                         {currentStep === 3 && "Solicitud de Recarga Exitosa"}
                         <FaCoins className="text-yellow-500" />
                     </DialogTitle>
-                    <DialogDescription>
+                    <DialogDescription className="xs:text-xs">
                         {currentStep === 1 && "Ingresa el monto que deseas recargar en tu cuenta."}
                         {currentStep === 2 && "Completa tu pago usando esta información."}
                         {currentStep === 3 && "¡Tu recarga ha sido procesada exitosamente!"}
                     </DialogDescription>
-                </DialogHeader>
+                </ResponsiveDialogHeader>
 
                 {error && (
                     <Alert variant="destructive">
-                        <AlertDescription>{error}</AlertDescription>
+                        <AlertDescription className="xs:text-xs">{error}</AlertDescription>
                     </Alert>
                 )}
 
@@ -479,15 +476,17 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
                                 </span>
                             </div>
                         </div>
-                        <Button
-                            onClick={handleClose}
-                            className="w-full h-14 mt-6 bg-purple-600 hover:bg-purple-700 text-white cursor-pointer"
-                        >
-                            Cerrar
-                        </Button>
+                        <ResponsiveDialogFooter>
+                            <Button
+                                onClick={handleClose}
+                                className="w-full xs:h-10 sm:h-14 mt-4 bg-purple-600 hover:bg-purple-700 text-white cursor-pointer"
+                            >
+                                Cerrar
+                            </Button>
+                        </ResponsiveDialogFooter>
                     </div>
                 )}
-            </DialogContent>
+            </ResponsiveDialogContent>
         </Dialog>
     );
 };
