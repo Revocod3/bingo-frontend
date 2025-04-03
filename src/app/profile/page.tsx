@@ -49,7 +49,6 @@ export default function ProfilePage() {
         })
         : 'Fecha desconocida';
 
-    console.log(user);
     return (
         <div className="container py-8 px-4 md:py-12 max-w-6xl mx-auto">
             <h1 className="text-2xl font-bold mb-8 text-left">Tu Perfil</h1>
