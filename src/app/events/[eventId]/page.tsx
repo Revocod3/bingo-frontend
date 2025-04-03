@@ -56,8 +56,9 @@ export default function EventDetailPage() {
 
         <div className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-4">
           <Link href="/dashboard" passHref>
-            <Button variant="outline" className="gap-2 text-gray-600 cursor-pointer">
-              <FaArrowLeft size={14} /> Dashboard
+            <Button variant="ghost" className="hover:bg-accent hover:text-accent-foreground">
+              <FaArrowLeft className="mr-2 h-4 w-4" />
+              Dashboard
             </Button>
           </Link>
 

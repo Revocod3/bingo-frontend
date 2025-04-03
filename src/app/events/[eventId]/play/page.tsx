@@ -39,8 +39,11 @@ export default function GamePlayPage() {
   const [isAnimating, setIsAnimating] = useState(false);
   // Auto-marking toggle state - default to false
   const [autoMarkEnabled, setAutoMarkEnabled] = useState(false);
+  // Remove verificationEnabled state since we'll verify only on button press
   // Auto-refresh interval reference
   const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  // Track if new numbers have been added since last poll
+  const lastNumbersCountRef = useRef<number>(0);
 
   // Initialize auto-mark preference from localStorage
   useEffect(() => {
@@ -56,23 +59,37 @@ export default function GamePlayPage() {
     localStorage.setItem('bingoAutoMarkPreference', enabled.toString());
   };
 
-  // Use ReactQuery with refetchInterval for real-time updates (more aggressive polling)
+  // Use ReactQuery with optimized polling for real-time updates
   useEffect(() => {
     // Clear any existing interval first
     if (refreshIntervalRef.current) {
       clearInterval(refreshIntervalRef.current);
     }
 
-    // Set up polling to check for new numbers more frequently (every 3 seconds)
+    // Set up less aggressive polling (10 seconds instead of 3)
     refreshIntervalRef.current = setInterval(() => {
-      queryClient.invalidateQueries({ queryKey: ['numbers', eventId] });
-    }, 3000);
+      // Only poll if we're on the page and only for numbers
+      if (document.visibilityState === 'visible') {
+        queryClient.invalidateQueries({ queryKey: ['numbers', eventId] });
+      }
+    }, 10000); // Reduced frequency to 10 seconds
+
+    // Add visibility change listener to pause polling when tab is not visible
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        // Force refresh when coming back to the tab
+        queryClient.invalidateQueries({ queryKey: ['numbers', eventId] });
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     // Cleanup interval on unmount
     return () => {
       if (refreshIntervalRef.current) {
         clearInterval(refreshIntervalRef.current);
       }
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [eventId, queryClient]);
 
@@ -82,6 +99,11 @@ export default function GamePlayPage() {
     isConnected,
     addCalledNumber
   } = useBingoStore();
+
+  // Update lastNumbersCountRef when calledNumbers changes
+  useEffect(() => {
+    lastNumbersCountRef.current = calledNumbers.length;
+  }, [calledNumbers.length]);
 
   // Changed default tab to 'cards' to show cartones first
   const [activeTab, setActiveTab] = useState<'info' | 'cards'>('cards');
@@ -193,8 +215,9 @@ export default function GamePlayPage() {
         <h1 className="text-2xl sm:text-3xl font-bold">{event.name}</h1>
         <div className="flex flex-wrap gap-2 text-gray-500">
           <Link href="/dashboard" passHref>
-            <Button variant="outline" size="sm" className="text-xs sm:text-sm cursor-pointer">
-              <FaArrowLeft size={12} /> Dashboard
+            <Button variant="ghost" className="hover:bg-accent hover:text-accent-foreground">
+              <FaArrowLeft className="mr-2 h-4 w-4" />
+              Dashboard
             </Button>
           </Link>
         </div>
@@ -316,7 +339,7 @@ export default function GamePlayPage() {
                   <BingoCard
                     cardId={String(card.id)} // Convertir a string
                     numbers={getCardNumbers(card)} // Asegurar que esta función devuelve string[][]
-                    active={true}
+                    active={false} // Disable automatic verification
                     eventId={eventId}
                     calledNumbers={calledNumbers}
                     autoMarkEnabled={autoMarkEnabled} // Add this prop
@@ -326,8 +349,7 @@ export default function GamePlayPage() {
             ))}
           </div>
         </div>
-      )
-      }
-    </div >
+      )}
+    </div>
   );
 }

@@ -30,11 +30,13 @@ export default function BingoCard({
   autoMarkEnabled = false // Default to false
 }: BingoCardProps) {
   const [markedNumbers, setMarkedNumbers] = useState<Set<string>>(new Set());
-  const { data: patternVerification } = useVerifyCardPattern(cardId, active);
+  // Only fetch the verification data when needed, not continuously
+  const { data: patternVerification, refetch: verifyPattern } = useVerifyCardPattern(cardId, false);
   const { data: eventPatterns } = useEventPatterns(eventId || '');
   const claimMutation = useClaimBingo();
   const [showConfetti, setShowConfetti] = useState(false);
   const [showBingoText, setShowBingoText] = useState(false);
+  const [isWinner, setIsWinner] = useState(false);
   const [windowSize, setWindowSize] = useState({
     width: typeof window !== 'undefined' ? window.innerWidth : 0,
     height: typeof window !== 'undefined' ? window.innerHeight : 0
@@ -110,32 +112,42 @@ export default function BingoCard({
     });
   };
 
-  // Manejar reclamo de BINGO
+  // Manejar reclamo de BINGO - Modified to verify first, then claim
   const handleClaimBingo = async () => {
     try {
-      const result = await claimMutation.mutateAsync(cardId);
-      if (result.success) {
-        toast.success('¡BINGO! Tu victoria ha sido verificada.', {
-          duration: 5000,
-          style: {
-            background: '#7C3AED',
-            color: 'white',
-            border: '2px solid #6D28D9'
-          },
-        });
+      // First manually verify if this card has a winning pattern
+      const verificationResult = await verifyPattern();
 
-        // Trigger confetti celebration and BINGO text
-        setShowConfetti(true);
-        setShowBingoText(true);
-        setTimeout(() => {
-          setShowConfetti(false);
-          setShowBingoText(false);
-        }, 5000);
+      if (verificationResult.data?.is_winner) {
+        // If verified as a winner, proceed to claim
+        const result = await claimMutation.mutateAsync({ cardId });
+        if (result.data.success) {
+          toast.success('¡BINGO! Tu victoria ha sido verificada.', {
+            duration: 5000,
+            style: {
+              background: '#7C3AED',
+              color: 'white',
+              border: '2px solid #6D28D9'
+            },
+          });
+
+          // Trigger confetti celebration and BINGO text
+          setShowConfetti(true);
+          setShowBingoText(true);
+          setIsWinner(true);
+          setTimeout(() => {
+            setShowConfetti(false);
+            setShowBingoText(false);
+          }, 5000);
+        } else {
+          toast.error(result.data.message || 'No se pudo verificar tu victoria');
+        }
       } else {
-        toast.error(result.message || 'No se pudo verificar tu victoria');
+        // Card doesn't have a winning pattern
+        toast.error('No tienes un patrón ganador en este cartón');
       }
     } catch (error) {
-      toast.error('Error al reclamar el BINGO');
+      toast.error('Error al verificar/reclamar el BINGO');
       console.error('Error claiming bingo:', error);
     }
   };
@@ -170,13 +182,10 @@ export default function BingoCard({
     return false;
   };
 
-  // Estado de victoria para efectos visuales
-  const isWinner = patternVerification?.success || false;
-
   return (
     <div className={cn(
       "rounded-lg overflow-hidden border bg-white shadow-sm transition-all text-gray-800 relative",
-      active ? "cursor-pointer" : "opacity-90",
+      "cursor-pointer", // Always keep cursor pointer since manual marking is always enabled
       isWinner && "border-2 border-[#7C3AED]"
     )}>
       {/* Confetti effect when winning */}
@@ -248,22 +257,20 @@ export default function BingoCard({
         ))}
       </div>
 
-      {/* Botón de BINGO */}
-      {active && (
-        <div className="p-2">
-          <Button
-            onClick={handleClaimBingo}
-            className={cn(
-              "w-full",
-              patternVerification?.is_winner
-                ? "bg-green-500 hover:bg-green-600"
-                : "bg-[#7C3AED] hover:bg-[#6D28D9]"
-            )}
-          >
-            {claimMutation.isPending ? '¡Verificando...' : '¡BINGO!'}
-          </Button>
-        </div>
-      )}
+      {/* Botón de BINGO - Always enabled since verification happens on click */}
+      <div className="p-2">
+        <Button
+          onClick={handleClaimBingo}
+          className={cn(
+            "w-full",
+            isWinner
+              ? "bg-green-500 hover:bg-green-600"
+              : "bg-[#7C3AED] hover:bg-[#6D28D9]"
+          )}
+        >
+          {claimMutation.isPending ? '¡Verificando...' : '¡BINGO!'}
+        </Button>
+      </div>
     </div>
   );
 }

@@ -26,8 +26,10 @@ export const useVerifyCardPattern = (cardId: string, enabled = true) => {
       return data;
     },
     enabled: !!cardId && enabled,
-    refetchInterval: enabled ? 5000 : false, // Verificar cada 5 segundos si está habilitado
-    refetchIntervalInBackground: false
+    refetchInterval: enabled ? 5000 : false, // Only automatically refetch if enabled
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: false, // Prevent refetching on window focus
+    staleTime: 30000, // Keep data fresh for 30 seconds
   });
 };
 
@@ -36,15 +38,16 @@ export const useClaimBingo = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async (cardId: string) => {
-      const { data } = await apiClient.post('/api/cards/claim/', { card_id: cardId });
-      return data as ClaimResult;
+    mutationFn: ({ cardId }: { cardId: string | number }) => {
+      if (!cardId) {
+        throw new Error('Card ID is required');
+      }
+      return apiClient.post(`/api/cards/${cardId}/claim/`, { card_id: cardId });
     },
-    onSuccess: (_, cardId) => {
-      // Invalidar consultas relacionadas
+    onSuccess: (_, { cardId }) => {
+      // Invalidate verification query
       queryClient.invalidateQueries({ queryKey: ['verify-card-pattern', cardId] });
-      queryClient.invalidateQueries({ queryKey: ['card', cardId] });
-      queryClient.invalidateQueries({ queryKey: ['user-cards'] });
-    }
+      // No need to invalidate other queries as frequently
+    },
   });
 };
