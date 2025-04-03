@@ -43,7 +43,7 @@ export default function ContactPage() {
         }
     });
 
-    const onSubmit = async (data: ContactFormValues) => {
+    const onSubmit = async () => {
         setIsSubmitting(true);
 
         try {
