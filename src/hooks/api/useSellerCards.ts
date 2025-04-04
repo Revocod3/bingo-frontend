@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import apiClient from '@/src/lib/api/client';
 import { BingoCard } from '@/src/lib/api/types';
 
@@ -39,11 +39,17 @@ interface DownloadTransactionCardsRequest {
 
 // Hook to generate multiple cards at once
 export function useGenerateBulkCards() {
+  const queryClient = useQueryClient();
+  
   return useMutation({
     mutationFn: async (data: GenerateBulkCardsRequest) => {
       const response = await apiClient.post('/api/cards/generate_bulk/', data);
       return response.data;
     },
+    onSuccess: () => {
+      // Invalidate test coin balance to refresh the data after generating cards
+      queryClient.invalidateQueries({ queryKey: ['testCoinBalance'] });
+    }
   });
 }
 
