@@ -72,9 +72,7 @@ export default function SellerDashboard() {
             queryClient.invalidateQueries({ queryKey: ['testCoinBalance'] });
         } catch (err: unknown) {
             if (err instanceof Error) {
-                err.message.includes('Insufficient') ? 
-                    setError('No tienes suficiente saldo para generar los cartones, recarga tu cuenta') :
-                    setError(err.message);
+                setError(err.message.includes('Insufficient') ? 'No tienes suficiente saldo para generar los cartones, recarga tu cuenta' : err.message);
             } else {
                 setError('Error al generar los cartones');
             }
