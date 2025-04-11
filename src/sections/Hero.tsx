@@ -20,7 +20,7 @@ const Hero: React.FC = () => {
                         <Link href='/auth/register' className='bg-[#7C3AED] hover:bg-[#6D28D9] text-white px-8 sm:px-12 md:px-16 lg:px-20 py-3 md:py-4 rounded-full font-medium transition-colors shadow-lg text-center'>
                             Registrate Ahora
                         </Link>
-                        <Link href='https://wa.me/+573228031537' target='_blank' className='bg-transparent border-2 border-[#7C3AED] hover:bg-[#6D28D9] text-white px-8 sm:px-12 md:px-16 lg:px-20 py-3 md:py-4 rounded-full font-medium transition-colors shadow-lg text-center'>
+                        <Link href="https://wa.me/+573147359408?text=Hola%2C%20me%20interesa%20obtener%20más%20información%20sobre%20el%20Bingo%20en%20Vivo" target='_blank' className='bg-transparent border-2 border-[#7C3AED] hover:bg-[#6D28D9] text-white px-8 sm:px-12 md:px-16 lg:px-20 py-3 md:py-4 rounded-full font-medium transition-colors shadow-lg text-center'>
                             Contáctanos
                         </Link>
                     </div>

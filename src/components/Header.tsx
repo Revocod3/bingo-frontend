@@ -11,6 +11,7 @@ import { signOut } from 'next-auth/react';
 import { SettingsGearIcon } from './ui/settings-gear';
 import { UserIcon } from './ui/user';
 import { CircleDollarSignIcon } from './ui/circle-dollar-sign';
+import { MessageCircleMoreIcon } from './ui/message-circle-more';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -81,7 +82,7 @@ export default function Header() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 ) : (
-                  <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                   </svg>
                 )}
@@ -109,13 +110,13 @@ export default function Header() {
 
 
           {/* Mostrar diferentes opciones según autenticación */}
-          <div className="flex items-center space-x-1 md:space-x-4">
+          <div className="flex items-center space-x-1 md:space-x-3">
             {isAuthenticated ? (
               <>
                 {isAdmin && (
                   <Link
                     href="/admin"
-                    className="flex items-center space-x-1 text-white hover:bg-white/2 transition-colors cursor-pointer rounded-lg md:pl-2 md:px-4"
+                    className="flex items-center text-white hover:bg-white/2 transition-colors cursor-pointer rounded-lg md:pl-2 md:px-4"
                   >
                     <SettingsGearIcon size={18} />
                     <span className='hidden md:block'>Admin</span>
@@ -125,7 +126,7 @@ export default function Header() {
                   isSeller && (
                     <Link
                       href="/seller"
-                      className="flex items-center space-x-1 text-white hover:bg-white/2 transition-colors cursor-pointer rounded-lg md:pl-2 md:px-4"
+                      className="flex items-center text-white hover:bg-white/2 transition-colors cursor-pointer rounded-lg md:pl-2 md:px-4"
                     >
                       <CircleDollarSignIcon size={18} />
                       <span className='hidden md:block'>Vender</span>
@@ -134,8 +135,18 @@ export default function Header() {
                 }
                 {
                   <Link
+                    href="https://wa.me/+573147359408?text=Hola%2C%20necesito%20soporte%20técnico%20para%20el%20Bingo%20en%20Vivo"
+                    className="flex items-center text-white hover:bg-white/2 transition-colors cursor-pointer rounded-lg sm:pl-2 md:px-4"
+                    target="_blank"
+                  >
+                    <MessageCircleMoreIcon size={18} />
+                    <span className='hidden md:block'>Soporte</span>
+                  </Link>
+                }
+                {
+                  <Link
                     href="/profile"
-                    className="flex items-center space-x-1 text-white hover:bg-white/2 transition-colors cursor-pointer rounded-lg md:pl-2 md:px-4"
+                    className="flex items-center text-white hover:bg-white/2 transition-colors cursor-pointer rounded-lg md:pl-2 md:px-4"
                   >
                     <UserIcon size={18} />
                     <span className='hidden md:block'>Perfil</span>
@@ -144,7 +155,7 @@ export default function Header() {
                 {/* Corregido: Ahora usa handleLogout en lugar de logout directamente */}
                 <button
                   onClick={handleLogout}
-                  className="flex items-center space-x-1 text-white hover:bg-white/2 transition-colors cursor-pointer rounded-lg md:pl-2 md:px-4"
+                  className="flex items-center text-white hover:bg-white/2 transition-colors cursor-pointer rounded-lg md:pl-2 md:px-4"
                   type="button"
                 >
                   <LogoutIcon size={18} />

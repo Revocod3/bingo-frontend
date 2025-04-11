@@ -106,7 +106,7 @@ export default function ContactPage() {
                                     </div>
                                     <div className="ml-3 text-sm">
                                         <p className="font-medium text-gray-900 dark:text-white">Teléfono</p>
-                                        <p className="text-gray-500 dark:text-gray-400">+58 (212) 555-1234</p>
+                                        <p className="text-gray-500 dark:text-gray-400">+57 (314) 735-9408</p>
                                         <p className="text-gray-500 dark:text-gray-400">Lunes a viernes: 9:00 AM - 6:00 PM</p>
                                     </div>
                                 </div>
