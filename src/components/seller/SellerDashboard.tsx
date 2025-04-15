@@ -15,7 +15,7 @@ import {
     useListTransactions,
     useDownloadTransactionCards
 } from '@/hooks/api/useSellerCards';
-import { FaSpinner, FaFileDownload, FaEnvelope, FaIdCard } from 'react-icons/fa';
+import { FaSpinner, FaFileDownload, FaEnvelope, FaIdCard, FaHistory } from 'react-icons/fa';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { BingoCard } from '@/src/lib/api/types';
@@ -183,7 +183,7 @@ export default function SellerDashboard() {
                                 value={selectedEventId}
                                 onValueChange={setSelectedEventId}
                             >
-                                <SelectTrigger id="event">
+                                <SelectTrigger id="event" className="w-full">
                                     <SelectValue placeholder="Selecciona un evento" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -207,22 +207,30 @@ export default function SellerDashboard() {
 
             {selectedEventId && (
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid grid-cols-3 w-full">
-                        <TabsTrigger value="generate" className="flex items-center gap-2">
-                            <FaIdCard className="h-4 w-4" />
-                            <span>Generar</span>
+                    <TabsList className="w-full grid-cols-2 sm:grid-cols-4 grid mb-6">
+                        <TabsTrigger value="generate" className="flex items-center justify-center gap-2 py-3 sm:py-2">
+                            <FaIdCard className="h-5 w-5 sm:h-4 sm:w-4" />
+                            <span className="hidden sm:inline">Generar</span>
                         </TabsTrigger>
-                        <TabsTrigger value="download" className="flex items-center gap-2" disabled={generatedCards.length === 0}>
-                            <FaFileDownload className="h-4 w-4" />
-                            <span>Descargar</span>
+                        <TabsTrigger
+                            value="download"
+                            className="flex items-center justify-center gap-2 py-3 sm:py-2"
+                            disabled={generatedCards.length === 0}
+                        >
+                            <FaFileDownload className="h-5 w-5 sm:h-4 sm:w-4" />
+                            <span className="hidden sm:inline">Descargar</span>
                         </TabsTrigger>
-                        <TabsTrigger value="email" className="flex items-center gap-2" disabled={generatedCards.length === 0}>
-                            <FaEnvelope className="h-4 w-4" />
-                            <span>Enviar</span>
+                        <TabsTrigger
+                            value="email"
+                            className="flex items-center justify-center gap-2 py-3 sm:py-2"
+                            disabled={generatedCards.length === 0}
+                        >
+                            <FaEnvelope className="h-5 w-5 sm:h-4 sm:w-4" />
+                            <span className="hidden sm:inline">Enviar</span>
                         </TabsTrigger>
-                        <TabsTrigger value="transactions" className="flex items-center gap-2">
-                            <FaFileDownload className="h-4 w-4" />
-                            <span>Transacciones</span>
+                        <TabsTrigger value="transactions" className="flex items-center justify-center gap-2 py-3 sm:py-2">
+                            <FaHistory className="h-5 w-5 sm:h-4 sm:w-4" />
+                            <span className="hidden sm:inline">Transacciones</span>
                         </TabsTrigger>
                     </TabsList>
 
@@ -251,16 +259,16 @@ export default function SellerDashboard() {
                                 <Button
                                     onClick={handleGenerateCards}
                                     disabled={generateCardsMutation.isPending || !selectedEventId}
-                                    className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2"
+                                    className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2 w-full sm:w-auto py-6 sm:py-3"
                                 >
                                     {generateCardsMutation.isPending ? (
                                         <>
-                                            <FaSpinner className="h-4 w-4 animate-spin" />
+                                            <FaSpinner className="h-5 w-5 sm:h-4 sm:w-4 animate-spin" />
                                             <span>Generando...</span>
                                         </>
                                     ) : (
                                         <>
-                                            <FaIdCard className="h-4 w-4" />
+                                            <FaIdCard className="h-5 w-5 sm:h-4 sm:w-4" />
                                             <span>Generar Cartones</span>
                                         </>
                                     )}
@@ -304,16 +312,16 @@ export default function SellerDashboard() {
                                 <Button
                                     onClick={handleDownloadPdf}
                                     disabled={downloadPdfMutation.isPending || generatedCards.length === 0}
-                                    className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2"
+                                    className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2 w-full sm:w-auto py-6 sm:py-3"
                                 >
                                     {downloadPdfMutation.isPending ? (
                                         <>
-                                            <FaSpinner className="h-4 w-4 animate-spin" />
+                                            <FaSpinner className="h-5 w-5 sm:h-4 sm:w-4 animate-spin" />
                                             <span>Descargando...</span>
                                         </>
                                     ) : (
                                         <>
-                                            <FaFileDownload className="h-4 w-4" />
+                                            <FaFileDownload className="h-5 w-5 sm:h-4 sm:w-4" />
                                             <span>Descargar PDF</span>
                                         </>
                                     )}
@@ -358,6 +366,7 @@ export default function SellerDashboard() {
                                             onChange={(e) => setEmailMessage(e.target.value)}
                                             placeholder="Aquí están tus cartones para el evento..."
                                             rows={4}
+                                            className="min-h-24 py-3"
                                         />
                                     </div>
                                 </div>
@@ -366,16 +375,16 @@ export default function SellerDashboard() {
                                 <Button
                                     onClick={handleEmailCards}
                                     disabled={emailCardsMutation.isPending || generatedCards.length === 0 || !recipientEmail}
-                                    className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2"
+                                    className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2 w-full sm:w-auto py-6 sm:py-3"
                                 >
                                     {emailCardsMutation.isPending ? (
                                         <>
-                                            <FaSpinner className="h-4 w-4 animate-spin" />
+                                            <FaSpinner className="h-5 w-5 sm:h-4 sm:w-4 animate-spin" />
                                             <span>Enviando...</span>
                                         </>
                                     ) : (
                                         <>
-                                            <FaEnvelope className="h-4 w-4" />
+                                            <FaEnvelope className="h-5 w-5 sm:h-4 sm:w-4" />
                                             <span>Enviar por Correo</span>
                                         </>
                                     )}
@@ -407,38 +416,77 @@ export default function SellerDashboard() {
                                 {isLoadingTransactions ? (
                                     <div className="text-center py-4">Cargando transacciones...</div>
                                 ) : transactions && transactions.length > 0 ? (
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead>Fecha</TableHead>
-                                                <TableHead>Evento</TableHead>
-                                                <TableHead>Cantidad</TableHead>
-                                                <TableHead>Acciones</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {transactions.map((transaction, i) => (
-                                                <TableRow key={i}>
-                                                    <TableCell>
-                                                        {transaction.generated_at
-                                                            ? format(new Date(transaction.generated_at), 'dd/MM/yyyy HH:mm')
-                                                            : 'Fecha no disponible'}
-                                                    </TableCell>
-                                                    <TableCell>{transaction.event_name}</TableCell>
-                                                    <TableCell>{transaction.batch_size} cartones</TableCell>
-                                                    <TableCell>
+                                    <div className="overflow-x-auto">
+                                        <div className="md:hidden">
+                                            <div className="space-y-4">
+                                                {transactions.map((transaction, i) => (
+                                                    <div key={i} className="bg-gray-50 p-4 rounded-lg">
+                                                        <div className="grid grid-cols-2 gap-2 mb-3">
+                                                            <div>
+                                                                <p className="text-sm text-gray-500">Fecha:</p>
+                                                                <p className="font-medium">
+                                                                    {transaction.generated_at
+                                                                        ? format(new Date(transaction.generated_at), 'dd/MM/yyyy HH:mm')
+                                                                        : 'Fecha no disponible'}
+                                                                </p>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-sm text-gray-500">Cantidad:</p>
+                                                                <p className="font-medium">{transaction.batch_size} cartones</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="mb-3">
+                                                            <p className="text-sm text-gray-500">Evento:</p>
+                                                            <p className="font-medium">{transaction.event_name}</p>
+                                                        </div>
                                                         <Button
                                                             size="sm"
                                                             onClick={() => handleDownloadTransactionCards(transaction.transaction_id)}
                                                             disabled={downloadTransactionCardsMutation.isPending}
+                                                            className="w-full py-3"
                                                         >
                                                             Descargar PDF
                                                         </Button>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div className="hidden md:block">
+                                            <Table>
+                                                <TableHeader>
+                                                    <TableRow>
+                                                        <TableHead>Fecha</TableHead>
+                                                        <TableHead>Evento</TableHead>
+                                                        <TableHead>Cantidad</TableHead>
+                                                        <TableHead>Acciones</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    {transactions.map((transaction, i) => (
+                                                        <TableRow key={i}>
+                                                            <TableCell>
+                                                                {transaction.generated_at
+                                                                    ? format(new Date(transaction.generated_at), 'dd/MM/yyyy HH:mm')
+                                                                    : 'Fecha no disponible'}
+                                                            </TableCell>
+                                                            <TableCell>{transaction.event_name}</TableCell>
+                                                            <TableCell>{transaction.batch_size} cartones</TableCell>
+                                                            <TableCell>
+                                                                <Button
+                                                                    size="sm"
+                                                                    onClick={() => handleDownloadTransactionCards(transaction.transaction_id)}
+                                                                    disabled={downloadTransactionCardsMutation.isPending}
+                                                                >
+                                                                    Descargar PDF
+                                                                </Button>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </div>
+                                    </div>
                                 ) : (
                                     <div className="text-center py-4">No hay transacciones disponibles</div>
                                 )}
