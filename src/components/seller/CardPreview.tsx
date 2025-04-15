@@ -13,12 +13,16 @@ export default function CardPreview({ card, isCompact = false }: CardPreviewProp
     const cardSize = isCompact ? 'text-xs' : 'text-sm';
     const cellSize = isCompact ? 'w-6 h-6' : 'w-8 h-8';
 
+    console.log("CardPreview", card)
+    // Use correlative_id if available, otherwise fallback to regular id
+    const cardIdentifier = card.correlative_id || card.id;
+
     return (
         <div className="bg-white rounded-md shadow-sm overflow-hidden w-fit mx-auto">
             {/* Card Header with ID */}
             <div className="bg-[#7C3AED] text-white text-center py-1 px-2">
                 <p className={cn("font-medium", isCompact ? "text-xs" : "text-sm")}>
-                    Cartón #{card.id.toString().substring(0, 8)}
+                    Cartón #{cardIdentifier.toString()}
                 </p>
             </div>
 

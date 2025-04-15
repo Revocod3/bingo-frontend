@@ -202,7 +202,7 @@ export default function DashboardPage() {
                   <div key={card.id}>
                     <div className="mb-2 text-center">
                       <span className="text-sm text-muted-foreground">
-                        Carton #{card.id.toString().substring(0, 8)} - {eventName}
+                        Carton #{card.correlative_id || card.id.toString().substring(0, 8)} - {eventName}
                       </span>
                     </div>
                     <BingoCard

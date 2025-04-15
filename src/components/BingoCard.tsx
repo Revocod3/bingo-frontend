@@ -18,6 +18,7 @@ interface BingoCardProps {
   eventId?: string | number;
   calledNumbers?: number[];
   autoMarkEnabled?: boolean;
+  correlativeId?: string;
 }
 
 export default function BingoCard({
@@ -26,7 +27,7 @@ export default function BingoCard({
   active,
   eventId,
   calledNumbers = [],
-  autoMarkEnabled = false
+  autoMarkEnabled = false,
 }: BingoCardProps) {
   // Estado para marcar manualmente. Iniciamos con FREE marcado.
   const [manualMarkedNumbers, setManualMarkedNumbers] = useState<Set<string>>(new Set(['N0']));
@@ -42,7 +43,7 @@ export default function BingoCard({
     height: typeof window !== 'undefined' ? window.innerHeight : 0
   });
 
-  // Actualizar tamaño de ventana para confetti
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const handleResize = () => {

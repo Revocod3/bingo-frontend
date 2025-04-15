@@ -314,7 +314,7 @@ export default function GamePlayPage() {
               <div key={card.id} className="p-1 sm:p-2 bg-gradient-to-br from-white to-purple-50 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
                 <div className="transform scale-[0.95] sm:scale-100">
                   <BingoCard
-                    cardId={String(card.id)} // Convertir a string
+                    cardId={String(card.id)} // Use correlative_id if available
                     numbers={getCardNumbers(card)} // Asegurar que esta función devuelve string[][]
                     active={true} // Changed from false to true to enable marking
                     eventId={eventId}

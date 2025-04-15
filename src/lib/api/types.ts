@@ -1,4 +1,4 @@
-import { WinningPattern } from "@/src/hooks/api/useWinningPatterns";
+import { WinningPattern } from '@/src/hooks/api/useWinningPatterns';
 
 // Authentication types
 export interface LoginRequest {
@@ -51,7 +51,7 @@ export interface Event {
   id: number | string;
   name: string;
   prize: number;
-  start_date: string; 
+  start_date: string;
   description?: string;
   end_date?: string;
   creator?: number;
@@ -76,6 +76,8 @@ export interface BingoCard {
   numbers: Record<string, BingoNumber>;
   is_winner: boolean;
   hash: string;
+  correlative_id?: string; // Optional field for correlative ID
+  created_at?: string;
 }
 
 export interface CreateBingoCardRequest {
@@ -114,7 +116,7 @@ export interface WebSocketEventInfo {
   id: number;
   name: string;
   prize: string;
-  start_date: string;  // Changed from start to start_date
+  start_date: string; // Changed from start to start_date
   called_numbers: {
     id: number;
     value: number;
