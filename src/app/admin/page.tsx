@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import AdminRouteGuard from '@/components/AdminRouteGuard';
 import { Card, CardContent, CardDescription, CardHeader, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,7 +13,11 @@ import WinningPatternsPanel from '@/components/admin/WinningPatternsPanel';
 import { useCurrentUser } from '@/hooks/api/useUsers';
 
 export default function AdminPage() {
-    const [activeTab, setActiveTab] = useState('events');
+    // Use useSearchParams to get the tab from URL
+    const searchParams = useSearchParams();
+    const tabParam = searchParams?.get('tab') || 'events';
+
+    const [activeTab, setActiveTab] = useState(tabParam);
     const { data: user } = useCurrentUser();
 
     return (

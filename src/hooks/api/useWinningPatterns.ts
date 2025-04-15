@@ -17,6 +17,7 @@ export interface CreateWinningPatternRequest {
   name: string;
   description: string;
   positions: number[];
+  display_name: string;
 }
 
 export interface UpdateWinningPatternRequest {
@@ -24,6 +25,8 @@ export interface UpdateWinningPatternRequest {
   description?: string;
   positions?: number[];
   is_active?: boolean;
+  display_name?: string;
+  pattern?: number[][];
 }
 
 // Add this new interface for pattern visualization
@@ -75,7 +78,7 @@ export const useWinningPatternVisualization = (id: string | number) => {
 
 export const useCreateWinningPattern = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async (patternData: CreateWinningPatternRequest) => {
       const { data } = await apiClient.post('/api/winning-patterns/', patternData);
@@ -89,7 +92,7 @@ export const useCreateWinningPattern = () => {
 
 export const useUpdateWinningPattern = (id: string | number) => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async (patternData: UpdateWinningPatternRequest) => {
       const { data } = await apiClient.put(`/api/winning-patterns/${id}/`, patternData);
@@ -104,7 +107,7 @@ export const useUpdateWinningPattern = (id: string | number) => {
 
 export const useDeleteWinningPattern = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async (id: string | number) => {
       await apiClient.delete(`/api/winning-patterns/${id}/`);
@@ -129,10 +132,12 @@ export const useEventPatterns = (eventId: string | number) => {
 
 export const useSetEventPatterns = (eventId: string | number) => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async (patternIds: number[]) => {
-      const { data } = await apiClient.post(`/api/events/${eventId}/set_patterns/`, { pattern_ids: patternIds });
+      const { data } = await apiClient.post(`/api/events/${eventId}/set_patterns/`, {
+        pattern_ids: patternIds,
+      });
       return data;
     },
     onSuccess: () => {

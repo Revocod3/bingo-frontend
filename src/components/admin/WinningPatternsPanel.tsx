@@ -12,12 +12,14 @@ import {
 } from '@/components/ui/card';
 import {
     Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
     DialogTitle,
-} from '@/components/ui/dialog';
+    DialogDescription
+} from '@/components/ui/responsive-dialog';
+import {
+    ResponsiveDialogContent,
+    ResponsiveDialogHeader,
+    ResponsiveDialogFooter
+} from '@/components/ui/responsive-dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -26,6 +28,7 @@ import { toast } from 'sonner';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import PatternEditor from '@/components/admin/PatternEditor';
 
 export default function WinningPatternsPanel() {
     const { data: patterns, isLoading } = useWinningPatterns();
@@ -36,11 +39,15 @@ export default function WinningPatternsPanel() {
         name: '',
         description: '',
         positions: [] as number[],
+        display_name: '', // Added display_name field
     });
 
     const handleCreatePattern = async () => {
         try {
-            await createPatternMutation.mutateAsync(newPattern);
+            await createPatternMutation.mutateAsync({
+                ...newPattern,
+                display_name: newPattern.name,
+            });
             toast.success('Patrón creado exitosamente');
             setIsCreateModalOpen(false);
             resetForm();
@@ -67,6 +74,7 @@ export default function WinningPatternsPanel() {
             name: '',
             description: '',
             positions: [],
+            display_name: '', // Making sure to reset display_name too
         });
     };
 
@@ -165,14 +173,14 @@ export default function WinningPatternsPanel() {
 
             {/* Create Pattern Modal */}
             <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-                <DialogContent className="sm:max-w-[500px]">
-                    <DialogHeader>
+                <ResponsiveDialogContent className="hide-scrollbar">
+                    <ResponsiveDialogHeader>
                         <DialogTitle>Crear Nuevo Patrón</DialogTitle>
                         <DialogDescription>
                             Completa los datos para crear un nuevo patrón de ganancia
                         </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
+                    </ResponsiveDialogHeader>
+                    <div className="grid gap-3 py-2">
                         <div className="grid gap-2">
                             <Label htmlFor="name">Nombre del Patrón</Label>
                             <Input
@@ -180,35 +188,43 @@ export default function WinningPatternsPanel() {
                                 value={newPattern.name}
                                 onChange={(e) => setNewPattern({ ...newPattern, name: e.target.value })}
                                 placeholder="Ej: Línea horizontal"
+                                mobileFriendly
                             />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="description">Descripción</Label>
                             <Textarea
                                 id="description"
+                                className="max-h-24"
                                 value={newPattern.description}
                                 onChange={(e) => setNewPattern({ ...newPattern, description: e.target.value })}
                                 placeholder="Describe el patrón..."
                             />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="positions">Posiciones (separadas por coma)</Label>
-                            <Input
-                                id="positions"
-                                value={newPattern.positions.join(',')}
-                                onChange={(e) => {
-                                    const positionsStr = e.target.value;
-                                    const positions = positionsStr
-                                        .split(',')
-                                        .map(pos => parseInt(pos.trim()))
-                                        .filter(pos => !isNaN(pos) && pos >= 0 && pos < 25);
-                                    setNewPattern({ ...newPattern, positions });
-                                }}
-                                placeholder="Ej: 0,1,2,3,4"
-                            />
+                            <Label>Selecciona las posiciones para tu patrón</Label>
+                            <div className="max-w-full">
+                                <PatternEditor
+                                    selectedPositions={newPattern.positions}
+                                    onTogglePosition={(position) => {
+                                        const positions = [...newPattern.positions];
+                                        const index = positions.indexOf(position);
+
+                                        if (index === -1) {
+                                            // Add position if not already selected
+                                            positions.push(position);
+                                        } else {
+                                            // Remove position if already selected
+                                            positions.splice(index, 1);
+                                        }
+
+                                        setNewPattern({ ...newPattern, positions });
+                                    }}
+                                />
+                            </div>
                         </div>
                     </div>
-                    <DialogFooter>
+                    <ResponsiveDialogFooter>
                         <Button variant="outline" onClick={() => setIsCreateModalOpen(false)}>
                             Cancelar
                         </Button>
@@ -219,8 +235,8 @@ export default function WinningPatternsPanel() {
                         >
                             Crear Patrón
                         </Button>
-                    </DialogFooter>
-                </DialogContent>
+                    </ResponsiveDialogFooter>
+                </ResponsiveDialogContent>
             </Dialog>
         </div>
     );

@@ -48,7 +48,7 @@ export default function EditPatternPage() {
         try {
             await updatePatternMutation.mutateAsync(formData);
             toast.success('Patrón actualizado correctamente');
-            router.back();
+            router.push('/admin?tab=patterns');
         } catch (error) {
             toast.error('Error al actualizar el patrón');
             console.error('Error updating pattern:', error);
