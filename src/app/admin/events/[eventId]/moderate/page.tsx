@@ -176,7 +176,7 @@ export default function ModerateEventPage() {
             const randomIndex = Math.floor(Math.random() * availableNumbers.length);
             // Obtener número aleatorio
             const randomNumber = availableNumbers[randomIndex];
-            
+
             // Llamar al número
             handleNumberClick(randomNumber);
         }
@@ -196,15 +196,15 @@ export default function ModerateEventPage() {
             // Si está inactivo, activarlo
             // Llamar un número inmediatamente
             callRandomNumber();
-            
+
             // Configurar intervalo para llamar números cada X segundos
             const interval = setInterval(() => {
                 callRandomNumber();
             }, autoCallDelay);
-            
+
             setAutoCallInterval(interval);
             setIsAutoCallingActive(true);
-            toast.success(`Llamado automático activado (${autoCallDelay/1000} segundos)`);
+            toast.success(`Llamado automático activado (${autoCallDelay / 1000} segundos)`);
         }
     };
 
@@ -305,7 +305,7 @@ export default function ModerateEventPage() {
                             ) : (
                                 <p className="text-sm sm:text-base text-gray-500 mb-4">No se ha llamado ningún número aún</p>
                             )}
-                            
+
                             {/* Nuevos botones para llamado aleatorio y automático */}
                             <div className="flex flex-wrap gap-2 mt-2 justify-center">
                                 <Button
@@ -320,28 +320,28 @@ export default function ModerateEventPage() {
                                 <Button
                                     variant={isAutoCallingActive ? "destructive" : "default"}
                                     size="sm"
-                                    className={`gap-1 ${isAutoCallingActive 
-                                        ? 'bg-red-600 hover:bg-red-700' 
+                                    className={`gap-1 ${isAutoCallingActive
+                                        ? 'bg-red-600 hover:bg-red-700'
                                         : 'bg-purple-600 hover:bg-purple-700'} text-white text-xs sm:text-sm`}
                                     onClick={toggleAutoCalling}
                                     disabled={calledNumbers.length >= 75 || postNumberMutation.isPending}
                                 >
-                                    <FaRandom size={12} /> 
+                                    <FaRandom size={12} />
                                     {isAutoCallingActive ? 'Detener Auto' : 'Iniciar Auto'}
                                 </Button>
                             </div>
-                            
+
                             {/* Selector de intervalo para el llamado automático */}
                             {isAutoCallingActive && (
                                 <div className="mt-3 flex items-center gap-2">
                                     <span className="text-xs">Intervalo:</span>
-                                    <select 
+                                    <select
                                         className="text-xs border rounded p-1"
                                         value={autoCallDelay}
                                         onChange={(e) => {
                                             const newDelay = parseInt(e.target.value);
                                             setAutoCallDelay(newDelay);
-                                            
+
                                             // Si el auto-llamado está activo, reiniciarlo con el nuevo intervalo
                                             if (isAutoCallingActive) {
                                                 if (autoCallInterval) {
@@ -351,7 +351,7 @@ export default function ModerateEventPage() {
                                                     callRandomNumber();
                                                 }, newDelay);
                                                 setAutoCallInterval(interval);
-                                                toast.success(`Intervalo actualizado a ${newDelay/1000} segundos`);
+                                                toast.success(`Intervalo actualizado a ${newDelay / 1000} segundos`);
                                             }
                                         }}
                                     >
