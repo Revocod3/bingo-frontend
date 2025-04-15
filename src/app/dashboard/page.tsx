@@ -206,7 +206,7 @@ export default function DashboardPage() {
                       </span>
                     </div>
                     <BingoCard
-                      cardId={String(card.id)}
+                      cardId={card.correlative_id ? String(card.correlative_id) : String(card.id)}
                       numbers={getCardNumbers(card)}
                       active={false}
                       autoMarkEnabled

@@ -9,7 +9,7 @@ import AdminRouteGuard from '@/components/AdminRouteGuard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { FaArrowLeft, FaTrash, FaUndo } from 'react-icons/fa';
+import { FaArrowLeft, FaTrash, FaUndo, FaRandom, FaDice } from 'react-icons/fa';
 import { toast } from 'sonner';
 import { BingoNumber } from '@/src/lib/api/types';
 
@@ -30,6 +30,9 @@ export default function ModerateEventPage() {
     // Estados para los modales de confirmación
     const [showDeleteLastModal, setShowDeleteLastModal] = useState(false);
     const [showResetAllModal, setShowResetAllModal] = useState(false);
+    const [isAutoCallingActive, setIsAutoCallingActive] = useState(false);
+    const [autoCallInterval, setAutoCallInterval] = useState<NodeJS.Timeout | null>(null);
+    const [autoCallDelay, setAutoCallDelay] = useState(5000); // 5 segundos por defecto
 
     // Referencia para rastrear si el cambio de lastCalledNumber vino de un clic del usuario
     const isManualUpdate = useRef(false);
@@ -154,6 +157,66 @@ export default function ModerateEventPage() {
         }
     };
 
+    // Función para seleccionar un número aleatorio que no haya sido llamado
+    const callRandomNumber = () => {
+        // Si todos los números ya han sido llamados, mostrar mensaje
+        if (calledNumbers.length >= 75) {
+            toast.error('Ya se han llamado todos los números');
+            return;
+        }
+
+        // Obtener números que aún no han sido llamados
+        const availableNumbers = allBingoNumbers
+            .map(item => item.number)
+            .filter(num => !calledNumbers.includes(num));
+
+        // Si hay números disponibles, elegir uno al azar
+        if (availableNumbers.length > 0) {
+            // Obtener índice aleatorio
+            const randomIndex = Math.floor(Math.random() * availableNumbers.length);
+            // Obtener número aleatorio
+            const randomNumber = availableNumbers[randomIndex];
+            
+            // Llamar al número
+            handleNumberClick(randomNumber);
+        }
+    };
+
+    // Función para activar/desactivar el llamado automático de números
+    const toggleAutoCalling = () => {
+        if (isAutoCallingActive) {
+            // Si está activo, desactivarlo
+            if (autoCallInterval) {
+                clearInterval(autoCallInterval);
+                setAutoCallInterval(null);
+            }
+            setIsAutoCallingActive(false);
+            toast.info('Llamado automático desactivado');
+        } else {
+            // Si está inactivo, activarlo
+            // Llamar un número inmediatamente
+            callRandomNumber();
+            
+            // Configurar intervalo para llamar números cada X segundos
+            const interval = setInterval(() => {
+                callRandomNumber();
+            }, autoCallDelay);
+            
+            setAutoCallInterval(interval);
+            setIsAutoCallingActive(true);
+            toast.success(`Llamado automático activado (${autoCallDelay/1000} segundos)`);
+        }
+    };
+
+    // Limpiar intervalo al desmontar componente
+    useEffect(() => {
+        return () => {
+            if (autoCallInterval) {
+                clearInterval(autoCallInterval);
+            }
+        };
+    }, [autoCallInterval]);
+
     if (eventLoading || numbersLoading) {
         return (
             <AdminRouteGuard>
@@ -234,13 +297,71 @@ export default function ModerateEventPage() {
                         <CardHeader className="py-3 sm:py-4">
                             <CardTitle className="text-base sm:text-lg">Último Número Llamado</CardTitle>
                         </CardHeader>
-                        <CardContent className="flex justify-center items-center py-8">
+                        <CardContent className="flex flex-col justify-center items-center py-4">
                             {lastCalledNumber ? (
-                                <div className="text-5xl sm:text-6xl font-bold text-center text-purple-600">
+                                <div className="text-5xl sm:text-6xl font-bold text-center text-purple-600 mb-4">
                                     {lastCalledNumber}
                                 </div>
                             ) : (
-                                <p className="text-sm sm:text-base text-gray-500">No se ha llamado ningún número aún</p>
+                                <p className="text-sm sm:text-base text-gray-500 mb-4">No se ha llamado ningún número aún</p>
+                            )}
+                            
+                            {/* Nuevos botones para llamado aleatorio y automático */}
+                            <div className="flex flex-wrap gap-2 mt-2 justify-center">
+                                <Button
+                                    variant="default"
+                                    size="sm"
+                                    className="gap-1 bg-purple-600 hover:bg-purple-700 text-white text-xs sm:text-sm"
+                                    onClick={callRandomNumber}
+                                    disabled={calledNumbers.length >= 75 || postNumberMutation.isPending}
+                                >
+                                    <FaDice size={12} /> Llamar Aleatorio
+                                </Button>
+                                <Button
+                                    variant={isAutoCallingActive ? "destructive" : "default"}
+                                    size="sm"
+                                    className={`gap-1 ${isAutoCallingActive 
+                                        ? 'bg-red-600 hover:bg-red-700' 
+                                        : 'bg-purple-600 hover:bg-purple-700'} text-white text-xs sm:text-sm`}
+                                    onClick={toggleAutoCalling}
+                                    disabled={calledNumbers.length >= 75 || postNumberMutation.isPending}
+                                >
+                                    <FaRandom size={12} /> 
+                                    {isAutoCallingActive ? 'Detener Auto' : 'Iniciar Auto'}
+                                </Button>
+                            </div>
+                            
+                            {/* Selector de intervalo para el llamado automático */}
+                            {isAutoCallingActive && (
+                                <div className="mt-3 flex items-center gap-2">
+                                    <span className="text-xs">Intervalo:</span>
+                                    <select 
+                                        className="text-xs border rounded p-1"
+                                        value={autoCallDelay}
+                                        onChange={(e) => {
+                                            const newDelay = parseInt(e.target.value);
+                                            setAutoCallDelay(newDelay);
+                                            
+                                            // Si el auto-llamado está activo, reiniciarlo con el nuevo intervalo
+                                            if (isAutoCallingActive) {
+                                                if (autoCallInterval) {
+                                                    clearInterval(autoCallInterval);
+                                                }
+                                                const interval = setInterval(() => {
+                                                    callRandomNumber();
+                                                }, newDelay);
+                                                setAutoCallInterval(interval);
+                                                toast.success(`Intervalo actualizado a ${newDelay/1000} segundos`);
+                                            }
+                                        }}
+                                    >
+                                        <option value={3000}>3 segundos</option>
+                                        <option value={5000}>5 segundos</option>
+                                        <option value={10000}>10 segundos</option>
+                                        <option value={15000}>15 segundos</option>
+                                        <option value={30000}>30 segundos</option>
+                                    </select>
+                                </div>
                             )}
                         </CardContent>
                     </Card>

@@ -13,8 +13,7 @@ export default function CardPreview({ card, isCompact = false }: CardPreviewProp
     const cardSize = isCompact ? 'text-xs' : 'text-sm';
     const cellSize = isCompact ? 'w-6 h-6' : 'w-8 h-8';
 
-    console.log("CardPreview", card)
-    // Use correlative_id if available, otherwise fallback to regular id
+    // Removed unnecessary console.log statement
     const cardIdentifier = card.correlative_id || card.id;
 
     return (
