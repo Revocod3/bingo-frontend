@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import AdminRouteGuard from '@/components/AdminRouteGuard';
@@ -12,16 +12,30 @@ import EventManagementPanel from '@/components/admin/EventManagementPanel';
 import WinningPatternsPanel from '@/components/admin/WinningPatternsPanel';
 import { useCurrentUser } from '@/hooks/api/useUsers';
 
-export default function AdminPage() {
-    // Use useSearchParams to get the tab from URL
+// Client component to safely use the useSearchParams hook
+function TabParamHandler({ setActiveTab }: { setActiveTab: (tab: string) => void }) {
     const searchParams = useSearchParams();
     const tabParam = searchParams?.get('tab') || 'events';
 
-    const [activeTab, setActiveTab] = useState(tabParam);
+    // Update parent state with the tab from URL
+    if (tabParam) {
+        setActiveTab(tabParam);
+    }
+
+    return null;
+}
+
+export default function AdminPage() {
+    const [activeTab, setActiveTab] = useState('events');
     const { data: user } = useCurrentUser();
 
     return (
         <AdminRouteGuard>
+            {/* Wrap the component using useSearchParams in Suspense */}
+            <Suspense fallback={null}>
+                <TabParamHandler setActiveTab={setActiveTab} />
+            </Suspense>
+
             <div className="container mx-auto pt-8 pb-8 px-4">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
                     <div>
@@ -41,7 +55,7 @@ export default function AdminPage() {
                     </div>
                 </div>
 
-                <Tabs defaultValue="events" value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+                <Tabs defaultValue={activeTab} value={activeTab} onValueChange={setActiveTab} className="space-y-4">
                     <TabsList className="mb-2 w-full overflow-x-auto">
                         <TabsTrigger value="events" className="flex items-center gap-1 sm:gap-2 flex-1 cursor-pointer">
                             <span className="sm:inline"><FaCalendarAlt /></span>
