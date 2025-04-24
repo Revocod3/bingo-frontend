@@ -15,20 +15,20 @@ type BingoState = {
   calledNumbers: number[];
   isPlaying: boolean;
   activeCardIndex: number;
-  
+
   // New properties
   isConnected: boolean;
   isWinner: boolean;
   winnerInfo: WinnerInfo | null;
   lastCalledAt: string | null;
   eventId: string | null;
-  
+
   // Existing methods
   initializeGame: (cards: number[][]) => void;
   callNumber: () => void;
   resetGame: () => void;
   setActiveCardIndex: (index: number) => void;
-  
+
   // New methods
   connectToGame: (eventId: string, token: string) => void;
   disconnectFromGame: () => void;
@@ -36,7 +36,6 @@ type BingoState = {
   markWinner: (winnerInfo: WinnerInfo) => void;
   clearWinner: () => void;
   addCalledNumber: (number: number, calledAt: string) => void;
-  
 };
 
 export const useBingoStore = create<BingoState>((set, get) => ({
@@ -46,62 +45,65 @@ export const useBingoStore = create<BingoState>((set, get) => ({
   calledNumbers: [],
   isPlaying: false,
   activeCardIndex: 0,
-  
+
   // New state properties
   isConnected: false,
   isWinner: false,
   winnerInfo: null,
   lastCalledAt: null,
   eventId: null,
-  
+
   // Existing methods with modifications as needed
-  initializeGame: (cards) => set({ 
-    cards, 
-    isPlaying: true,
-    calledNumbers: [] 
-  }),
-  
+  initializeGame: (cards) =>
+    set({
+      cards,
+      isPlaying: true,
+      calledNumbers: [],
+    }),
+
   callNumber: () => {
-    const availableNumbers = Array.from({ length: 75 }, (_, i) => i + 1)
-      .filter(n => !get().calledNumbers.includes(n));
-    
+    const availableNumbers = Array.from({ length: 75 }, (_, i) => i + 1).filter(
+      (n) => !get().calledNumbers.includes(n)
+    );
+
     if (availableNumbers.length === 0) return;
-    
+
     const newNumber = availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
-    
+
     // If connected to WebSocket, send the call through there instead of updating locally
     if (get().isConnected && get().eventId) {
       websocketService.send({
         type: 'CALL_NUMBER',
         payload: {
           eventId: get().eventId,
-          number: newNumber
-        }
+          number: newNumber,
+        },
       });
       return;
     }
-    
+
     // Otherwise, update locally (for offline testing)
-    set(state => ({
+    set((state) => ({
       currentNumber: newNumber,
       calledNumbers: [...state.calledNumbers, newNumber],
-      lastCalledAt: new Date().toISOString()
+      lastCalledAt: new Date().toISOString(),
     }));
   },
-  
-  resetGame: () => set({
-    cards: [],
-    currentNumber: null,
-    calledNumbers: [],
-    isPlaying: false,
-    activeCardIndex: 0,
-    isWinner: false,
-    winnerInfo: null,
-    lastCalledAt: null
-  }),
-  
+
+  resetGame: () =>
+    set({
+      cards: [],
+      currentNumber: null,
+      calledNumbers: [],
+      isPlaying: false,
+      activeCardIndex: 0,
+      isWinner: false,
+      winnerInfo: null,
+      lastCalledAt: null,
+    }),
+
   setActiveCardIndex: (index) => set({ activeCardIndex: index }),
-  
+
   // New methods
   connectToGame: (eventId, token) => {
     websocketService.connect(eventId, token, {
@@ -115,15 +117,15 @@ export const useBingoStore = create<BingoState>((set, get) => ({
       },
       onMessage: (message) => {
         get().handleWebSocketMessage(message);
-      }
+      },
     });
   },
-  
+
   disconnectFromGame: () => {
     websocketService.disconnect();
     set({ isConnected: false, eventId: null });
   },
-  
+
   handleWebSocketMessage: (message) => {
     switch (message.type) {
       case 'NUMBER_CALLED':
@@ -132,20 +134,20 @@ export const useBingoStore = create<BingoState>((set, get) => ({
           get().addCalledNumber(number, calledAt);
         }
         break;
-        
+
       case 'WINNER_DECLARED':
         get().markWinner(message.payload as WinnerInfo);
         break;
-        
+
       case 'GAME_RESET':
-        set({ 
+        set({
           calledNumbers: [],
           currentNumber: null,
           isWinner: false,
-          winnerInfo: null
+          winnerInfo: null,
         });
         break;
-        
+
       case 'GAME_STATE':
         {
           // Handle initial game state
@@ -162,24 +164,24 @@ export const useBingoStore = create<BingoState>((set, get) => ({
             isPlaying: payload.isPlaying || false,
             isWinner: !!payload.winnerInfo,
             winnerInfo: payload.winnerInfo || null,
-            lastCalledAt: payload.lastCalledAt || null
+            lastCalledAt: payload.lastCalledAt || null,
           });
         }
         break;
-        
+
       default:
         console.error('Unknown message type:', message.type);
     }
   },
-  
+
   markWinner: (winnerInfo) => {
-    set({ 
-      isWinner: true, 
-      winnerInfo, 
-      isPlaying: false 
+    set({
+      isWinner: true,
+      winnerInfo,
+      isPlaying: false,
     });
   },
-  
+
   clearWinner: () => {
     set({
       isWinner: false,
@@ -193,19 +195,19 @@ export const useBingoStore = create<BingoState>((set, get) => ({
       winnerInfo: null,
     });
   },
-  
+
   addCalledNumber: (number, calledAt) => {
-    set(state => {
+    set((state) => {
       // Don't add duplicates
       if (state.calledNumbers.includes(number)) {
         return state;
       }
-      
+
       return {
         currentNumber: number,
         calledNumbers: [...state.calledNumbers, number],
-        lastCalledAt: calledAt || new Date().toISOString()
+        lastCalledAt: calledAt || new Date().toISOString(),
       };
     });
-  }
+  },
 }));

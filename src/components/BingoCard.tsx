@@ -38,11 +38,12 @@ export default function BingoCard({
   const [showConfetti, setShowConfetti] = useState(false);
   const [showBingoText, setShowBingoText] = useState(false);
   const [isWinner, setIsWinner] = useState(false);
+  // Nuevo estado para controlar la animación de intento fallido
+  const [showFailedAttempt, setShowFailedAttempt] = useState(false);
   const [windowSize, setWindowSize] = useState({
     width: typeof window !== 'undefined' ? window.innerWidth : 0,
-    height: typeof window !== 'undefined' ? window.innerHeight : 0
+    height: typeof window !== 'undefined' ? window.innerHeight : 0,
   });
-
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -58,7 +59,7 @@ export default function BingoCard({
     if (!autoMarkEnabled) return new Set<string>();
     const set = new Set<string>();
     set.add('N0'); // FREE siempre marcado
-    numbers.flat().forEach(num => {
+    numbers.flat().forEach((num) => {
       if (num !== 'N0') {
         const numberPart = parseInt(num.substring(1));
         if (calledNumbers.includes(numberPart)) {
@@ -75,7 +76,7 @@ export default function BingoCard({
       // Si el número está en llamados, se marca automáticamente (se ignora el toggle manual)
       const unionSet = new Set<string>(autoMarkedNumbers);
       // Se agregan marcas manuales para casos en que el usuario desee marcar algún número no llamado (si lo permite la lógica)
-      manualMarkedNumbers.forEach(num => {
+      manualMarkedNumbers.forEach((num) => {
         // Sólo se agregan si no están ya en autoMarkedNumbers
         if (!autoMarkedNumbers.has(num)) unionSet.add(num);
       });
@@ -89,7 +90,7 @@ export default function BingoCard({
     if (!active || num === 'N0') return;
     const numberPart = parseInt(num.substring(1));
     if (autoMarkEnabled && calledNumbers.includes(numberPart)) return;
-    setManualMarkedNumbers(prev => {
+    setManualMarkedNumbers((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(num)) {
         newSet.delete(num);
@@ -120,23 +121,43 @@ export default function BingoCard({
           }, 5000);
         } else {
           toast.error(result.data.message || 'No se pudo verificar tu victoria');
+          // Mostrar animación de intento fallido
+          setShowFailedAttempt(true);
+          setTimeout(() => {
+            setShowFailedAttempt(false);
+          }, 3000);
         }
       } else {
         toast.error('No tienes un patrón ganador en este cartón');
+        // Mostrar animación de intento fallido
+        setShowFailedAttempt(true);
+        setTimeout(() => {
+          setShowFailedAttempt(false);
+        }, 3000);
       }
     } catch (error) {
       toast.error('Error al verificar/reclamar el BINGO');
       console.error('Error claiming bingo:', error);
+      // Mostrar animación de intento fallido también en caso de error
+      setShowFailedAttempt(true);
+      setTimeout(() => {
+        setShowFailedAttempt(false);
+      }, 3000);
     }
   };
 
   // Función para determinar si una posición forma parte de un patrón ganador.
   const isPartOfWinningPattern = (position: number): boolean => {
-    if (!eventPatterns || !patternVerification || !patternVerification.is_winner || !patternVerification.matched_patterns?.length) {
+    if (
+      !eventPatterns ||
+      !patternVerification ||
+      !patternVerification.is_winner ||
+      !patternVerification.matched_patterns?.length
+    ) {
       return false;
     }
     for (const patternId of patternVerification.matched_patterns) {
-      const pattern = eventPatterns.find(p => p.id === patternId);
+      const pattern = eventPatterns.find((p) => p.id === patternId);
       if (pattern && pattern.positions.includes(position)) {
         return true;
       }
@@ -147,11 +168,13 @@ export default function BingoCard({
   const columns = ['B', 'I', 'N', 'G', 'O'];
 
   return (
-    <div className={cn(
-      "rounded-lg overflow-hidden border bg-white shadow-sm transition-all text-gray-800 relative",
-      "cursor-pointer",
-      isWinner && "border-2 border-[#7C3AED]"
-    )}>
+    <div
+      className={cn(
+        'rounded-lg overflow-hidden border bg-white shadow-sm transition-all text-gray-800 relative',
+        'cursor-pointer',
+        isWinner && 'border-2 border-[#7C3AED]'
+      )}
+    >
       {showConfetti && (
         <ReactConfetti
           width={windowSize.width}
@@ -167,11 +190,30 @@ export default function BingoCard({
           className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none"
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: [0, 1, 1, 0], scale: [0.5, 1.2, 1.2, 0.5] }}
-          transition={{ duration: 4, times: [0, 0.2, 0.8, 1], ease: "easeInOut" }}
+          transition={{ duration: 4, times: [0, 0.2, 0.8, 1], ease: 'easeInOut' }}
         >
           <div className="text-[#7C3AED] font-extrabold text-5xl md:text-7xl drop-shadow-lg">
             ¡BINGO!
           </div>
+        </motion.div>
+      )}
+      {/* Animación para intento fallido de Bingo */}
+      {showFailedAttempt && (
+        <motion.div
+          className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none bg-black/40"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 1, 0] }}
+          transition={{ duration: 2.5, times: [0, 0.2, 0.8, 1], ease: 'easeInOut' }}
+        >
+          <motion.div
+            className="bg-white/95 rounded-lg p-4 shadow-lg max-w-[90%] text-center"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+          >
+            <div className="text-red-600 font-bold text-xl mb-2">No es Bingo</div>
+            <p className="text-gray-700">No tienes un patrón ganador en este cartón</p>
+          </motion.div>
         </motion.div>
       )}
       <div className="grid grid-cols-5 bg-[#7C3AED] text-white">
@@ -182,7 +224,7 @@ export default function BingoCard({
         ))}
       </div>
       <div className="grid grid-cols-5 gap-1 p-2 bg-gray-50">
-        {numbers.map((row, rowIdx) => (
+        {numbers.map((row, rowIdx) =>
           row.map((num, colIdx) => {
             const position = rowIdx * 5 + colIdx;
             const isFree = num === 'N0';
@@ -192,12 +234,12 @@ export default function BingoCard({
               <div
                 key={`${rowIdx}-${colIdx}`}
                 className={cn(
-                  "aspect-square flex items-center justify-center rounded-md text-xs sm:text-sm font-medium transition-all",
-                  isMarked && "bg-[#DDD6FE] text-[#7C3AED]",
-                  isFree && "bg-green-100 text-green-800",
-                  isWinningPosition && "bg-green-100 text-green-800 ring-2 ring-green-500",
-                  active && !isFree && "hover:bg-gray-200",
-                  !isMarked && !isFree && "bg-white"
+                  'aspect-square flex items-center justify-center rounded-md text-xs sm:text-sm font-medium transition-all',
+                  isMarked && 'bg-[#DDD6FE] text-[#7C3AED]',
+                  isFree && 'bg-green-100 text-green-800',
+                  isWinningPosition && 'bg-green-100 text-green-800 ring-2 ring-green-500',
+                  active && !isFree && 'hover:bg-gray-200',
+                  !isMarked && !isFree && 'bg-white'
                 )}
                 onClick={() => toggleNumber(num)}
               >
@@ -205,14 +247,14 @@ export default function BingoCard({
               </div>
             );
           })
-        ))}
+        )}
       </div>
       <div className="p-2">
         <Button
           onClick={handleClaimBingo}
           className={cn(
-            "w-full",
-            isWinner ? "bg-green-500 hover:bg-green-600" : "bg-[#7C3AED] hover:bg-[#6D28D9]"
+            'w-full',
+            isWinner ? 'bg-green-500 hover:bg-green-600' : 'bg-[#7C3AED] hover:bg-[#6D28D9]'
           )}
         >
           {claimMutation.isPending ? '¡Verificando...' : '¡BINGO!'}

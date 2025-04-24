@@ -66,6 +66,8 @@ export interface CreateEventRequest {
   end_date?: string;
   start: string | number | Date;
   end?: string | number | Date;
+  is_active?: boolean;
+  is_live?: boolean;
 }
 
 // BingoCard types
