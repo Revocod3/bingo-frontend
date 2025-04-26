@@ -36,7 +36,7 @@ export default function LoginPage() {
         <div className="container mx-auto max-w-md mb-4 mt-6">
           <Alert variant="destructive">
             <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Tu sesión ha expirado</AlertTitle>
+            <AlertTitle>Sesión Expirada</AlertTitle>
             <AlertDescription>
               Por razones de seguridad, tu sesión ha expirado. Por favor, inicia sesión nuevamente.
             </AlertDescription>
