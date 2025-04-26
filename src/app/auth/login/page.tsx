@@ -2,26 +2,44 @@
 
 import { LoginForm } from '@/components/login-form';
 import { useSession } from 'next-auth/react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, Suspense } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
 
-export default function LoginPage() {
-  const { status } = useSession();
-  const router = useRouter();
-  const searchParams = useSearchParams();
+// Componente que utiliza useSearchParams para verificar mensajes de expiración de sesión
+function SessionExpiredAlert() {
+  // useSearchParams debe estar dentro de un componente cliente y dentro de Suspense
   const [showExpiredMessage, setShowExpiredMessage] = useState(false);
 
-  // Verificar si el usuario ha sido redirigido por expiración de sesión
   useEffect(() => {
-    const expired = searchParams?.get('expired');
-    const session = searchParams?.get('session');
+    const searchParams = new URLSearchParams(window.location.search);
+    const expired = searchParams.get('expired');
+    const session = searchParams.get('session');
 
     if (expired === 'true' || session === 'expired') {
       setShowExpiredMessage(true);
     }
-  }, [searchParams]);
+  }, []);
+
+  if (!showExpiredMessage) return null;
+
+  return (
+    <div className="container mx-auto max-w-md mb-4 mt-6">
+      <Alert variant="destructive">
+        <AlertTriangle className="h-4 w-4" />
+        <AlertTitle>Tu sesión ha expirado</AlertTitle>
+        <AlertDescription>
+          Por razones de seguridad, tu sesión ha expirado. Por favor, inicia sesión nuevamente.
+        </AlertDescription>
+      </Alert>
+    </div>
+  );
+}
+
+export default function LoginPage() {
+  const { status } = useSession();
+  const router = useRouter();
 
   // Redirigir si ya está autenticado
   useEffect(() => {
@@ -38,17 +56,9 @@ export default function LoginPage() {
 
   return (
     <>
-      {showExpiredMessage && (
-        <div className="container mx-auto max-w-md mb-4 mt-6">
-          <Alert variant="destructive">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Tu sesión ha expirado</AlertTitle>
-            <AlertDescription>
-              Por razones de seguridad, tu sesión ha expirado. Por favor, inicia sesión nuevamente.
-            </AlertDescription>
-          </Alert>
-        </div>
-      )}
+      <Suspense fallback={null}>
+        <SessionExpiredAlert />
+      </Suspense>
       <LoginForm />
     </>
   );
