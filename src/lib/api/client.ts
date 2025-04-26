@@ -11,16 +11,19 @@ const apiClient = axios.create({
 
 // Variable para controlar el proceso de refresh token
 let isRefreshing = false;
-interface QueueItem {
+interface PromiseQueueItem {
   resolve: (token: string | null) => void;
   reject: (error: unknown) => void;
 }
 
-let failedQueue: QueueItem[] = [];
+let failedQueue: PromiseQueueItem[] = [];
+
+// Variable para evitar bucles infinitos de redirección
+let isLoggingOut = false;
 
 // Función para procesar la cola de solicitudes fallidas
 const processQueue = (error: unknown, token: string | null = null): void => {
-  failedQueue.forEach((prom) => {
+  failedQueue.forEach((prom: PromiseQueueItem) => {
     if (error) {
       prom.reject(error);
     } else {
@@ -57,6 +60,11 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
+    // Si ya estamos en proceso de logout, no intentar refrescar token
+    if (isLoggingOut) {
+      return Promise.reject(error);
+    }
+
     // Obtener la configuración de la solicitud original
     const originalRequest = error.config;
 
@@ -131,18 +139,36 @@ apiClient.interceptors.response.use(
 
 // Función para manejar el proceso de cierre de sesión
 const handleLogout = async () => {
-  // Eliminar tokens del localStorage
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('refreshToken');
-  }
+  // Prevenir múltiples llamadas simultáneas o bucles
+  if (isLoggingOut) return;
 
-  // Cerrar la sesión de NextAuth y redirigir al login
-  await signOut({ redirect: false });
+  try {
+    isLoggingOut = true;
 
-  // Redirigir manualmente para asegurar que el usuario va al login
-  if (typeof window !== 'undefined') {
-    window.location.href = '/auth/login?session=expired';
+    // Eliminar tokens del localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('refreshToken');
+    }
+
+    // Cerrar la sesión de NextAuth sin redirección automática
+    await signOut({ redirect: false });
+
+    // Verificar si ya estamos en la página de login para evitar redirecciones innecesarias
+    if (typeof window !== 'undefined') {
+      const currentPath = window.location.pathname;
+      // Solo redirigir si no estamos ya en la página de login
+      if (!currentPath.includes('/auth/login')) {
+        window.location.href = '/auth/login?session=expired';
+      }
+    }
+  } catch (error) {
+    console.error('Error durante el logout:', error);
+  } finally {
+    // Reiniciar el flag después de un breve retraso
+    setTimeout(() => {
+      isLoggingOut = false;
+    }, 1000);
   }
 };
 
