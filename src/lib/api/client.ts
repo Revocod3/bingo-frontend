@@ -92,9 +92,18 @@ apiClient.interceptors.response.use(
         const refreshToken = localStorage.getItem('refreshToken');
 
         if (!refreshToken) {
-          // No hay refresh token, cerrar sesión
-          console.error('No hay refresh token disponible');
-          await handleLogout();
+          // No hay refresh token, cerrar sesión silenciosamente sin mostrar error
+          // Solo registrar en consola cuando estamos en desarrollo
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Sin token de actualización - usuario probablemente no ha iniciado sesión aún');
+          }
+          
+          // Limpiar el estado de autenticación sin redirigir
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('refreshToken');
+          }
+          
           return Promise.reject(error);
         }
 
@@ -145,6 +154,12 @@ const handleLogout = async () => {
   try {
     isLoggingOut = true;
 
+    // Verificar si había tokens antes de eliminarlos para decidir si mostrar mensaje de sesión expirada
+    const hadTokensBefore = !!(
+      typeof window !== 'undefined' && 
+      (localStorage.getItem('authToken') || localStorage.getItem('refreshToken'))
+    );
+    
     // Eliminar tokens del localStorage
     if (typeof window !== 'undefined') {
       localStorage.removeItem('authToken');
@@ -157,9 +172,21 @@ const handleLogout = async () => {
     // Verificar si ya estamos en la página de login para evitar redirecciones innecesarias
     if (typeof window !== 'undefined') {
       const currentPath = window.location.pathname;
-      // Solo redirigir si no estamos ya en la página de login
-      if (!currentPath.includes('/auth/login')) {
-        window.location.href = '/auth/login?session=expired';
+      
+      // Determinar si la ruta actual es una ruta protegida que requiere autenticación
+      const publicRoutes = ['/auth/login', '/auth/register', '/verify-email', '/', '/terms', '/privacy', '/contact'];
+      const isPublicRoute = publicRoutes.some(route => 
+        currentPath === route || currentPath.startsWith(route + '/')
+      );
+      
+      // Solo redirigir si estamos en una ruta protegida (no pública)
+      if (!isPublicRoute && !currentPath.includes('/auth/login')) {
+        // Solo añadir el parámetro de sesión expirada si había tokens antes
+        if (hadTokensBefore) {
+          window.location.href = '/auth/login?session=expired';
+        } else {
+          window.location.href = '/auth/login';
+        }
       }
     }
   } catch (error) {

@@ -26,18 +26,24 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 
   // Verificar si el usuario fue redirigido por sesión expirada
   useEffect(() => {
-    // Obtener parámetros de URL
-    const searchParams = new URLSearchParams(window.location.search);
-    const expired = searchParams.get('expired');
+    // Sólo ejecutar esto en el cliente una vez al cargar el componente
+    if (typeof window !== 'undefined') {
+      // Obtener parámetros de URL
+      const searchParams = new URLSearchParams(window.location.search);
+      const expired = searchParams.get('expired');
+      const session = searchParams.get('session');
 
-    if (expired === 'true') {
-      setError('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
+      // Mostrar mensaje si cualquiera de los dos parámetros indica sesión expirada
+      if (expired === 'true' || session === 'expired') {
+        setError('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
 
-      // Limpiar el parámetro de la URL para evitar mostrar el mensaje después de refrescar
-      const cleanUrl = window.location.pathname;
-      router.replace(cleanUrl);
+        // Limpiar el parámetro de la URL para evitar mostrar el mensaje después de refrescar
+        // Usamos history.replaceState en lugar de router.replace para evitar una recarga de página
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
     }
-  }, [router]);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -7,8 +7,10 @@ export async function middleware(req: NextRequest) {
   // Obtener el token y verificar su validez
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-  // Un token es válido si existe y no está expirado
-  const isTokenValid = !!token && (token.exp ? Date.now() < Number(token.exp) * 1000 : true);
+  // Distinguir entre "sin token" y "token expirado"
+  const hasToken = !!token;
+  const isTokenExpired = hasToken && token.exp ? Date.now() > Number(token.exp) * 1000 : false;
+  const isTokenValid = hasToken && !isTokenExpired;
 
   // Rutas públicas que no requieren autenticación
   const publicRoutes = [
@@ -26,17 +28,18 @@ export async function middleware(req: NextRequest) {
 
   // Si es una ruta protegida y el token no es válido, redirigir al login
   if (!isPublicRoute && !isTokenValid) {
-    // Si el token existía pero expiró, mostrar un mensaje
-    if (token && token.exp && Date.now() > Number(token.exp) * 1000) {
+    // Solo mostrar mensaje de expiración si realmente había un token que expiró
+    if (hasToken && isTokenExpired) {
       // Redirigir a login con parámetro de sesión expirada para mostrar mensaje
       return NextResponse.redirect(new URL('/auth/login?expired=true', req.url));
     }
-
+    
+    // Sin token, simplemente redirigir al login sin mensaje de error
     return NextResponse.redirect(new URL('/auth/login', req.url));
   }
 
-  // Redirigir a los usuarios autenticados lejos de páginas de auth
-  if ((pathname.startsWith('/auth/login') || pathname === '/') && isTokenValid) {
+  // Redirigir a los usuarios autenticados lejos de páginas de auth, pero permitir landing page (/)
+  if (pathname.startsWith('/auth/login') && isTokenValid) {
     return NextResponse.redirect(new URL('/dashboard', req.url));
   }
 
