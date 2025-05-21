@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import React, { useState, Suspense, useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import AdminRouteGuard from '@/components/AdminRouteGuard';
@@ -17,10 +17,12 @@ function TabParamHandler({ setActiveTab }: { setActiveTab: (tab: string) => void
     const searchParams = useSearchParams();
     const tabParam = searchParams?.get('tab') || 'events';
 
-    // Update parent state with the tab from URL
-    if (tabParam) {
-        setActiveTab(tabParam);
-    }
+    // Update parent state with the tab from URL using useEffect to avoid state updates during render
+    useEffect(() => {
+        if (tabParam) {
+            setActiveTab(tabParam);
+        }
+    }, [tabParam, setActiveTab]);
 
     return null;
 }
@@ -47,7 +49,7 @@ export default function AdminPage() {
 
                     <div className="mt-2 md:mt-0">
                         <Link href="/dashboard" passHref>
-                            <Button variant="ghost" className="hover:bg-accent hover:text-accent-foreground">
+                            <Button variant="ghost" className="hover:bg-white/20     hover:text-accent-foreground">
                                 <FaArrowLeft className="mr-2 h-4 w-4" />
                                 Dashboard
                             </Button>
