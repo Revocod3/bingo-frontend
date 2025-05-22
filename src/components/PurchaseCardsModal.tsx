@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { usePurchaseCards } from '@/hooks/api/useTestCoins';
-import { useTestCoinBalance } from '@/hooks/api/useTestCoins';
+import { usePurchaseCards, useTestCoinBalance } from '@/hooks/api/useTestCoins';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -13,6 +12,8 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FaCoins, FaPlus, FaMinus } from 'react-icons/fa';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 interface PurchaseCardsModalProps {
   eventId: string;
@@ -49,7 +50,7 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
 
   const handlePurchase = async () => {
     if (!hasEnoughCoins) {
-      setErrorMessage(`No tienes suficientes monedas para comprar ${quantity} cartón${quantity !== 1 ? 'es' : ''}.`);
+      setErrorMessage(`💸 ¡Ups! Recarga para poder adquirir ${quantity} cartón${quantity !== 1 ? 'es' : ''}.`);
       return;
     }
 
@@ -83,109 +84,187 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={() => {
-      // Only allow closing if not in the middle of a purchase
-      if (!purchaseCardsMutation.isPending) {
-        onClose();
-      }
-    }}>
-      <ResponsiveDialogContent className="text-gray-800">
-        <ResponsiveDialogHeader>
-          <DialogTitle className="xs:text-lg">Compra tus cartones</DialogTitle>
-          <DialogDescription className="xs:text-xs">
-            Selecciona el numero de cartones que quieres comprar para este evento.
+    <Dialog
+      open={isOpen}
+      onOpenChange={() => {
+        // Only allow closing if not in the middle of a purchase
+        if (!purchaseCardsMutation.isPending) {
+          onClose();
+        }
+      }}
+    >
+      <ResponsiveDialogContent
+        className={cn(
+          "relative rounded-2xl overflow-hidden backdrop-blur-md",
+          "bg-black/30 border border-white/10",
+          "shadow-[0_0_15px_rgba(123,58,237,0.2)]",
+          "max-w-md mx-auto",
+          "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        )}
+      >
+        {/* Background glow effects */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
+
+        <ResponsiveDialogHeader className="relative z-10">
+          <DialogTitle className="text-xl font-bold text-white">Compra tus cartones</DialogTitle>
+          <DialogDescription className="text-sm text-gray-300">
+            Selecciona el número de cartones que quieres comprar para este evento.
           </DialogDescription>
         </ResponsiveDialogHeader>
 
-        {errorMessage && (
-          <Alert variant="destructive">
-            <AlertDescription className="xs:text-xs">{errorMessage}</AlertDescription>
-          </Alert>
-        )}
-
-        {successMessage && (
-          <Alert className="bg-green-50 text-green-800 border-green-200">
-            <AlertDescription className="xs:text-xs">{successMessage}</AlertDescription>
-          </Alert>
-        )}
-
-        <div className="my-1 flex flex-col items-center">
-          <p className="mb-1 text-sm xs:text-xs">Balance actual:</p>
-          <div className="flex items-center bg-[#7C3AED]/20 rounded-full px-4 py-2">
-            <FaCoins className="text-yellow-500 mr-2 xs:text-xs" />
-            <span className="font-bold xs:text-sm">{coinBalance?.balance || 0} USD</span>
-          </div>
-          {!hasEnoughCoins && (
-            <div className="flex flex-col items-center mt-2">
-              <p className="text-red-500 text-sm my-2">
-                No tienes suficientes monedas para comprar {quantity} cartón{quantity !== 1 ? 'es' : ''}.
-              </p>
-              <Link
-                href="/deposits"
-                className="py-2 px-4 bg-[#7C3AED] flex  items-center text-white rounded-full mt-2 hover:bg-[#6D28D9] transition duration-200"
-              >
-                Recargar
-                <FaCoins className="ml-2" />
-              </Link>
-            </div>
+        <div className="relative z-10 space-y-4">
+          {errorMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-red-500/20 text-red-300 p-3 rounded-lg text-sm"
+            >
+              {errorMessage}
+            </motion.div>
           )}
 
+          {successMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-green-500/20 text-green-300 p-3 rounded-lg text-sm"
+            >
+              {successMessage}
+            </motion.div>
+          )}
+
+          <div className="flex flex-col items-center space-y-2">
+            <p className="text-sm text-gray-300">Balance actual:</p>
+            <div
+              className="flex items-center bg-gradient-to-r from-slate-900/80 to-purple-900/80 text-white rounded-lg shadow-md border border-white/10 backdrop-blur-sm px-4 py-2"
+            >
+              <FaCoins className="text-amber-400 mr-2" />
+              <div className="font-medium tracking-tight">
+                <span className="text-xs text-slate-300 mr-1">USD</span>
+                <span className="text-white">${(coinBalance?.balance || 0).toFixed(2)}</span>
+              </div>
+            </div>
+
+            {!hasEnoughCoins && (
+              <div className="flex flex-col items-center mt-2 space-y-2">
+                <p className="text-red-400 text-sm">
+                  💸 ¡Ups! Recarga para poder adquirir {quantity} cartón{quantity !== 1 ? 'es' : ''}.
+                </p>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Link
+                    href="/deposits"
+                    className={cn(
+                      "py-2 px-4 flex items-center justify-center gap-2",
+                      "rounded-full bg-gradient-to-r from-purple-600 to-indigo-600",
+                      "hover:from-purple-700 hover:to-indigo-700 text-white",
+                      "border-none shadow-md hover:shadow-lg transition-all duration-200"
+                    )}
+                  >
+                    <span>Recargar</span>
+                    <FaCoins className="ml-1" />
+                  </Link>
+                </motion.div>
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <p className="text-sm text-gray-300">Selecciona la cantidad:</p>
+            <div className="flex items-center justify-between">
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={handleDecrease}
+                  disabled={quantity <= 1}
+                  className={cn(
+                    "cursor-pointer border border-white/20 bg-purple-900/20",
+                    "hover:bg-purple-800/30 hover:border-white/30",
+                    "text-white w-10 h-10"
+                  )}
+                >
+                  <FaMinus className="h-4 w-4" />
+                </Button>
+              </motion.div>
+
+              <span className="text-3xl font-bold text-white mx-4">{quantity}</span>
+
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={handleIncrease}
+                  disabled={quantity >= 100}
+                  className={cn(
+                    "cursor-pointer border border-white/20 bg-purple-900/20",
+                    "hover:bg-purple-800/30 hover:border-white/30",
+                    "text-white w-10 h-10"
+                  )}
+                >
+                  <FaPlus className="h-4 w-4" />
+                </Button>
+              </motion.div>
+            </div>
+          </div>
+
+          <div className="border-t border-white/10 pt-4 mt-6">
+            <div className="flex justify-between text-gray-300 text-sm">
+              <span>Costo del cartón:</span>
+              <span>{costPerCard.toFixed(2)} USD</span>
+            </div>
+            <div className="flex justify-between font-bold text-xl text-white mt-2">
+              <span>Total ({quantity}):</span>
+              <span className="text-purple-300">{totalCost.toFixed(2)} USD</span>
+            </div>
+          </div>
         </div>
 
-        <div className="my-2">
-          <p className="mb-2 text-sm">Selecciona la cantidad:</p>
-          <div className="flex items-center justify-between">
+        <ResponsiveDialogFooter className="mt-6 flex justify-between relative z-10">
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
             <Button
               variant="outline"
-              size="icon"
-              onClick={handleDecrease}
-              disabled={quantity <= 1}
-              className="cursor-pointer"
+              onClick={onClose}
+              disabled={purchaseCardsMutation.isPending}
+              className={cn(
+                "border border-white/20 text-gray-300",
+                "bg-black/30 backdrop-blur-sm",
+                "hover:bg-gray-800/50 hover:text-white hover:border-white/30",
+                "rounded-full px-6 py-2 transition-all"
+              )}
             >
-              <FaMinus className="h-4 w-4" />
+              Cancelar
             </Button>
+          </motion.div>
 
-            <span className="text-2xl font-bold mx-8">{quantity}</span>
-
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
             <Button
-              variant="outline"
-              size="icon"
-              onClick={handleIncrease}
-              disabled={quantity >= 100} // Assuming a max limit of 100
-              className="cursor-pointer"
+              onClick={handlePurchase}
+              disabled={!hasEnoughCoins || purchaseCardsMutation.isPending}
+              className={cn(
+                "bg-gradient-to-r from-purple-600 to-indigo-600",
+                "hover:from-purple-700 hover:to-indigo-700 text-white",
+                "shadow-md hover:shadow-lg",
+                "border-none rounded-full px-6 py-2 transition-all duration-200"
+              )}
             >
-              <FaPlus className="h-4 w-4" />
+              {purchaseCardsMutation.isPending ? 'Procesando...' : 'Comprar'}
             </Button>
-          </div>
-        </div>
-
-        <div className="border-t pt-4 mt-4">
-          <div className="flex justify-between">
-            <span>Costo del carton:</span>
-            <span>{costPerCard.toFixed(2)} USD</span>
-          </div>
-          <div className="flex justify-between font-bold text-lg mt-2">
-            <span>Total ({quantity}) :</span>
-            <span>{totalCost.toFixed(2)} USD</span>
-          </div>
-        </div>
-
-        <ResponsiveDialogFooter className="mt-4">
-          <Button
-            variant="outline"
-            onClick={onClose}
-            disabled={purchaseCardsMutation.isPending}
-            className="border-gray-300 text-gray-700 hover:bg-gray-100 cursor-pointer xs:text-xs xs:py-1"
-          >
-            Cancelar
-          </Button>
-          <Button
-            onClick={handlePurchase}
-            disabled={!hasEnoughCoins || purchaseCardsMutation.isPending}
-            className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white cursor-pointer xs:text-xs xs:py-1"
-          >
-            {purchaseCardsMutation.isPending ? 'Procesando...' : 'Comprar'}
-          </Button>
+          </motion.div>
         </ResponsiveDialogFooter>
       </ResponsiveDialogContent>
     </Dialog>
