@@ -46,6 +46,7 @@ export interface User {
 
 // Event types
 export interface Event {
+  image: string;
   start?: string | number | Date;
   end?: string | number | Date;
   id: number | string;
