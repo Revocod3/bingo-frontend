@@ -8,6 +8,8 @@ import { cn } from '@/lib/utils';
 import { useEventPatterns } from '@/hooks/api/useWinningPatterns';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
+import { FaStar } from 'react-icons/fa';
+
 
 const ReactConfetti = dynamic(() => import('react-confetti'), { ssr: false });
 
@@ -170,11 +172,20 @@ export default function BingoCard({
   return (
     <div
       className={cn(
-        'rounded-lg overflow-hidden border bg-white shadow-sm transition-all text-gray-800 relative',
-        'cursor-pointer',
-        isWinner && 'border-2 border-[#7C3AED]'
+        'rounded-2xl overflow-hidden transition-all relative',
+        'backdrop-blur-md bg-black/30 border border-white/10',
+        'shadow-[0_0_15px_rgba(123,58,237,0.2)]',
+        isWinner && 'shadow-[0_0_30px_rgba(123,58,237,0.6)] border-purple-500/50'
       )}
     >
+      {/* Background glow effects */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
+      <div className={cn(
+        'absolute -inset-[100px] bg-purple-600/10 rounded-full blur-3xl z-0 transition-opacity duration-1000',
+        isWinner ? 'opacity-70' : 'opacity-0'
+      )}></div>
+
+      {/* Confetti effect for winners */}
       {showConfetti && (
         <ReactConfetti
           width={windowSize.width}
@@ -185,6 +196,8 @@ export default function BingoCard({
           colors={['#7C3AED', '#6D28D9', '#DDD6FE', '#4C1D95', '#FBBF24']}
         />
       )}
+
+      {/* BINGO text animation for winners */}
       {showBingoText && (
         <motion.div
           className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none"
@@ -192,73 +205,105 @@ export default function BingoCard({
           animate={{ opacity: [0, 1, 1, 0], scale: [0.5, 1.2, 1.2, 0.5] }}
           transition={{ duration: 4, times: [0, 0.2, 0.8, 1], ease: 'easeInOut' }}
         >
-          <div className="text-[#7C3AED] font-extrabold text-5xl md:text-7xl drop-shadow-lg">
+          <div className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 font-extrabold text-5xl md:text-7xl drop-shadow-[0_0_8px_rgba(124,58,237,0.8)]">
             ¡BINGO!
           </div>
         </motion.div>
       )}
-      {/* Animación para intento fallido de Bingo */}
+
+      {/* Failed attempt animation */}
       {showFailedAttempt && (
         <motion.div
-          className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none bg-black/40"
+          className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none bg-black/40 backdrop-blur-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: [0, 1, 1, 0] }}
-          transition={{ duration: 2.5, times: [0, 0.2, 0.8, 1], ease: 'easeInOut' }}
+          transition={{ duration: 3, times: [0, 0.2, 0.8, 1], ease: 'easeInOut' }}
         >
           <motion.div
-            className="bg-white/95 rounded-lg p-4 shadow-lg max-w-[90%] text-center"
+            className="bg-black/40 backdrop-blur-md rounded-xl p-4 shadow-lg max-w-[90%] text-center"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.1, duration: 0.5 }}
           >
-            <div className="text-red-600 font-bold text-xl mb-2">No es Bingo</div>
-            <p className="text-gray-700">No tienes un patrón ganador en este cartón</p>
+            <div className="text-red-400 font-bold text-xl mb-2">AÚN NO TIENES BINGO</div>
+            <p className="text-gray-300">Este cartón todavía no tiene un patrón ganador.</p>
           </motion.div>
         </motion.div>
       )}
-      <div className="grid grid-cols-5 bg-[#7C3AED] text-white">
+
+      {/* Card header with column letters */}
+      <div className="grid grid-cols-5 relative z-10 bg-gradient-to-r from-purple-700 to-indigo-700 shadow-md">
         {columns.map((letter, idx) => (
-          <div key={idx} className="text-center font-bold py-2 text-sm sm:text-base">
-            {letter}
+          <div
+            key={idx}
+            className="text-center font-bold py-3 text-sm sm:text-base text-white"
+          >
+            <span className="inline-block bg-gradient-to-b from-white to-purple-200 bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(255,255,255,0.5)]">
+              {letter}
+            </span>
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-5 gap-1 p-2 bg-gray-50">
+
+      {/* Card grid with numbers */}
+      <div className="grid grid-cols-5 gap-2 p-3 bg-black/20 backdrop-blur-sm relative z-10">
         {numbers.map((row, rowIdx) =>
           row.map((num, colIdx) => {
             const position = rowIdx * 5 + colIdx;
             const isFree = num === 'N0';
             const isMarked = markedNumbers.has(num);
             const isWinningPosition = isPartOfWinningPattern(position);
+
             return (
-              <div
+              <motion.div
                 key={`${rowIdx}-${colIdx}`}
                 className={cn(
-                  'aspect-square flex items-center justify-center rounded-md text-xs sm:text-sm font-medium transition-all',
-                  isMarked && 'bg-[#DDD6FE] text-[#7C3AED]',
-                  isFree && 'bg-green-100 text-green-800',
-                  isWinningPosition && 'bg-green-100 text-green-800 ring-2 ring-green-500',
-                  active && !isFree && 'hover:bg-gray-200',
-                  !isMarked && !isFree && 'bg-white'
+                  'aspect-square flex items-center justify-center rounded-lg text-xs sm:text-sm font-medium',
+                  'transition-all duration-200 backdrop-blur-sm shadow-sm',
+                  'border border-white/5',
+                  isMarked && !isWinningPosition && 'bg-purple-500/30 text-white border-purple-500/30 shadow-[0_0_10px_rgba(139,92,246,0.3)]',
+                  isFree && 'bg-gradient-to-br from-green-400/30 to-emerald-500/30 text-emerald-300 border-emerald-400/20',
+                  isWinningPosition && 'bg-gradient-to-br from-amber-400/40 to-orange-500/40 text-amber-200 border-amber-500/40 shadow-[0_0_15px_rgba(251,191,36,0.4)]',
+                  active && !isFree && 'cursor-pointer hover:scale-105 hover:shadow-md hover:z-10',
+                  !isMarked && !isFree && 'bg-white/10 text-gray-200 hover:bg-white/20'
                 )}
                 onClick={() => toggleNumber(num)}
+                whileHover={active && !isFree ? { scale: 1.05 } : {}}
+                whileTap={active && !isFree ? { scale: 0.98 } : {}}
+                animate={isMarked ? {
+                  scale: [1, 1.1, 1],
+                  transition: { duration: 0.3 }
+                } : {}}
               >
-                {isFree ? 'FREE' : num.substring(1)}
-              </div>
+                {isFree ? <FaStar /> : num.substring(1)}
+              </motion.div>
             );
           })
         )}
       </div>
-      <div className="p-2">
-        <Button
-          onClick={handleClaimBingo}
-          className={cn(
-            'w-full',
-            isWinner ? 'bg-green-500 hover:bg-green-600' : 'bg-[#7C3AED] hover:bg-[#6D28D9]'
-          )}
+
+      {/* Bingo button */}
+      <div className="px-3 pb-3 bg-black/10 backdrop-blur-sm relative z-10">
+        <motion.div
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
-          {claimMutation.isPending ? '¡Verificando...' : '¡BINGO!'}
-        </Button>
+          <Button
+            onClick={handleClaimBingo}
+            className={cn(
+              'w-full py-4 relative overflow-hidden group font-bold text-base',
+              'border border-white/10 shadow-[0_4px_12px_rgba(123,58,237,0.5)]',
+              'bg-gradient-to-r from-purple-700 via-purple-600 to-indigo-700',
+              'hover:shadow-[0_4px_20px_rgba(123,58,237,0.7)]',
+              isWinner ? 'from-green-600 to-emerald-700' : ''
+            )}
+          >
+            <span className="relative z-10">
+              {claimMutation.isPending ? '¡Verificando...' : '¡BINGO!'}
+            </span>
+            <span className="absolute inset-0 bg-gradient-to-r from-purple-600/0 via-purple-300/30 to-purple-600/0 translate-x-[-100%] group-hover:animate-shimmer"></span>
+          </Button>
+        </motion.div>
       </div>
     </div>
   );

@@ -186,18 +186,16 @@ export default function GamePlayPage() {
           <p className="text-xs sm:text-sm text-gray-500">Estado del juego:</p>
           <div className="flex items-center gap-2">
             <span
-              className={`font-medium text-sm sm:text-lg ${
-                isLive ? 'text-indigo-700' : 'text-red-600'
-              }`}
+              className={`font-medium text-sm sm:text-lg ${isLive ? 'text-indigo-700' : 'text-red-600'
+                }`}
             >
               {isLive ? 'En vivo' : 'Desconectado'}
             </span>
             <div
-              className={`h-3 w-3 rounded-full ${
-                isLive
-                  ? 'bg-gradient-to-r from-purple-500 to-green-400 animate-pulse shadow-sm'
-                  : 'bg-gradient-to-r from-red-500 to-orange-400 shadow-sm'
-              }`}
+              className={`h-3 w-3 rounded-full ${isLive
+                ? 'bg-gradient-to-r from-purple-500 to-green-400 animate-pulse shadow-sm'
+                : 'bg-gradient-to-r from-red-500 to-orange-400 shadow-sm'
+                }`}
             ></div>
           </div>
         </div>
@@ -265,21 +263,19 @@ export default function GamePlayPage() {
       {/* Tab header - Cambiado el orden para que "Tus Cartones" sea primero */}
       <div className="flex border-b mb-4 mt-2 overflow-x-auto">
         <button
-          className={`px-3 sm:px-4 py-2 cursor-pointer whitespace-nowrap ${
-            activeTab === 'cards'
-              ? 'border-b-2 border-purple-600 font-bold text-purple-700'
-              : 'text-gray-500'
-          }`}
+          className={`px-3 sm:px-4 py-2 cursor-pointer whitespace-nowrap ${activeTab === 'cards'
+            ? 'border-b-2 border-purple-600 font-bold text-purple-700'
+            : 'text-gray-500'
+            }`}
           onClick={() => setActiveTab('cards')}
         >
           Tus Cartones
         </button>
         <button
-          className={`px-3 sm:px-4 py-2 cursor-pointer whitespace-nowrap ${
-            activeTab === 'info'
-              ? 'border-b-2 border-purple-600 font-bold text-purple-700'
-              : 'text-gray-500'
-          }`}
+          className={`px-3 sm:px-4 py-2 cursor-pointer whitespace-nowrap ${activeTab === 'info'
+            ? 'border-b-2 border-purple-600 font-bold text-purple-700'
+            : 'text-gray-500'
+            }`}
           onClick={() => setActiveTab('info')}
         >
           ¿Cómo ganar?
@@ -324,20 +320,16 @@ export default function GamePlayPage() {
           {/* Botón de CANTAR BINGO más prominente */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {eventCards.map((card) => (
-              <div
-                key={card.id}
-                className="p-1 sm:p-2 bg-gradient-to-br from-white to-purple-50 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
-              >
-                <div className="transform scale-[0.95] sm:scale-100">
-                  <BingoCard
-                    cardId={card.correlative_id ? String(card.correlative_id) : String(card.id)} // Use correlative_id if available
-                    numbers={getCardNumbers(card)} // Asegurar que esta función devuelve string[][]
-                    active={true} // Changed from false to true to enable marking
-                    eventId={eventId}
-                    calledNumbers={calledNumbers}
-                    autoMarkEnabled={autoMarkEnabled} // Add this prop
-                  />
-                </div>
+
+              <div className="transform scale-[0.95] sm:scale-100" key={card.id}>
+                <BingoCard
+                  cardId={card.correlative_id ? String(card.correlative_id) : String(card.id)} // Use correlative_id if available
+                  numbers={getCardNumbers(card)} // Asegurar que esta función devuelve string[][]
+                  active={true} // Changed from false to true to enable marking
+                  eventId={eventId}
+                  calledNumbers={calledNumbers}
+                  autoMarkEnabled={autoMarkEnabled} // Add this prop
+                />
               </div>
             ))}
           </div>
