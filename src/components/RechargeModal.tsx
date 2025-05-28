@@ -318,7 +318,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
                                 <h4 className="font-medium text-gray-700">Métodos de Pago</h4>
 
                                 <Tabs defaultValue="bank" value={activePaymentMethod} onValueChange={setActivePaymentMethod}>
-                                    <TabsList className="w-full bg-[#f9fafb] p-1 rounded-xl">
+                                    <TabsList className="w-full bg-[#f9fafb] p-1 rounded-lg">
                                         {paymentMethods.map(method => (
                                             <TabsTrigger
                                                 key={method.id}

@@ -4,13 +4,6 @@ import { useState } from 'react';
 import { useWinningPatterns, useCreateWinningPattern, useDeleteWinningPattern } from '@/hooks/api/useWinningPatterns';
 import { Button } from '@/components/ui/button';
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-} from '@/components/ui/card';
-import {
     Dialog,
     DialogTitle,
     DialogDescription
@@ -89,10 +82,10 @@ export default function WinningPatternsPanel() {
     return (
         <div className="container mx-auto py-4">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl md:text-2xl font-bold">Patrones de Ganancia</h2>
+                <h2 className="text-xl md:text-2xl font-bold bg-gradient-to-b from-white to-purple-200 bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(255,255,255,0.5)]">Patrones de Ganancia</h2>
                 <Button
                     onClick={() => setIsCreateModalOpen(true)}
-                    className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2"
+                    className="bg-gradient-to-r from-purple-700 via-purple-600 to-indigo-700 text-white hover:shadow-[0_4px_20px_rgba(123,58,237,0.7)] border border-white/10 flex items-center gap-2"
                 >
                     <FaPlus className="h-4 w-4" /> Crear Patrón
                 </Button>
@@ -101,108 +94,118 @@ export default function WinningPatternsPanel() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {patterns && patterns.length > 0 ? (
                     patterns.map((pattern) => (
-                        <Card key={pattern.id} className="overflow-hidden shadow-md hover:shadow-lg gap-4 transition-shadow pt-0 border-0 rounded-lg">
-                            <div className="relative h-16 bg-gradient-to-r from-purple-700 to-indigo-700 rounded-t-lg opacity-80">
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <h3 className="text-2xl font-bold text-white">{pattern.name}</h3>
+                        <div key={pattern.id} className="rounded-xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] relative">
+                            {/* Decorative elements for glassmorphism effect */}
+                            <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
+
+                            {/* Encabezado con gradiente */}
+                            <div className="w-full relative z-10 bg-gradient-to-r from-purple-700 to-indigo-700 shadow-md p-4">
+                                <div className="text-center">
+                                    <h3 className="text-xl font-bold text-white">{pattern.name}</h3>
                                 </div>
                             </div>
-                            <CardHeader>
-                                <CardDescription>
-                                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+
+                            {/* Contenido */}
+                            <div className="w-full p-4 bg-black/20 backdrop-blur-sm relative z-10">
+                                <div className="mb-4">
+                                    <div className="flex items-center justify-between text-xs text-gray-300 mb-2">
                                         <div className="flex items-center gap-2">
-                                            <FaPuzzlePiece className="h-4 w-4 text-muted-foreground" />
+                                            <FaPuzzlePiece className="h-4 w-4 text-purple-300" />
                                             <span>Patrón de Bingo</span>
                                         </div>
-                                        <div className="flex items-center justify-between">
-                                            <Badge className={cn("bg-slate-400 text-slate-200", {
-                                                'bg-green-400 text-green-200': pattern.is_active,
-                                            })}>
-                                                {pattern.is_active ? 'Activo' : 'Inactivo'}
-                                            </Badge>
-                                        </div>
+                                        <Badge className={cn("bg-slate-500/40 text-white backdrop-blur-sm border border-slate-500/30", {
+                                            'bg-green-500/40 text-green-200 border-green-500/30': pattern.is_active,
+                                        })}>
+                                            {pattern.is_active ? 'Activo' : 'Inactivo'}
+                                        </Badge>
                                     </div>
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-2">
-                                {pattern.description && (
-                                    <div className="rounded-lg bg-gray-50 py-2 px-4 dark:bg-gray-800/50">
-                                        <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">{pattern.description}</p>
-                                    </div>
-                                )}
 
-                                <div className="rounded-lg bg-blue-50 py-1 px-4 dark:bg-blue-950/50 flex flex-row justify-between items-center">
-                                    <div className="flex items-center gap-2">
-                                        <FaCheck className="h-4 w-4 text-blue-500" />
-                                        <h4 className="text-blue-600 text-sm font-semibold dark:text-blue-400">Celdas</h4>
+                                    {pattern.description && (
+                                        <div className="rounded-lg bg-white/5 py-2 px-4 backdrop-blur-sm border border-white/10 shadow-inner mb-3">
+                                            <p className="text-sm text-gray-300 line-clamp-2">{pattern.description}</p>
+                                        </div>
+                                    )}
+
+                                    <div className="rounded-lg bg-blue-900/20 py-2 px-4 backdrop-blur-sm flex flex-row justify-between items-center border border-blue-500/20 shadow-inner">
+                                        <div className="flex items-center gap-2">
+                                            <FaCheck className="h-4 w-4 text-blue-400" />
+                                            <h4 className="text-blue-300 text-sm font-semibold">Celdas</h4>
+                                        </div>
+                                        <p className="text-sm font-bold text-blue-200">
+                                            {pattern.positions?.length || 0}
+                                        </p>
                                     </div>
-                                    <p className="text-sm font-bold text-blue-700">
-                                        {pattern.positions?.length || 0}
-                                    </p>
                                 </div>
-                            </CardContent>
-                            <CardFooter className="flex gap-2 flex-wrap">
-                                <Link href={`/admin/patterns/${pattern.id}/edit`} passHref className="flex-1">
-                                    <Button variant="outline" className="w-full flex items-center justify-center gap-2">
-                                        <FaEdit className="h-4 w-4" /> Editar
+
+                                <div className="flex gap-2 flex-wrap pt-3 border-t border-white/10">
+                                    <Link href={`/admin/patterns/${pattern.id}/edit`} passHref className="flex-1">
+                                        <Button variant="outline" className="w-full flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20">
+                                            <FaEdit className="h-4 w-4" /> Editar
+                                        </Button>
+                                    </Link>
+                                    <Button
+                                        variant="outline"
+                                        className="bg-red-500/20 backdrop-blur-md text-red-200 border border-red-500/30 hover:bg-red-500/30 p-2 h-10 w-10 flex items-center justify-center"
+                                        onClick={() => handleDeletePattern(pattern.id)}
+                                    >
+                                        <FaTrash />
                                     </Button>
-                                </Link>
-                                <Button
-                                    variant="outline"
-                                    className="text-red-500 border-red-500 hover:bg-red-50 p-2 h-10 w-10 flex items-center justify-center"
-                                    onClick={() => handleDeletePattern(pattern.id)}
-                                >
-                                    <FaTrash />
-                                </Button>
-                            </CardFooter>
-                        </Card>
+                                </div>
+                            </div>
+                        </div>
                     ))
                 ) : (
-                    <div className="col-span-full bg-gray-100 dark:bg-gray-800 p-8 rounded-lg text-center">
-                        <p className="text-xl font-medium text-gray-700 dark:text-gray-300 mb-4">No hay patrones disponibles</p>
-                        <p className="text-gray-500 mb-4">Crea tu primer patrón para empezar</p>
-                        <Button
-                            onClick={() => setIsCreateModalOpen(true)}
-                            className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2"
-                        >
-                            <FaPlus className="h-4 w-4" /> Crear Patrón
-                        </Button>
+                    <div className="col-span-full rounded-xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] relative p-8">
+                        {/* Decorative elements for glassmorphism effect */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
+
+                        <div className="relative z-10 text-center">
+                            <p className="text-xl font-medium text-white mb-4">No hay patrones disponibles</p>
+                            <p className="text-gray-300 mb-4">Crea tu primer patrón para empezar</p>
+                            <Button
+                                onClick={() => setIsCreateModalOpen(true)}
+                                className="bg-gradient-to-r from-purple-700 via-purple-600 to-indigo-700 text-white hover:shadow-[0_4px_20px_rgba(123,58,237,0.7)] border border-white/10 flex items-center gap-2"
+                            >
+                                <FaPlus className="h-4 w-4" /> Crear Patrón
+                            </Button>
+                        </div>
                     </div>
                 )}
             </div>
 
             {/* Create Pattern Modal */}
             <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-                <ResponsiveDialogContent className="hide-scrollbar">
+                <ResponsiveDialogContent className="hide-scrollbar bg-black/80 backdrop-blur-md border border-white/10 shadow-[0_0_30px_rgba(123,58,237,0.3)]">
                     <ResponsiveDialogHeader>
-                        <DialogTitle>Crear Nuevo Patrón</DialogTitle>
-                        <DialogDescription>
+                        <DialogTitle className="bg-gradient-to-b from-white to-purple-200 bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(255,255,255,0.5)]">Crear Nuevo Patrón</DialogTitle>
+                        <DialogDescription className="text-gray-300">
                             Completa los datos para crear un nuevo patrón de ganancia
                         </DialogDescription>
                     </ResponsiveDialogHeader>
                     <div className="grid gap-3 py-2">
                         <div className="grid gap-2">
-                            <Label htmlFor="name">Nombre del Patrón</Label>
+                            <Label htmlFor="name" className="text-gray-200">Nombre del Patrón</Label>
                             <Input
                                 id="name"
                                 value={newPattern.name}
                                 onChange={(e) => setNewPattern({ ...newPattern, name: e.target.value })}
                                 placeholder="Ej: Línea horizontal"
                                 mobileFriendly
+                                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                             />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="description">Descripción</Label>
+                            <Label htmlFor="description" className="text-gray-200">Descripción</Label>
                             <Textarea
                                 id="description"
-                                className="max-h-24"
+                                className="max-h-24 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                                 value={newPattern.description}
                                 onChange={(e) => setNewPattern({ ...newPattern, description: e.target.value })}
                                 placeholder="Describe el patrón..."
                             />
                         </div>
                         <div className="grid gap-2">
-                            <Label>Selecciona las posiciones para tu patrón</Label>
+                            <Label className="text-gray-200">Selecciona las posiciones para tu patrón</Label>
                             <div className="max-w-full">
                                 <PatternEditor
                                     selectedPositions={newPattern.positions}
@@ -225,12 +228,16 @@ export default function WinningPatternsPanel() {
                         </div>
                     </div>
                     <ResponsiveDialogFooter>
-                        <Button variant="outline" onClick={() => setIsCreateModalOpen(false)}>
+                        <Button
+                            variant="outline"
+                            onClick={() => setIsCreateModalOpen(false)}
+                            className="bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20"
+                        >
                             Cancelar
                         </Button>
                         <Button
                             onClick={handleCreatePattern}
-                            className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white"
+                            className="bg-gradient-to-r from-purple-700 to-indigo-700 hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] border border-white/10 text-white"
                             disabled={!newPattern.name || newPattern.positions.length === 0}
                         >
                             Crear Patrón

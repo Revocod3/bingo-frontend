@@ -207,8 +207,8 @@ export default function SellerDashboard() {
 
             {selectedEventId && (
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="w-full grid-cols-2 sm:grid-cols-4 grid mb-6">
-                        <TabsTrigger value="generate" className="flex items-center justify-center gap-2 py-3 sm:py-2">
+                    <TabsList className="w-full grid-cols-2 sm:grid-cols-4 grid mb-6 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl p-1 shadow-[0_0_15px_rgba(123,58,237,0.15)]">
+                        <TabsTrigger value="generate" className="flex items-center justify-center gap-2 py-3 sm:py-2 cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-700 data-[state=active]:to-indigo-700 data-[state=active]:border-purple-500/50 data-[state=active]:shadow-[0_0_10px_rgba(139,92,246,0.3)] text-white rounded-lg">
                             <FaIdCard className="h-5 w-5 sm:h-4 sm:w-4" />
                             <span className="hidden sm:inline">Generar</span>
                         </TabsTrigger>
