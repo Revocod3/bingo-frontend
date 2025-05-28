@@ -181,82 +181,114 @@ export default function GamePlayPage() {
       </div>
 
       {/* Estado y último número prominentes */}
-      <div className="flex flex-col sm:flex-row justify-between items-ceenter bg-gradient-to-r from-purple-50 to-indigo-50 p-3 sm:p-4 rounded-lg shadow mb-4">
-        <div className="flex flex-row items-center gap-2">
-          <p className="text-xs sm:text-sm text-gray-500">Estado del juego:</p>
-          <div className="flex items-center gap-2">
-            <span
-              className={`font-medium text-sm sm:text-lg ${isLive ? 'text-indigo-700' : 'text-red-600'
-                }`}
-            >
-              {isLive ? 'En vivo' : 'Desconectado'}
+      <div className="rounded-2xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] mb-5 relative">
+        {/* Decorative elements for glassmorphism effect */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
+
+        {/* Encabezado con gradiente similar a BingoCard */}
+        <div className="w-full relative z-10 bg-gradient-to-r from-purple-700 to-indigo-700 shadow-md">
+          <div className="text-center font-bold py-2 text-sm sm:text-base text-white">
+            <span className="inline-block bg-gradient-to-b from-white to-purple-200 bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(255,255,255,0.5)]">
+              Estado del Juego
             </span>
-            <div
-              className={`h-3 w-3 rounded-full ${isLive
-                ? 'bg-gradient-to-r from-purple-500 to-green-400 animate-pulse shadow-sm'
-                : 'bg-gradient-to-r from-red-500 to-orange-400 shadow-sm'
-                }`}
-            ></div>
           </div>
         </div>
 
-        <div className="flex flex-row items-center gap-2">
-          <p className="text-xs sm:text-sm text-gray-500">Último número llamado:</p>
-          {lastCalledNumber ? (
-            <div className="relative">
-              <div
-                className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full 
-                  bg-gradient-to-r from-purple-600 to-indigo-600 
-                  shadow-lg flex items-center justify-center
-                  ${isAnimating ? 'animate-pulse ring-4 ring-yellow-400 scale-110' : ''}
-                  transition-all duration-300`}
-              >
-                <span className="text-white text-2xl sm:text-3xl font-bold">
-                  {lastCalledNumber}
+        {/* Contenido del estado del juego */}
+        <div className="w-full p-4 bg-black/20 backdrop-blur-sm relative z-10">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            {/* Estado del juego */}
+            <div className="flex flex-row items-center gap-3 relative z-10">
+              <p className="text-xs sm:text-sm text-gray-300 font-medium">Estado:</p>
+              <div className="flex items-center gap-2">
+                <span
+                  className={`font-semibold text-sm sm:text-lg ${isLive ? 'text-purple-300' : 'text-red-400'
+                    }`}
+                >
+                  {isLive ? 'En vivo' : 'Desconectado'}
                 </span>
+                <div
+                  className={`h-3 w-3 rounded-full ${isLive
+                    ? 'bg-gradient-to-r from-purple-500 to-green-400 animate-pulse shadow-[0_0_8px_rgba(167,139,250,0.6)]'
+                    : 'bg-gradient-to-r from-red-500 to-orange-400 shadow-md'
+                    }`}
+                ></div>
               </div>
-              {isAnimating && previousNumber && (
-                <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center opacity-0 animate-fade-out">
-                  <span className="text-yellow-500 text-3xl font-bold absolute -top-6 -right-6 bg-white rounded-full px-2 py-1 border border-yellow-400">
-                    {previousNumber}
-                  </span>
+            </div>
+
+            {/* Último número llamado */}
+            <div className="flex flex-row items-center gap-3 relative z-10">
+              <p className="text-xs sm:text-sm text-gray-300 font-medium">Último número:</p>
+              {lastCalledNumber ? (
+                <div className="relative">
+                  <div
+                    className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full 
+                      bg-gradient-to-r from-purple-600 to-indigo-600 
+                      shadow-[0_0_15px_rgba(139,92,246,0.4)] flex items-center justify-center
+                      ${isAnimating ? 'animate-pulse ring-4 ring-yellow-400 scale-110' : ''}
+                      transition-all duration-300`}
+                  >
+                    <span className="text-white text-2xl sm:text-3xl font-bold">
+                      {lastCalledNumber}
+                    </span>
+                  </div>
+                  {isAnimating && previousNumber && (
+                    <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center opacity-0 animate-fade-out">
+                      <span className="text-yellow-500 text-3xl font-bold absolute -top-6 -right-6 bg-white/10 backdrop-blur-sm rounded-full px-2 py-1 border border-yellow-400/50 shadow-[0_0_10px_rgba(251,191,36,0.5)]">
+                        {previousNumber}
+                      </span>
+                    </div>
+                  )}
                 </div>
+              ) : (
+                <span className="text-xs font-medium text-gray-400">Ninguno aún</span>
               )}
             </div>
-          ) : (
-            <span className="text-xs font-medium text-gray-400">Ninguno aún</span>
-          )}
-        </div>
 
-        <div className="flex flex-row items-center gap-2">
-          <p className="text-xs sm:text-sm text-gray-500">Números cantados:</p>
-          <div className="flex items-center gap-2">
-            <span className="font-medium text-sm sm:text-lg text-indigo-700">
-              {calledNumbers.length}/75
-            </span>
+            {/* Números cantados counter */}
+            <div className="flex flex-row items-center gap-3 relative z-10">
+              <p className="text-xs sm:text-sm text-gray-300 font-medium">Cantados:</p>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-sm sm:text-lg text-purple-300">
+                  {calledNumbers.length}/75
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       {/* Lista de números cantados en versión compacta */}
-      <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-white rounded-lg shadow-sm border border-indigo-100">
-        <h3 className="text-base sm:text-lg font-semibold mb-2 text-indigo-700">
-          Números Cantados
-        </h3>
-        <div className="flex flex-wrap justify-start gap-1 sm:gap-2">
-          {calledNumbers.length > 0 ? (
-            calledNumbers.map((num, index) => (
-              <span
-                key={index}
-                className="inline-block min-w-[30px] text-center py-1 bg-indigo-100 text-indigo-800 text-xs rounded-md"
-              >
-                {num}
-              </span>
-            ))
-          ) : (
-            <span className="text-gray-500 italic text-xs sm:text-sm">
-              Aún no se han llamado números
+      <div className="mt-6 sm:mt-8 rounded-2xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] relative">
+        {/* Decorative elements for glassmorphism effect */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
+
+        {/* Encabezado con gradiente similar a BingoCard */}
+        <div className="grid grid-cols-1 relative z-10 bg-gradient-to-r from-purple-700 to-indigo-700 shadow-md">
+          <div className="text-center font-bold py-3 text-sm sm:text-base text-white">
+            <span className="inline-block bg-gradient-to-b from-white to-purple-200 bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(255,255,255,0.5)]">
+              Números Cantados
             </span>
-          )}
+          </div>
+        </div>
+
+        {/* Contenido de números */}
+        <div className="p-4 bg-black/20 backdrop-blur-sm relative z-10">
+          <div className="flex flex-wrap justify-start gap-1.5 sm:gap-2 relative z-10">
+            {calledNumbers.length > 0 ? (
+              calledNumbers.map((num, index) => (
+                <div
+                  key={index}
+                  className="aspect-square min-w-[32px] h-8 flex items-center justify-center rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 backdrop-blur-sm shadow-sm border border-white/5 bg-purple-500/30 text-white border-purple-500/30 shadow-[0_0_10px_rgba(139,92,246,0.3)]"
+                >
+                  {num}
+                </div>
+              ))
+            ) : (
+              <span className="text-gray-300 italic text-xs sm:text-sm">
+                Aún no se han llamado números
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
