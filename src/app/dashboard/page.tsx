@@ -56,7 +56,7 @@ export default function DashboardPage() {
     }
 
     return (
-      <div className="container mx-auto pt-6 pb-12 px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto pt-6 pb-4 px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent drop-shadow-sm">
