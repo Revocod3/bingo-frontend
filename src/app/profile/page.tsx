@@ -54,153 +54,188 @@ export default function ProfilePage() {
             <h1 className="text-2xl font-bold mb-8 text-left">Tu Perfil</h1>
 
             <div className="grid grid-cols-1 gap-6">
-                {/* Main Profile Information */}
-                <Card className='pt-2 bg-gradient-to-l from-yellow-50 border-0 to-purple-100 shadow-lg'>
-                    <CardHeader className="px-4">
-                        <CardTitle className="text-lg m-0 p-0">Saldo de Cuenta</CardTitle>
-                    </CardHeader>
-                    <CardContent className='pb-6 m-0'>
+                {/* Saldo de cuenta con glassmorphism */}
+                <div className="rounded-2xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] relative">
+                    {/* Decorative elements for glassmorphism effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
+
+                    {/* Encabezado con gradiente */}
+                    <div className="w-full relative z-10 bg-gradient-to-r from-purple-700 to-indigo-700 shadow-md">
+                        <div className="text-center font-bold py-2 text-sm sm:text-base text-white">
+                            <span className="inline-block bg-gradient-to-b from-white to-purple-200 bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(255,255,255,0.5)]">
+                                Saldo de Cuenta
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Contenido */}
+                    <div className="w-full p-4 bg-black/20 backdrop-blur-sm relative z-10">
                         <div className="flex justify-center flex-col md:flex-row items-center gap-2">
                             <TestCoinBadge />
                             <Button
                                 variant="outline"
                                 size="sm"
-                                className="rounded-lg hover:bg-purple-100 cursor-pointer"
+                                className="bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 cursor-pointer"
                                 onClick={() => router.push('/deposits')}
                             >
-                                <span className="flex items-center gap-1.5 text-gray-800">
+                                <span className="flex items-center gap-1.5">
                                     Depósitos <FaHistory size={14} />
                                 </span>
                             </Button>
                         </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="pb-4">
-                        <div className="flex justify-between items-center">
-                            <CardTitle className="text-xl md:text-2xl">Información Personal</CardTitle>
+                    </div>
+                </div>
+                {/* Información Personal con glassmorphism */}
+                <div className="rounded-2xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] relative">
+                    {/* Decorative elements for glassmorphism effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
+
+                    {/* Encabezado con gradiente */}
+                    <div className="w-full relative z-10 bg-gradient-to-r from-purple-700 to-indigo-700 shadow-md">
+                        <div className="flex justify-between items-center px-4 py-3">
+                            <div className="text-center font-bold text-sm sm:text-base text-white">
+                                <span className="inline-block bg-gradient-to-b from-white to-purple-200 bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(255,255,255,0.5)]">
+                                    Información Personal
+                                </span>
+                            </div>
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-muted-foreground hover:text-primary"
+                                className="text-white/80 hover:text-white hover:bg-white/10"
                                 onClick={() => setIsEditing(!isEditing)}
                             >
                                 <FaEdit className="mr-2" />
                                 {isEditing ? 'Cancelar' : 'Editar'}
                             </Button>
                         </div>
-                        <CardDescription>
+                        <div className="text-white/70 text-xs px-4 pb-2">
                             Administra tus datos personales y cuenta
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="pb-6 space-y-6">
+                        </div>
+                    </div>
+
+                    {/* Contenido */}
+                    <div className="w-full p-4 bg-black/20 backdrop-blur-sm relative z-10 space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-1">
-                                <div className="text-sm text-muted-foreground flex items-center">
-                                    <FaUser className="mr-2 text-primary" />
+                                <div className="text-sm text-gray-300 flex items-center">
+                                    <FaUser className="mr-2 text-purple-300" />
                                     Nombre
                                 </div>
-                                <div className="font-medium">
+                                <div className="font-medium text-white">
                                     {user.first_name || 'No especificado'} {user.last_name || ''}
                                 </div>
                             </div>
 
                             <div className="space-y-1">
-                                <div className="text-sm text-muted-foreground flex items-center">
-                                    <FaEnvelope className="mr-2 text-primary" />
+                                <div className="text-sm text-gray-300 flex items-center">
+                                    <FaEnvelope className="mr-2 text-purple-300" />
                                     Correo Electrónico
                                 </div>
-                                <div className="font-medium">
+                                <div className="font-medium text-white">
                                     {user.email}
                                 </div>
                             </div>
 
                             <div className="space-y-1">
-                                <div className="text-sm text-muted-foreground flex items-center">
-                                    <FaCalendarAlt className="mr-2 text-primary" />
+                                <div className="text-sm text-gray-300 flex items-center">
+                                    <FaCalendarAlt className="mr-2 text-purple-300" />
                                     Miembro desde
                                 </div>
-                                <div className="font-medium">
+                                <div className="font-medium text-white">
                                     {formattedDate}
                                 </div>
                             </div>
 
                             <div className="space-y-1">
-                                <div className="text-sm text-muted-foreground flex items-center">
-                                    <FaCrown className="mr-2 text-primary" />
+                                <div className="text-sm text-gray-300 flex items-center">
+                                    <FaCrown className="mr-2 text-purple-300" />
                                     Tipo de cuenta
                                 </div>
                                 <div className="font-medium">
                                     {user.is_staff ?
-                                        <Badge variant="secondary" className="bg-purple-100 text-purple-800 hover:bg-purple-200">Administrador</Badge> :
-                                        <Badge variant="secondary" className="bg-blue-100 text-blue-800 hover:bg-blue-200">Jugador</Badge>
+                                        <Badge className="bg-purple-500/40 text-purple-200 backdrop-blur-sm border border-purple-500/30">Administrador</Badge> :
+                                        <Badge className="bg-indigo-500/40 text-indigo-200 backdrop-blur-sm border border-indigo-500/30">Jugador</Badge>
                                     }
                                 </div>
                             </div>
                         </div>
-                    </CardContent>
-                    <CardFooter>
-                        {isEditing ? (
-                            <div className="w-full space-y-4">
-                                <p className="text-muted-foreground text-sm">
-                                    La edición de perfil se implementará pronto. Podrás cambiar tu nombre, contraseña y más.
+
+                        {/* Footer info */}
+                        <div className="pt-3 border-t border-white/10">
+                            {isEditing ? (
+                                <div className="w-full space-y-4">
+                                    <p className="text-gray-300 text-sm">
+                                        La edición de perfil se implementará pronto. Podrás cambiar tu nombre, contraseña y más.
+                                    </p>
+                                    <Button
+                                        className="w-full bg-gradient-to-r from-purple-700 via-purple-600 to-indigo-700 hover:shadow-[0_4px_20px_rgba(123,58,237,0.7)] border border-white/10"
+                                        onClick={() => setIsEditing(false)}
+                                    >
+                                        Guardar Cambios
+                                    </Button>
+                                </div>
+                            ) : (
+                                <p className="text-gray-300 text-sm">
+                                    Tu información está segura y es privada. Solo tú puedes verla y editarla.
                                 </p>
-                                <Button
-                                    className="w-full"
-                                    onClick={() => setIsEditing(false)}
-                                >
-                                    Guardar Cambios
-                                </Button>
-                            </div>
-                        ) : (
-                            <p className="text-muted-foreground text-sm">
-                                Tu información está segura y es privada. Solo tú puedes verla y editarla.
-                            </p>
-                        )}
-                    </CardFooter>
-                </Card>
+                            )}
+                        </div>
+                    </div>
+                </div>
 
 
                 {/* Stats and Account Info */}
                 <div className="space-y-6">
+                    {/* Estadísticas con glassmorphism */}
+                    <div className="rounded-2xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] relative">
+                        {/* Decorative elements for glassmorphism effect */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
 
-                    <Card>
-                        <CardHeader className="pb-2">
-                            <CardTitle className="text-lg">Estadísticas</CardTitle>
-                        </CardHeader>
-                        <CardContent className="pb-6 space-y-4">
-                            <div className="flex justify-between items-center">
-                                <span className="text-muted-foreground flex items-center">
-                                    <FaGamepad className="mr-2 text-primary" />
-                                    Eventos Jugados
+                        {/* Encabezado con gradiente */}
+                        <div className="w-full relative z-10 bg-gradient-to-r from-purple-700 to-indigo-700 shadow-md">
+                            <div className="text-center font-bold py-2 text-sm sm:text-base text-white">
+                                <span className="inline-block bg-gradient-to-b from-white to-purple-200 bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(255,255,255,0.5)]">
+                                    Estadísticas
                                 </span>
-                                <Badge variant="outline" className="font-bold">0</Badge>
                             </div>
-                            <div className="flex justify-between items-center">
-                                <span className="text-muted-foreground flex items-center">
-                                    <FaReceipt className="mr-2 text-primary" />
-                                    Cartones Comprados
-                                </span>
-                                <Badge variant="outline" className="font-bold">0</Badge>
+                        </div>
+
+                        {/* Contenido */}
+                        <div className="w-full p-4 bg-black/20 backdrop-blur-sm relative z-10">
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-gray-300 flex items-center">
+                                        <FaGamepad className="mr-2 text-purple-300" />
+                                        Eventos Jugados
+                                    </span>
+                                    <Badge className="bg-black/30 backdrop-blur-sm text-white border border-white/20 font-bold">0</Badge>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-gray-300 flex items-center">
+                                        <FaReceipt className="mr-2 text-purple-300" />
+                                        Cartones Comprados
+                                    </span>
+                                    <Badge className="bg-black/30 backdrop-blur-sm text-white border border-white/20 font-bold">0</Badge>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-gray-300 flex items-center">
+                                        <FaTrophy className="mr-2 text-purple-300" />
+                                        Victorias
+                                    </span>
+                                    <Badge className="bg-black/30 backdrop-blur-sm text-white border border-white/20 font-bold">0</Badge>
+                                </div>
                             </div>
-                            <div className="flex justify-between items-center">
-                                <span className="text-muted-foreground flex items-center">
-                                    <FaTrophy className="mr-2 text-primary" />
-                                    Victorias
-                                </span>
-                                <Badge variant="outline" className="font-bold">0</Badge>
+
+                            <div className="mt-6 pt-3 border-t border-white/10">
+                                <Button
+                                    className="w-full bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20"
+                                    onClick={() => router.push('/dashboard')}
+                                >
+                                    Ver Todos los Eventos
+                                </Button>
                             </div>
-                        </CardContent>
-                        <CardFooter>
-                            <Button
-                                variant="outline"
-                                className="w-full"
-                                onClick={() => router.push('/dashboard')}
-                            >
-                                Ver Todos los Eventos
-                            </Button>
-                        </CardFooter>
-                    </Card>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div >
