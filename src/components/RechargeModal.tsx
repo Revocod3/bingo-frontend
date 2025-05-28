@@ -8,6 +8,7 @@ import { useDepositRequest, useDepositConfirm } from '@/hooks/api/useTestCoins';
 import { useActivePaymentMethods } from '@/hooks/api/usePaymentMethods';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useCurrentExchangeRates } from '../hooks/api/useExchangeRates';
+import { cn } from '@/lib/utils';
 
 interface RechargeModalProps {
     isOpen: boolean;
@@ -197,14 +198,17 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
             <div className="mt-4">
                 {/* MUI-style floating label for amount display */}
                 <div className="relative mb-4">
-                    <div className="border border-[#e5e7eb] bg-white rounded-lg py-3 px-4 shadow-sm relative group focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 hover:border-gray-400 transition-colors">
-                        <label className="absolute text-xs font-medium text-gray-500 left-2 -top-2 bg-white px-1 transition-all">
-                            Monto a recargar:
-                        </label>
-                        <div className="flex justify-center">
-                            <div className="text-5xl font-bold flex items-center">
-                                <span className="text-gray-500 text-2xl">$</span>
-                                <span>{amountStr || '0'}</span>
+                    <div className="rounded-xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] p-4 relative">
+                        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
+                        <div className="relative z-10">
+                            <label className="absolute text-xs font-medium text-gray-300 left-3 -top-2 bg-black/50 px-2 py-0.5 rounded backdrop-blur-md transition-all border border-white/10">
+                                Monto a recargar:
+                            </label>
+                            <div className="flex justify-center">
+                                <div className="text-5xl font-bold flex items-center">
+                                    <span className="text-white/70 text-2xl">$</span>
+                                    <span className="text-white">{amountStr || '0'}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -216,7 +220,10 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
                             key={digit}
                             type="button"
                             variant="outline"
-                            className={`h-14 text-xl font-semibold ${digit === '0' ? 'col-span-3' : ''}`}
+                            className={cn(
+                                "h-14 text-xl font-semibold bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 transition-all",
+                                digit === '0' ? 'col-span-3' : ''
+                            )}
                             onClick={() => handleKeypadPress(digit)}
                         >
                             {digit}
@@ -228,7 +235,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
                     <Button
                         type="button"
                         variant="outline"
-                        className="h-14"
+                        className="h-14 bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 transition-all"
                         onClick={handleClear}
                     >
                         Limpiar
@@ -236,7 +243,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
                     <Button
                         type="button"
                         variant="outline"
-                        className="h-14"
+                        className="h-14 bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 transition-all"
                         onClick={handleBackspace}
                     >
                         <FaBackspace className="h-5 w-5" />
@@ -247,7 +254,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
                     <Button
                         onClick={handleSubmitAmount}
                         disabled={isLoading || !amountStr}
-                        className="w-full h-14 bg-purple-600 hover:bg-purple-700 text-white"
+                        className="w-full h-14 bg-gradient-to-r from-purple-700 to-indigo-700 hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] border border-white/10 text-white transition-all"
                     >
                         {isLoading ? 'Procesando...' : 'Continuar'}
                     </Button>
@@ -258,15 +265,18 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
 
     return (
         <Dialog open={isOpen} onOpenChange={handleClose}>
-            <ResponsiveDialogContent className="text-gray-800 bg-white rounded-xl shadow-md">
-                <ResponsiveDialogHeader>
-                    <DialogTitle className="flex items-center gap-2 text-xl xs:text-lg font-medium">
+            <ResponsiveDialogContent className="relative rounded-xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] text-white">
+                {/* Decorative elements for glassmorphism effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
+
+                <ResponsiveDialogHeader className="relative z-10">
+                    <DialogTitle className="flex items-center justify-center gap-2 text-xl xs:text-lg font-medium text-white">
                         {currentStep === 1 && "Recargar Monedas USD"}
                         {currentStep === 2 && "Información de Pago"}
                         {currentStep === 3 && "Solicitud de Recarga Exitosa"}
                         <FaCoins className="text-yellow-500" />
                     </DialogTitle>
-                    <DialogDescription className="xs:text-xs">
+                    <DialogDescription className="xs:text-xs text-gray-300">
                         {currentStep === 1 && "Ingresa el monto que deseas recargar en tu cuenta."}
                         {currentStep === 2 && "Completa tu pago usando esta información."}
                         {currentStep === 3 && "¡Tu recarga ha sido procesada exitosamente!"}
@@ -286,23 +296,24 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
                 )}
 
                 {currentStep === 2 && (
-                    <div className="grid gap-3">
-                        <div className="bg-white rounded-md">
-                            {/* Unique Code Section - MUI style floating label */}
-                            <div className="mb-6 mt-2">
+                    <div className="grid gap-3 relative z-10">
+                        <div className="rounded-xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] p-4 relative">
+                            <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
+                            {/* Unique Code Section */}
+                            <div className="mb-4 relative z-10">
                                 <div className="relative">
-                                    <div className="border border-[#e5e7eb] bg-white rounded-lg p-3 pt-3 pb-3 shadow-sm relative group focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 hover:border-gray-400 transition-colors">
-                                        <label className="absolute text-xs font-medium text-gray-500 left-2 -top-2 bg-white px-1 transition-all">
+                                    <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-lg p-3 relative">
+                                        <label className="absolute text-xs font-medium text-gray-300 left-3 -top-2 bg-black/70 px-2 py-0.5 rounded border border-white/10">
                                             Código Único:
                                         </label>
                                         <div className="flex items-center justify-between">
-                                            <code className="text-[#111827] text-xl font-mono font-semibold tracking-wider">
+                                            <code className="text-white text-xl font-mono font-semibold tracking-wider">
                                                 {uniqueCode}
                                             </code>
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
-                                                className="ml-2 p-1 h-8 rounded-md bg-[#f3f4f6] hover:bg-[#e5e7eb] text-[#4b5563] cursor-pointer"
+                                                className="ml-2 p-1 h-8 rounded-md bg-white/10 hover:bg-white/20 text-white cursor-pointer"
                                                 onClick={() => copyToClipboard(uniqueCode)}
                                                 title="Copiar"
                                             >
@@ -314,16 +325,16 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
                             </div>
 
                             {/* Payment Methods */}
-                            <div className="space-y-3">
-                                <h4 className="font-medium text-gray-700">Métodos de Pago</h4>
+                            <div className="space-y-3 relative z-10">
+                                <h4 className="font-medium text-gray-200">Métodos de Pago</h4>
 
                                 <Tabs defaultValue="bank" value={activePaymentMethod} onValueChange={setActivePaymentMethod}>
-                                    <TabsList className="w-full bg-[#f9fafb] p-1 rounded-lg">
+                                    <TabsList className="w-full bg-black/30 backdrop-blur-md border border-white/10 rounded-xl p-1 shadow-[0_0_15px_rgba(123,58,237,0.15)]">
                                         {paymentMethods.map(method => (
                                             <TabsTrigger
                                                 key={method.id}
                                                 value={method.id ?? ''}
-                                                className="flex items-center gap-2 text-sm py-2 rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm cursor-pointer"
+                                                className="flex items-center gap-2 text-sm py-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-700 data-[state=active]:to-indigo-700 data-[state=active]:border-purple-500/50 data-[state=active]:shadow-[0_0_10px_rgba(139,92,246,0.3)] text-white"
                                             >
                                                 {method.icon}
                                                 <span>{method.name}</span>
@@ -332,73 +343,39 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
                                     </TabsList>
 
                                     {paymentMethods.map(method => (
-                                        <TabsContent key={method.id} value={method.id ?? ''}>
-                                            <p className="text-sm text-gray-600 mb-3">{method.instructions}</p>
-                                            <div className="font-mono bg-[#f9fafb] p-4 rounded-xl space-y-3 shadow-sm border border-[#e5e7eb]">
-                                                {Object.entries(method.details).map(([key, value]) => (
-                                                    <div key={key} className="flex items-center justify-between">
-                                                        <span className="font-medium text-gray-700">{key}:</span>
-                                                        <div className="flex items-center">
-                                                            {key === 'link' ? (
-                                                                <a
-                                                                    href={`https://${value}`}
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="text-blue-600 hover:underline"
-                                                                >
-                                                                    WhatsApp
-                                                                </a>
-                                                            ) : (
-                                                                <span className="text-gray-800">{value}</span>
-                                                            )}
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="sm"
-                                                                className="ml-2 h-6 w-6 rounded-full hover:bg-gray-200 p-1 cursor-pointer"
-                                                                onClick={() => copyToClipboard(value)}
-                                                                title={`Copiar ${key}`}
-                                                            >
-                                                                <FaClipboard className="h-3 w-3 text-gray-500 cursor-pointer" />
-                                                            </Button>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                            <div className="mt-3 text-sm">
-                                                <div className="bg-[#f9fafb] p-3 rounded-lg border border-[#e5e7eb] mt-3">
-
-                                                    <div className="relative mb-3">
-                                                        <div className="border border-[#e5e7eb] bg-white rounded-lg p-3 shadow-sm relative group">
-                                                            <label className="absolute text-xs font-medium text-gray-500 left-2 -top-2 bg-white px-1">
-                                                                Monto a pagar:
-                                                            </label>
-                                                            <div className="flex items-center justify-between">
-                                                                <span className="text-lg font-bold text-purple-700">
-                                                                    {localAmount(Number(amountStr), method.name as string)}
-                                                                    {
-                                                                        method.name === 'Nequi'
-                                                                            ? ' COP'
-                                                                            : ' VEF'
-                                                                    }
-                                                                </span>
+                                        <TabsContent key={method.id} value={method.id ?? ''} className="relative">
+                                            <p className="text-sm text-gray-300 mb-3">{method.instructions}</p>
+                                            <div className="font-mono backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] p-4 rounded-xl space-y-3 relative">
+                                                <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
+                                                <div className="relative z-10">
+                                                    {Object.entries(method.details).map(([key, value]) => (
+                                                        <div key={key} className="flex items-center justify-between">
+                                                            <span className="font-medium text-gray-300">{key}:</span>
+                                                            <div className="flex items-center">
+                                                                {key === 'link' ? (
+                                                                    <a
+                                                                        href={`https://${value}`}
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        className="text-purple-400 hover:underline"
+                                                                    >
+                                                                        WhatsApp
+                                                                    </a>
+                                                                ) : (
+                                                                    <span className="text-white">{value}</span>
+                                                                )}
                                                                 <Button
                                                                     variant="ghost"
                                                                     size="sm"
-                                                                    className="ml-2 p-1 h-8 rounded-md bg-[#f3f4f6] hover:bg-[#e5e7eb] text-[#4b5563] cursor-pointer"
-                                                                    onClick={() => copyToClipboard(String(localAmount(Number(amountStr), method.name as string)))}
-                                                                    title="Copiar monto"
+                                                                    className="ml-2 h-6 w-6 rounded-full hover:bg-white/20 p-1 cursor-pointer"
+                                                                    onClick={() => copyToClipboard(value)}
+                                                                    title={`Copiar ${key}`}
                                                                 >
-                                                                    <FaClipboard className="mr-1 h-3 w-3" /> Copiar
+                                                                    <FaClipboard className="h-3 w-3 text-gray-300 cursor-pointer" />
                                                                 </Button>
                                                             </div>
-                                                            <p className="text-xs text-gray-600 mb-2 font-thin">Monto de la recarga: <span className="font-semibold">${amountStr} USD</span></p>
                                                         </div>
-                                                    </div>
-
-                                                    <p className="text-gray-600 text-xs rounded-lg p-2 bg-gradient-to-r from-yellow-100 to-yellow-50">
-                                                        <FaInfoCircle className="inline-block mr-1" />
-                                                        No olvides incluir el código único <span className="font-semibold">{uniqueCode}</span> en el concepto de la transacción.
-                                                    </p>
+                                                    ))}
                                                 </div>
                                             </div>
                                         </TabsContent>
@@ -408,21 +385,26 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
                         </div>
 
                         {/* Reference Input - also update to match MUI style */}
-                        <div className="mt-2">
-                            <div className="relative ">
-                                <Input
-                                    id="reference"
-                                    className="w-full h-14 px-4 pt-2 rounded-lg border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-                                    value={reference}
-                                    onChange={(e) => setReference(e.target.value)}
-                                    placeholder=" "
-                                />
-                                <label
-                                    htmlFor="reference"
-                                    className="absolute text-xs font-medium text-gray-500 left-3 -top-2 bg-white px-1 transition-all pointer-events-none"
-                                >
-                                    Referencia de tu pago
-                                </label>
+                        <div className="mt-2 relative z-10">
+                            <div className="relative">
+                                <div className="rounded-xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] p-1 relative">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
+                                    <div className="relative z-10 p-2">
+                                        <Input
+                                            id="reference"
+                                            className="w-full h-14 px-4 pt-2 rounded-lg bg-black/40 backdrop-blur-md border-white/10 text-white focus:border-purple-500/50 focus:ring-purple-500/30"
+                                            value={reference}
+                                            onChange={(e) => setReference(e.target.value)}
+                                            placeholder=" "
+                                        />
+                                        <label
+                                            htmlFor="reference"
+                                            className="absolute text-xs font-medium text-gray-300 left-5 top-0 px-2 py-0.5 transition-all pointer-events-none"
+                                        >
+                                            Referencia de tu pago
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -430,14 +412,14 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
                             <Button
                                 onClick={handleSubmitReference}
                                 disabled={isLoading}
-                                className="w-full h-14 bg-purple-600 hover:bg-purple-700 text-white cursor-pointer"
+                                className="w-full h-14 bg-gradient-to-r from-purple-700 to-indigo-700 hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] border border-white/10 text-white cursor-pointer transition-all"
                             >
                                 {isLoading ? 'Procesando...' : 'Confirmar Pago'}
                             </Button>
                             <Button
                                 variant="outline"
                                 onClick={() => setCurrentStep(1)}
-                                className="w-full text-gray-600 border-gray-300 cursor-pointer hover:bg-gray-100"
+                                className="w-full bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 cursor-pointer transition-all"
                                 disabled={isLoading}
                             >
                                 Atrás
@@ -447,40 +429,43 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
                 )}
 
                 {currentStep === 3 && (
-                    <div className="py-4 flex flex-col items-center">
-                        <div className="mb-4 bg-green-50 p-4 rounded-full">
-                            <FaCheck className="h-12 w-12 text-green-500" />
+                    <div className="py-4 flex flex-col items-center relative z-10">
+                        <div className="mb-4 bg-white/10 backdrop-blur-md rounded-full p-5 border border-white/20 shadow-[0_0_15px_rgba(139,92,246,0.3)]">
+                            <FaCheck className="h-12 w-12 text-green-400" />
                         </div>
-                        <h3 className="text-xl font-medium mb-2 text-center">
+                        <h3 className="text-xl font-medium mb-2 text-center text-white">
                             ¡Solicitud confirmada!
                         </h3>
-                        <p className="text-gray-600 text-center mb-4">
+                        <p className="text-gray-300 text-center mb-4">
                             Tu solicitud de recarga se ha enviado correctamente.
                             Recibirás los fondos en tu cuenta tan pronto como se verifique el pago.
                         </p>
                         <p className="text-gray-400 text-xs text-center mb-4">
                             Por lo general se verifica en minutos, pero hay casos que puede tardar hasta 24 horas.
                         </p>
-                        <div className="w-full bg-gray-50 p-4 rounded-lg">
-                            <div className="flex justify-between mb-2">
-                                <span className="text-gray-600">Monto:</span>
-                                <span className="font-medium">${amountStr} USD</span>
-                            </div>
-                            <div className="flex justify-between mb-2">
-                                <span className="text-gray-600">Referencia:</span>
-                                <span className="font-medium">{reference}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-gray-600">Método de pago:</span>
-                                <span className="font-medium">
-                                    {paymentMethods.find(m => m.id === activePaymentMethod)?.name || 'Transferencia'}
-                                </span>
+                        <div className="w-full rounded-xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] p-4 relative">
+                            <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
+                            <div className="relative z-10">
+                                <div className="flex justify-between mb-2">
+                                    <span className="text-gray-300">Monto:</span>
+                                    <span className="font-medium text-white">${amountStr} USD</span>
+                                </div>
+                                <div className="flex justify-between mb-2">
+                                    <span className="text-gray-300">Referencia:</span>
+                                    <span className="font-medium text-white">{reference}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-gray-300">Método de pago:</span>
+                                    <span className="font-medium text-white">
+                                        {paymentMethods.find(m => m.id === activePaymentMethod)?.name || 'Transferencia'}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                         <ResponsiveDialogFooter>
                             <Button
                                 onClick={handleClose}
-                                className="w-full xs:h-10 sm:h-14 mt-4 bg-purple-600 hover:bg-purple-700 text-white cursor-pointer"
+                                className="w-full xs:h-10 sm:h-14 mt-4 bg-gradient-to-r from-purple-700 to-indigo-700 hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] border border-white/10 text-white cursor-pointer transition-all"
                             >
                                 Cerrar
                             </Button>
