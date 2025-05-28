@@ -165,7 +165,7 @@ export default function GamePlayPage() {
   }
 
   return (
-    <div className="container mx-auto pt-4 pb-8 px-2 sm:px-4 md:py-8">
+    <div className="container mx-auto px-4 py-2 md:px-8 lg:px-12 xl:px-16">
       {/* Remove NumberCallNotification component */}
 
       <div className="flex flex-row justify-between items-start sm:items-center my-6 gap-3">
