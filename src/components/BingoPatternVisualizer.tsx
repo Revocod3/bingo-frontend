@@ -35,16 +35,18 @@ export default function BingoPatternVisualizer({ patternId }: BingoPatternVisual
     return (
         <div className="max-w-[250px] w-full">
             {/* Encabezado del cartón */}
-            <div className="grid grid-cols-5 bg-[#7C3AED]/70 text-white rounded-t-md">
+            <div className="grid grid-cols-5 bg-gradient-to-r from-purple-700 to-indigo-700 text-white rounded-t-md shadow-md">
                 {columns.map((letter, idx) => (
                     <div key={idx} className="text-center font-bold py-1 text-xs">
-                        {letter}
+                        <span className="inline-block bg-gradient-to-b from-white to-purple-200 bg-clip-text text-transparent drop-shadow-[0_0_1px_rgba(255,255,255,0.5)]">
+                            {letter}
+                        </span>
                     </div>
                 ))}
             </div>
 
             {/* Visualización del patrón */}
-            <div className="grid grid-cols-5 gap-1 p-1 bg-gray-50 rounded-b-md">
+            <div className="grid grid-cols-5 gap-1 p-2 bg-black/20 backdrop-blur-sm rounded-b-md">
                 {cells.map((isMarked, index) => {
                     const row = Math.floor(index / 5);
                     const col = index % 5;
@@ -54,12 +56,12 @@ export default function BingoPatternVisualizer({ patternId }: BingoPatternVisual
                         <div
                             key={index}
                             className={cn(
-                                "aspect-square flex items-center justify-center rounded-sm text-xs",
+                                "aspect-square flex items-center justify-center rounded-lg text-xs transition-all duration-200 backdrop-blur-sm shadow-sm border border-white/5",
                                 isMarked
-                                    ? "bg-[#7C3AED]/70 text-white"
+                                    ? "bg-purple-500/30 text-white border-purple-500/30 shadow-[0_0_10px_rgba(139,92,246,0.3)]"
                                     : isFreeCell
-                                        ? "bg-green-100 text-green-800"
-                                        : "bg-gray-200 text-gray-800",
+                                        ? "bg-gradient-to-br from-green-400/30 to-emerald-500/30 text-emerald-300 border-emerald-400/20"
+                                        : "bg-white/10 text-gray-300",
                             )}
                         >
                             {isFreeCell ? 'FREE' : ''}

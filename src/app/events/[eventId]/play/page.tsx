@@ -316,15 +316,25 @@ export default function GamePlayPage() {
 
       {activeTab === 'info' && (
         <>
-          {/* Bingo Patterns Display */}
-          <Card className="mb-2">
-            <CardHeader className="px-6">
-              <CardTitle className="text-base sm:text-lg">Patrones ganadores</CardTitle>
-            </CardHeader>
-            <CardContent>
+          {/* Bingo Patterns Display con estilo glassmorphism */}
+          <div className="rounded-2xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] mb-5 relative">
+            {/* Decorative elements for glassmorphism effect */}
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
+
+            {/* Encabezado con gradiente similar a BingoCard */}
+            <div className="w-full relative z-10 bg-gradient-to-r from-purple-700 to-indigo-700 shadow-md">
+              <div className="text-center font-bold py-2 text-sm sm:text-base text-white">
+                <span className="inline-block bg-gradient-to-b from-white to-purple-200 bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(255,255,255,0.5)]">
+                  Patrones Ganadores
+                </span>
+              </div>
+            </div>
+
+            {/* Contenido de patrones ganadores */}
+            <div className="w-full p-4 bg-black/20 backdrop-blur-sm relative z-10">
               <BingoPatternsDisplay eventId={eventId} />
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </>
       )}
 
