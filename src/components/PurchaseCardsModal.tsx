@@ -9,7 +9,6 @@ import {
   DialogTitle,
   DialogDescription
 } from '@/components/ui/responsive-dialog';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FaCoins, FaPlus, FaMinus } from 'react-icons/fa';
 import Link from 'next/link';
 import { motion } from 'framer-motion';

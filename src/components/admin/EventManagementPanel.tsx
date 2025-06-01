@@ -4,13 +4,6 @@ import { useState } from 'react';
 import { useEvents, useCreateEvent, useDeleteEvent } from '@/hooks/api/useEvents';
 import { Button } from '@/components/ui/button';
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-} from '@/components/ui/card';
-import {
     Dialog,
     DialogContent,
     DialogDescription,

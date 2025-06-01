@@ -7,7 +7,6 @@ import AdminRouteGuard from '@/components/AdminRouteGuard';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FaCalendarAlt, FaUsers, FaChartBar, FaPuzzlePiece, FaCogs, FaArrowLeft, FaMoneyBillWave } from 'react-icons/fa';
-import EventManagementPanel from '@/components/admin/EventManagementPanel';
 import WinningPatternsPanel from '@/components/admin/WinningPatternsPanel';
 import AdminMenuCard from '@/components/admin/AdminMenuCard';
 import { useCurrentUser } from '@/hooks/api/useUsers';

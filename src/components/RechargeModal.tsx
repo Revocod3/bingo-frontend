@@ -3,7 +3,7 @@ import { Dialog, ResponsiveDialogContent, ResponsiveDialogHeader, ResponsiveDial
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { FaCoins, FaMoneyBillWave, FaClipboard, FaCheck, FaBackspace, FaMobile, FaPaypal, FaInfoCircle } from 'react-icons/fa';
+import { FaCoins, FaMoneyBillWave, FaClipboard, FaCheck, FaBackspace, FaMobile, FaPaypal } from 'react-icons/fa';
 import { useDepositRequest, useDepositConfirm } from '@/hooks/api/useTestCoins';
 import { useActivePaymentMethods } from '@/hooks/api/usePaymentMethods';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -59,16 +59,16 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
         }
     };
 
-    const localAmount = (amount: number, paymentMethod: string) => {
-        // Convert the amount to the local currency based on the payment method
+    // const localAmount = (amount: number, paymentMethod: string) => {
+    //     // Convert the amount to the local currency based on the payment method
 
-        const rates = Object.entries(exchangeRates?.rates || {});
-        if (!rates.length) return amount;
-        const rate = rates.find(([key]) => paymentMethod === 'Nequi' ? key === 'COP' : key === 'VEF');
-        if (!rate) return amount;
-        const [, rateValue] = rate;
-        return (amount * Number(rateValue)).toFixed(2);
-    }
+    //     const rates = Object.entries(exchangeRates?.rates || {});
+    //     if (!rates.length) return amount;
+    //     const rate = rates.find(([key]) => paymentMethod === 'Nequi' ? key === 'COP' : key === 'VEF');
+    //     if (!rate) return amount;
+    //     const [, rateValue] = rate;
+    //     return (amount * Number(rateValue)).toFixed(2);
+    // }
 
     // Transform API payment methods to the format used by the component
     const paymentMethods = useMemo(() => {

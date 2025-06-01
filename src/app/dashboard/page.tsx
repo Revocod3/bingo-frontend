@@ -10,7 +10,7 @@ import { AuthGuard } from '@/components/auth-guard';
 
 import { Button } from '@/components/ui/button';
 import TestCoinBadge from '@/components/TestCoinBadge';
-import { FaGamepad, FaCalendarAlt, FaTrophy, FaClock, FaArrowRight, FaPlus, FaUsers } from 'react-icons/fa';
+import { FaGamepad, FaCalendarAlt, FaTrophy, FaClock, FaArrowRight, FaPlus } from 'react-icons/fa';
 import { Event } from '@/src/lib/api/types';
 import { cn } from '@/src/lib/utils';
 import { Badge } from '@/src/components/ui/badge';

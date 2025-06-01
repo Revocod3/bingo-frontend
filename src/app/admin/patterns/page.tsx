@@ -2,14 +2,12 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { FaArrowLeft, FaPlus } from 'react-icons/fa';
+import { FaArrowLeft } from 'react-icons/fa';
 import AdminRouteGuard from '@/components/AdminRouteGuard';
 import WinningPatternsPanel from '@/components/admin/WinningPatternsPanel';
 
 export default function AdminPatternsPage() {
-    const router = useRouter();
 
     return (
         <AdminRouteGuard>

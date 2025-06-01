@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { FaPuzzlePiece, FaCalendarAlt, FaUsers, FaChartBar, FaMoneyBillWave } from 'react-icons/fa';
 
 interface AdminMenuCardProps {
     icon: React.ReactNode;

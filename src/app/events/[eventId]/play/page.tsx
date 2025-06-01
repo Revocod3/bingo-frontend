@@ -8,7 +8,6 @@ import { useBingoCards } from '@/hooks/api/useBingoCards';
 import { useNumbersByEvent, useLastCalledNumber } from '@/hooks/api/useNumbers';
 import { useBingoStore } from '@/lib/stores/bingo';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FaArrowLeft } from 'react-icons/fa';
 import BingoPatternsDisplay from '@/src/components/BingoPatternsDisplay';
 import BingoCard from '@/components/BingoCard';

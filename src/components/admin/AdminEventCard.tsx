@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -18,7 +18,6 @@ interface AdminEventCardProps {
 }
 
 export default function AdminEventCard({
-    id,
     name,
     date,
     time,
@@ -27,7 +26,6 @@ export default function AdminEventCard({
     onEdit,
     onDelete
 }: AdminEventCardProps) {
-    const router = useRouter();
 
     return (
         <div className="rounded-xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] relative">
