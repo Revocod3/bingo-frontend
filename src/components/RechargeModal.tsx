@@ -201,7 +201,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
                     <div className="rounded-xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] p-4 relative">
                         <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
                         <div className="relative z-10">
-                            <label className="absolute text-xs font-medium text-gray-300 left-3 -top-2 bg-black/50 px-2 py-0.5 rounded backdrop-blur-md transition-all border border-white/10">
+                            <label className="absolute text-xs z-40 font-medium text-gray-300 -left-4    -top-4 bg-black/50 px-1 rounded-xs backdrop-blur-md transition-all border border-white/10">
                                 Monto a recargar:
                             </label>
                             <div className="flex justify-center">
@@ -252,9 +252,10 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
 
                 <div className="mt-4">
                     <Button
+                        type="button"
                         onClick={handleSubmitAmount}
                         disabled={isLoading || !amountStr}
-                        className="w-full h-14 bg-gradient-to-r from-purple-700 to-indigo-700 hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] border border-white/10 text-white transition-all"
+                        className="w-full h-14 bg-gradient-to-r from-purple-700 to-indigo-700 hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] border border-white/10 text-white transition-all cursor-pointer relative z-50"
                     >
                         {isLoading ? 'Procesando...' : 'Continuar'}
                     </Button>
@@ -265,7 +266,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
 
     return (
         <Dialog open={isOpen} onOpenChange={handleClose}>
-            <ResponsiveDialogContent className="relative rounded-xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] text-white">
+            <ResponsiveDialogContent className="rounded-xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] text-white">
                 {/* Decorative elements for glassmorphism effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
 
