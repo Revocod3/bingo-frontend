@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FaCalendarAlt, FaUsers, FaChartBar, FaPuzzlePiece, FaCogs, FaArrowLeft, FaMoneyBillWave } from 'react-icons/fa';
 import WinningPatternsPanel from '@/components/admin/WinningPatternsPanel';
+import EventManagementPanel from '@/components/admin/EventManagementPanel';
 import AdminMenuCard from '@/components/admin/AdminMenuCard';
 import { useCurrentUser } from '@/hooks/api/useUsers';
 
@@ -81,34 +82,7 @@ export default function AdminPage() {
                     </TabsList>
 
                     <TabsContent value="events" className="space-y-4">
-                        <h2 className="text-xl md:text-2xl font-bold inline-block bg-gradient-to-b from-white to-purple-200 bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(255,255,255,0.5)]">Gestión de Eventos</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <AdminMenuCard
-                                icon={<FaCalendarAlt className="h-5 w-5 text-white" />}
-                                title="Listado de Eventos"
-                                description="Gestiona todos los eventos de bingo"
-                                href="/admin/events"
-                                buttonText="Ver Eventos"
-                                buttonIcon={<FaCalendarAlt className="h-4 w-4" />}
-                            />
-                            <AdminMenuCard
-                                icon={<FaPuzzlePiece className="h-5 w-5 text-white" />}
-                                title="Patrones de Ganancia"
-                                description="Configura patrones para eventos"
-                                href="/admin/patterns"
-                                buttonText="Ver Patrones"
-                                buttonIcon={<FaPuzzlePiece className="h-4 w-4" />}
-                            />
-                            <AdminMenuCard
-                                icon={<FaChartBar className="h-5 w-5 text-white" />}
-                                title="Estadísticas de Eventos"
-                                description="Analiza el rendimiento de eventos"
-                                href="#"
-                                buttonText="Ver Estadísticas"
-                                buttonIcon={<FaChartBar className="h-4 w-4" />}
-                                disabled={true}
-                            />
-                        </div>
+                        <EventManagementPanel />
                     </TabsContent>
 
                     <TabsContent value="patterns">

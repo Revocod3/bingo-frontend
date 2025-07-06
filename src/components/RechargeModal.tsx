@@ -3,11 +3,11 @@ import { Dialog, ResponsiveDialogContent, ResponsiveDialogHeader, ResponsiveDial
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { FaCoins, FaMoneyBillWave, FaClipboard, FaCheck, FaBackspace, FaMobile, FaPaypal } from 'react-icons/fa';
+import { FaCoins, FaMoneyBillWave, FaClipboard, FaCheck, FaBackspace, FaMobile, FaPaypal, FaInfoCircle } from 'react-icons/fa';
 import { useDepositRequest, useDepositConfirm } from '@/hooks/api/useTestCoins';
 import { useActivePaymentMethods } from '@/hooks/api/usePaymentMethods';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-// import { useCurrentExchangeRates } from '../hooks/api/useExchangeRates';
+import { useCurrentExchangeRates } from '../hooks/api/useExchangeRates';
 import { cn } from '@/lib/utils';
 
 interface RechargeModalProps {
@@ -31,7 +31,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
     const { data: apiPaymentMethods, isLoading: isLoadingPaymentMethods } = useActivePaymentMethods();
 
     // Fetch exchange rates
-    // const { data: exchangeRates } = useCurrentExchangeRates();
+    const { data: exchangeRates } = useCurrentExchangeRates();
 
     // Set initial amount when provided and modal opens
     useEffect(() => {
@@ -59,16 +59,16 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
         }
     };
 
-    // const localAmount = (amount: number, paymentMethod: string) => {
-    //     // Convert the amount to the local currency based on the payment method
+    const localAmount = (amount: number, paymentMethod: string) => {
+        // Convert the amount to the local currency based on the payment method
 
-    //     const rates = Object.entries(exchangeRates?.rates || {});
-    //     if (!rates.length) return amount;
-    //     const rate = rates.find(([key]) => paymentMethod === 'Nequi' ? key === 'COP' : key === 'VEF');
-    //     if (!rate) return amount;
-    //     const [, rateValue] = rate;
-    //     return (amount * Number(rateValue)).toFixed(2);
-    // }
+        const rates = Object.entries(exchangeRates?.rates || {});
+        if (!rates.length) return amount;
+        const rate = rates.find(([key]) => paymentMethod === 'Nequi' ? key === 'COP' : key === 'VEF');
+        if (!rate) return amount;
+        const [, rateValue] = rate;
+        return (amount * Number(rateValue)).toFixed(2);
+    }
 
     // Transform API payment methods to the format used by the component
     const paymentMethods = useMemo(() => {
@@ -335,7 +335,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
                                             <TabsTrigger
                                                 key={method.id}
                                                 value={method.id ?? ''}
-                                                className="flex items-center gap-2 text-sm py-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-700 data-[state=active]:to-indigo-700 data-[state=active]:border-purple-500/50 data-[state=active]:shadow-[0_0_10px_rgba(139,92,246,0.3)] text-white"
+                                                className="flex items-center gap-2 text-sm py-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-700 data-[state=active]:to-indigo-700 data-[state=active]:border-purple-500/50 data-[state=active]:shadow-[0_0_10px_rgba(139,92,246,0.3)] text-white cursor-pointer hover:bg-white/10 transition-all"
                                             >
                                                 {method.icon}
                                                 <span>{method.name}</span>
@@ -347,7 +347,6 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
                                         <TabsContent key={method.id} value={method.id ?? ''} className="relative">
                                             <p className="text-sm text-gray-300 mb-3">{method.instructions}</p>
                                             <div className="font-mono backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] p-4 rounded-xl space-y-3 relative">
-                                                <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
                                                 <div className="relative z-10">
                                                     {Object.entries(method.details).map(([key, value]) => (
                                                         <div key={key} className="flex items-center justify-between">
@@ -377,6 +376,41 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
                                                             </div>
                                                         </div>
                                                     ))}
+                                                </div>
+                                            </div>
+                                            <div className="mt-3 text-sm">
+                                                <div className="bg-black/40 backdrop-blur-md p-3 rounded-lg border border-white/10 mt-3">
+                                                    <div className="relative mb-3">
+                                                        <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-lg p-3 shadow-sm relative group">
+                                                            <label className="absolute text-xs font-medium text-gray-300 left-3 -top-2 bg-black/70 px-2 py-0.5 rounded border border-white/10">
+                                                                Monto a pagar:
+                                                            </label>
+                                                            <div className="flex items-center justify-between">
+                                                                <span className="text-lg font-bold text-purple-400">
+                                                                    {localAmount(Number(amountStr), method.name as string)}
+                                                                    {
+                                                                        method.name === 'Nequi'
+                                                                            ? ' COP'
+                                                                            : ' VEF'
+                                                                    }
+                                                                </span>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    className="ml-2 p-1 h-8 rounded-md bg-white/10 hover:bg-white/20 text-white cursor-pointer"
+                                                                    onClick={() => copyToClipboard(String(localAmount(Number(amountStr), method.name as string)))}
+                                                                    title="Copiar monto"
+                                                                >
+                                                                    <FaClipboard className="mr-1 h-3 w-3" /> Copiar
+                                                                </Button>
+                                                            </div>
+                                                            <p className="text-xs text-gray-400 mb-2 font-thin">Monto de la recarga: <span className="font-semibold">${amountStr} USD</span></p>
+                                                        </div>
+                                                    </div>
+                                                    <p className="text-gray-300 text-xs rounded-lg p-2 bg-gradient-to-r from-yellow-900/30 to-yellow-800/30 border border-yellow-700/30">
+                                                        <FaInfoCircle className="inline-block mr-1" />
+                                                        No olvides incluir el código único <span className="font-semibold">{uniqueCode}</span> en el concepto de la transacción.
+                                                    </p>
                                                 </div>
                                             </div>
                                         </TabsContent>
