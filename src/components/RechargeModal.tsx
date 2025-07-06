@@ -31,7 +31,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
     const { data: apiPaymentMethods, isLoading: isLoadingPaymentMethods } = useActivePaymentMethods();
 
     // Fetch exchange rates
-    const { data: exchangeRates } = useCurrentExchangeRates();
+    // const { data: exchangeRates } = useCurrentExchangeRates();
 
     // Set initial amount when provided and modal opens
     useEffect(() => {
