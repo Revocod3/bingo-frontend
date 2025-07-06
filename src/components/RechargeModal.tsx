@@ -7,7 +7,7 @@ import { FaCoins, FaMoneyBillWave, FaClipboard, FaCheck, FaBackspace, FaMobile, 
 import { useDepositRequest, useDepositConfirm } from '@/hooks/api/useTestCoins';
 import { useActivePaymentMethods } from '@/hooks/api/usePaymentMethods';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { useCurrentExchangeRates } from '../hooks/api/useExchangeRates';
+// import { useCurrentExchangeRates } from '../hooks/api/useExchangeRates';
 import { cn } from '@/lib/utils';
 
 interface RechargeModalProps {
