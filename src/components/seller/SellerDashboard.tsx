@@ -153,97 +153,97 @@ export default function SellerDashboard() {
     };
 
     return (
-        <div className="container py-8 px-4 md:py-12 max-w-5xl mx-auto">
-            <div className="flex flex-col md:flex-row justify-between mb-6">
-                <h1 className="text-xl md:2xl font-bold mb-6">Panel de Vendedor</h1>
+
+        <div className="container py-4 px-4 md:py-8 max-w-5xl mx-auto">
+            <div className="flex flex-col gap-4 mb-6 sm:flex-row sm:justify-between sm:items-center">
+                <h1 className="text-xl font-bold text-white sm:text-2xl">Panel de Vendedor</h1>
                 <TestCoinBadge />
             </div>
+
             {error && (
-                <Alert variant="destructive" className="mb-4">
+                <Alert variant="destructive" className="mb-4 bg-red-900/30 text-red-300 border border-red-700/30">
                     <AlertDescription>{error}</AlertDescription>
                 </Alert>
             )}
 
             {success && (
-                <Alert className="mb-4 bg-green-50 text-green-800 border-green-200">
+                <Alert className="mb-4 bg-green-900/30 text-green-300 border border-green-700/30">
                     <AlertDescription>{success}</AlertDescription>
                 </Alert>
             )}
 
-            <Card className="mb-6">
-                <CardHeader>
-                    <CardTitle>Seleccionar Evento</CardTitle>
-                    <CardDescription>Elige el evento para el cual quieres generar cartones</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="event">Evento</Label>
-                            <Select
-                                value={selectedEventId}
-                                onValueChange={setSelectedEventId}
-                            >
-                                <SelectTrigger id="event" className="w-full">
-                                    <SelectValue placeholder="Selecciona un evento" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {isLoadingEvents ? (
-                                        <SelectItem value="loading" disabled>Cargando eventos...</SelectItem>
-                                    ) : events && events.length > 0 ? (
-                                        events.map((event) => (
-                                            <SelectItem key={event.id} value={String(event.id)}>
-                                                {event.name}
-                                            </SelectItem>
-                                        ))
-                                    ) : (
-                                        <SelectItem value="empty" disabled>No hay eventos disponibles</SelectItem>
-                                    )}
-                                </SelectContent>
-                            </Select>
-                        </div>
+            <div className="rounded-2xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] mb-6">
+                <div className="bg-gradient-to-r from-purple-600 to-purple-700 p-4">
+                    <h2 className="text-lg font-bold text-white">Seleccionar Evento</h2>
+                    <p className="text-sm text-gray-200 mt-1">Elige el evento para el cual quieres generar cartones</p>
+                </div>
+                <div className="p-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="event" className="text-gray-300">Evento</Label>
+                        <Select
+                            value={selectedEventId}
+                            onValueChange={setSelectedEventId}
+                        >
+                            <SelectTrigger id="event" className="w-full bg-white/10 border-white/20 text-white">
+                                <SelectValue placeholder="Selecciona un evento" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-black/90 border-white/20">
+                                {isLoadingEvents ? (
+                                    <SelectItem value="loading" disabled>Cargando eventos...</SelectItem>
+                                ) : events && events.length > 0 ? (
+                                    events.map((event) => (
+                                        <SelectItem key={event.id} value={String(event.id)} className="text-white">
+                                            {event.name}
+                                        </SelectItem>
+                                    ))
+                                ) : (
+                                    <SelectItem value="empty" disabled>No hay eventos disponibles</SelectItem>
+                                )}
+                            </SelectContent>
+                        </Select>
                     </div>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
 
             {selectedEventId && (
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="w-full grid-cols-2 sm:grid-cols-4 grid mb-6 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl p-1 shadow-[0_0_15px_rgba(123,58,237,0.15)]">
-                        <TabsTrigger value="generate" className="flex items-center justify-center gap-2 py-3 sm:py-2 cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-700 data-[state=active]:to-indigo-700 data-[state=active]:border-purple-500/50 data-[state=active]:shadow-[0_0_10px_rgba(139,92,246,0.3)] text-white rounded-lg">
-                            <FaIdCard className="h-5 w-5 sm:h-4 sm:w-4" />
-                            <span className="hidden sm:inline">Generar</span>
+                    <TabsList className="w-full grid grid-cols-2 sm:grid-cols-4 mb-6 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl p-1 shadow-[0_0_15px_rgba(123,58,237,0.15)]">
+                        <TabsTrigger value="generate" className="flex flex-col items-center gap-1 py-3 sm:flex-row sm:gap-2 sm:py-2 cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-700 data-[state=active]:to-indigo-700 data-[state=active]:border-purple-500/50 data-[state=active]:shadow-[0_0_10px_rgba(139,92,246,0.3)] text-white rounded-lg">
+                            <FaIdCard className="h-4 w-4" />
+                            <span className="text-xs sm:text-sm">Generar</span>
                         </TabsTrigger>
                         <TabsTrigger
                             value="download"
-                            className="flex items-center justify-center gap-2 py-3 sm:py-2"
+                            className="flex flex-col items-center gap-1 py-3 sm:flex-row sm:gap-2 sm:py-2 cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-700 data-[state=active]:to-indigo-700 data-[state=active]:border-purple-500/50 data-[state=active]:shadow-[0_0_10px_rgba(139,92,246,0.3)] text-white rounded-lg"
                             disabled={generatedCards.length === 0}
                         >
-                            <FaFileDownload className="h-5 w-5 sm:h-4 sm:w-4" />
-                            <span className="hidden sm:inline">Descargar</span>
+                            <FaFileDownload className="h-4 w-4" />
+                            <span className="text-xs sm:text-sm">Descargar</span>
                         </TabsTrigger>
                         <TabsTrigger
                             value="email"
-                            className="flex items-center justify-center gap-2 py-3 sm:py-2"
+                            className="flex flex-col items-center gap-1 py-3 sm:flex-row sm:gap-2 sm:py-2 cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-700 data-[state=active]:to-indigo-700 data-[state=active]:border-purple-500/50 data-[state=active]:shadow-[0_0_10px_rgba(139,92,246,0.3)] text-white rounded-lg"
                             disabled={generatedCards.length === 0}
                         >
-                            <FaEnvelope className="h-5 w-5 sm:h-4 sm:w-4" />
-                            <span className="hidden sm:inline">Enviar</span>
+                            <FaEnvelope className="h-4 w-4" />
+                            <span className="text-xs sm:text-sm">Enviar</span>
                         </TabsTrigger>
-                        <TabsTrigger value="transactions" className="flex items-center justify-center gap-2 py-3 sm:py-2">
-                            <FaHistory className="h-5 w-5 sm:h-4 sm:w-4" />
-                            <span className="hidden sm:inline">Transacciones</span>
+                        <TabsTrigger value="transactions" className="flex flex-col items-center gap-1 py-3 sm:flex-row sm:gap-2 sm:py-2 cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-700 data-[state=active]:to-indigo-700 data-[state=active]:border-purple-500/50 data-[state=active]:shadow-[0_0_10px_rgba(139,92,246,0.3)] text-white rounded-lg">
+                            <FaHistory className="h-4 w-4" />
+                            <span className="text-xs sm:text-sm">Historial</span>
                         </TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="generate" className="space-y-4 mt-6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Generar Cartones</CardTitle>
-                                <CardDescription>Especifica la cantidad de cartones que deseas generar</CardDescription>
-                            </CardHeader>
-                            <CardContent>
+                        <div className="rounded-2xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)]">
+                            <div className="bg-gradient-to-r from-purple-600 to-purple-700 p-4">
+                                <h2 className="text-lg font-bold text-white">Generar Cartones</h2>
+                                <p className="text-sm text-gray-200 mt-1">Especifica la cantidad de cartones que deseas generar</p>
+                            </div>
+                            <div className="p-4">
                                 <div className="space-y-4">
                                     <div className="space-y-2">
-                                        <Label htmlFor="quantity">Cantidad (máximo 100)</Label>
+                                        <Label htmlFor="quantity" className="text-gray-300">Cantidad (máximo 100)</Label>
                                         <Input
                                             id="quantity"
                                             type="number"
@@ -251,42 +251,43 @@ export default function SellerDashboard() {
                                             max="100"
                                             value={cardQuantity}
                                             onChange={(e) => setCardQuantity(parseInt(e.target.value || '0'))}
+                                            className="bg-white/10 border-white/20 text-white"
                                         />
                                     </div>
                                 </div>
-                            </CardContent>
-                            <CardFooter>
+                            </div>
+                            <div className="p-4 pt-0">
                                 <Button
                                     onClick={handleGenerateCards}
                                     disabled={generateCardsMutation.isPending || !selectedEventId}
-                                    className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2 w-full sm:w-auto py-6 sm:py-3"
+                                    className="bg-gradient-to-r from-purple-700 to-indigo-700 hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] border border-white/10 text-white flex items-center gap-2 w-full py-3"
                                 >
                                     {generateCardsMutation.isPending ? (
                                         <>
-                                            <FaSpinner className="h-5 w-5 sm:h-4 sm:w-4 animate-spin" />
+                                            <FaSpinner className="h-4 w-4 animate-spin" />
                                             <span>Generando...</span>
                                         </>
                                     ) : (
                                         <>
-                                            <FaIdCard className="h-5 w-5 sm:h-4 sm:w-4" />
+                                            <FaIdCard className="h-4 w-4" />
                                             <span>Generar Cartones</span>
                                         </>
                                     )}
                                 </Button>
-                            </CardFooter>
-                        </Card>
+                            </div>
+                        </div>
                     </TabsContent>
 
                     <TabsContent value="download" className="space-y-4 mt-6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Descargar Cartones como PDF</CardTitle>
-                                <CardDescription>Descarga los {generatedCards.length} cartones generados como un archivo PDF</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="p-4 bg-gray-50 rounded-lg mb-4">
-                                    <p className="font-medium">Resumen:</p>
-                                    <ul className="list-disc pl-5 mt-2 space-y-1">
+                        <div className="rounded-2xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)]">
+                            <div className="bg-gradient-to-r from-purple-600 to-purple-700 p-4">
+                                <h2 className="text-lg font-bold text-white">Descargar Cartones como PDF</h2>
+                                <p className="text-sm text-gray-200 mt-1">Descarga los {generatedCards.length} cartones generados como un archivo PDF</p>
+                            </div>
+                            <div className="p-4">
+                                <div className="p-4 bg-white/10 backdrop-blur-md rounded-lg mb-4 border border-white/10">
+                                    <p className="font-medium text-white">Resumen:</p>
+                                    <ul className="list-disc pl-5 mt-2 space-y-1 text-gray-300">
                                         <li>Evento: {events?.find(e => String(e.id) === selectedEventId)?.name}</li>
                                         <li>Cartones generados: {generatedCards.length}</li>
                                     </ul>
@@ -294,204 +295,216 @@ export default function SellerDashboard() {
 
                                 {generatedCards.length > 0 && (
                                     <div>
-                                        <h3 className="font-medium mb-3">Vista previa:</h3>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-80 overflow-y-auto p-2">
+                                        <h3 className="font-medium mb-3 text-white">Vista previa:</h3>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-80 overflow-y-auto p-2 bg-black/20 rounded-lg border border-white/10">
                                             {generatedCards.slice(0, 6).map((card) => (
                                                 <CardPreview key={card.id} card={card} isCompact={true} />
                                             ))}
                                             {generatedCards.length > 6 && (
-                                                <div className="flex items-center justify-center border border-dashed border-gray-300 rounded-md p-4">
-                                                    <p className="text-gray-500">+{generatedCards.length - 6} cartones más</p>
+                                                <div className="flex items-center justify-center border border-dashed border-white/30 rounded-md p-4">
+                                                    <p className="text-gray-400">+{generatedCards.length - 6} cartones más</p>
                                                 </div>
                                             )}
                                         </div>
                                     </div>
                                 )}
-                            </CardContent>
-                            <CardFooter>
+                            </div>
+                            <div className="p-4 pt-0">
                                 <Button
                                     onClick={handleDownloadPdf}
                                     disabled={downloadPdfMutation.isPending || generatedCards.length === 0}
-                                    className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2 w-full sm:w-auto py-6 sm:py-3"
+                                    className="bg-gradient-to-r from-purple-700 to-indigo-700 hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] border border-white/10 text-white flex items-center gap-2 w-full py-3"
                                 >
                                     {downloadPdfMutation.isPending ? (
                                         <>
-                                            <FaSpinner className="h-5 w-5 sm:h-4 sm:w-4 animate-spin" />
+                                            <FaSpinner className="h-4 w-4 animate-spin" />
                                             <span>Descargando...</span>
                                         </>
                                     ) : (
                                         <>
-                                            <FaFileDownload className="h-5 w-5 sm:h-4 sm:w-4" />
+                                            <FaFileDownload className="h-4 w-4" />
                                             <span>Descargar PDF</span>
                                         </>
                                     )}
                                 </Button>
-                            </CardFooter>
-                        </Card>
+                            </div>
+                        </div>
                     </TabsContent>
 
                     <TabsContent value="email" className="space-y-4 mt-6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Enviar Cartones por Correo</CardTitle>
-                                <CardDescription>Envía los cartones generados por correo electrónico</CardDescription>
-                            </CardHeader>
-                            <CardContent>
+                        <div className="rounded-2xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)]">
+                            <div className="bg-gradient-to-r from-purple-600 to-purple-700 p-4">
+                                <h2 className="text-lg font-bold text-white">Enviar Cartones por Correo</h2>
+                                <p className="text-sm text-gray-200 mt-1">Envía los cartones generados por correo electrónico</p>
+                            </div>
+                            <div className="p-4">
                                 <div className="space-y-4">
                                     <div className="space-y-2">
-                                        <Label htmlFor="email">Correo Electrónico del Destinatario</Label>
+                                        <Label htmlFor="email" className="text-gray-300">Correo Electrónico del Destinatario</Label>
                                         <Input
                                             id="email"
                                             type="email"
                                             value={recipientEmail}
                                             onChange={(e) => setRecipientEmail(e.target.value)}
                                             placeholder="correo@ejemplo.com"
+                                            className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="subject">Asunto (opcional)</Label>
+                                        <Label htmlFor="subject" className="text-gray-300">Asunto (opcional)</Label>
                                         <Input
                                             id="subject"
                                             type="text"
                                             value={emailSubject}
                                             onChange={(e) => setEmailSubject(e.target.value)}
                                             placeholder="Cartones para el evento de Bingo"
+                                            className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="message">Mensaje (opcional)</Label>
+                                        <Label htmlFor="message" className="text-gray-300">Mensaje (opcional)</Label>
                                         <Textarea
                                             id="message"
                                             value={emailMessage}
                                             onChange={(e) => setEmailMessage(e.target.value)}
                                             placeholder="Aquí están tus cartones para el evento..."
                                             rows={4}
-                                            className="min-h-24 py-3"
+                                            className="min-h-24 py-3 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                                         />
                                     </div>
                                 </div>
-                            </CardContent>
-                            <CardFooter>
+                            </div>
+                            <div className="p-4 pt-0">
                                 <Button
                                     onClick={handleEmailCards}
                                     disabled={emailCardsMutation.isPending || generatedCards.length === 0 || !recipientEmail}
-                                    className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2 w-full sm:w-auto py-6 sm:py-3"
+                                    className="bg-gradient-to-r from-purple-700 to-indigo-700 hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] border border-white/10 text-white flex items-center gap-2 w-full py-3"
                                 >
                                     {emailCardsMutation.isPending ? (
                                         <>
-                                            <FaSpinner className="h-5 w-5 sm:h-4 sm:w-4 animate-spin" />
+                                            <FaSpinner className="h-4 w-4 animate-spin" />
                                             <span>Enviando...</span>
                                         </>
                                     ) : (
                                         <>
-                                            <FaEnvelope className="h-5 w-5 sm:h-4 sm:w-4" />
+                                            <FaEnvelope className="h-4 w-4" />
                                             <span>Enviar por Correo</span>
                                         </>
                                     )}
                                 </Button>
-                            </CardFooter>
-                        </Card>
+                            </div>
+                        </div>
                     </TabsContent>
 
                     <TabsContent value="transactions" className="space-y-4 mt-6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Mis Transacciones</CardTitle>
-                                <CardDescription>
-                                    Historial de cartones generados para eventos
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
+                        <div className="rounded-2xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)]">
+                            <div className="bg-gradient-to-r from-purple-600 to-purple-700 p-4">
+                                <h2 className="text-lg font-bold text-white">Mis Transacciones</h2>
+                                <p className="text-sm text-gray-200 mt-1">Historial de cartones generados para eventos</p>
+                            </div>
+                            <div className="p-4">
                                 {error && (
-                                    <Alert variant="destructive" className="mb-4">
+                                    <Alert variant="destructive" className="mb-4 bg-red-900/30 text-red-300 border border-red-700/30">
                                         <AlertDescription>{error}</AlertDescription>
                                     </Alert>
                                 )}
                                 {success && (
-                                    <Alert className="mb-4 bg-green-50 text-green-800 border-green-200">
+                                    <Alert className="mb-4 bg-green-900/30 text-green-300 border border-green-700/30">
                                         <AlertDescription>{success}</AlertDescription>
                                     </Alert>
                                 )}
 
                                 {isLoadingTransactions ? (
-                                    <div className="text-center py-4">Cargando transacciones...</div>
+                                    <div className="text-center py-8">
+                                        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500 mx-auto"></div>
+                                        <p className="text-gray-300 mt-2">Cargando transacciones...</p>
+                                    </div>
                                 ) : transactions && transactions.length > 0 ? (
                                     <div className="overflow-x-auto">
-                                        <div className="md:hidden">
-                                            <div className="space-y-4">
-                                                {transactions.map((transaction, i) => (
-                                                    <div key={i} className="bg-gray-50 p-4 rounded-lg">
-                                                        <div className="grid grid-cols-2 gap-2 mb-3">
-                                                            <div>
-                                                                <p className="text-sm text-gray-500">Fecha:</p>
-                                                                <p className="font-medium">
-                                                                    {transaction.generated_at
-                                                                        ? format(new Date(transaction.generated_at), 'dd/MM/yyyy HH:mm')
-                                                                        : 'Fecha no disponible'}
-                                                                </p>
-                                                            </div>
-                                                            <div>
-                                                                <p className="text-sm text-gray-500">Cantidad:</p>
-                                                                <p className="font-medium">{transaction.batch_size} cartones</p>
-                                                            </div>
-                                                        </div>
-                                                        <div className="mb-3">
-                                                            <p className="text-sm text-gray-500">Evento:</p>
-                                                            <p className="font-medium">{transaction.event_name}</p>
-                                                        </div>
-                                                        <Button
-                                                            size="sm"
-                                                            onClick={() => handleDownloadTransactionCards(transaction.transaction_id)}
-                                                            disabled={downloadTransactionCardsMutation.isPending}
-                                                            className="w-full py-3"
-                                                        >
-                                                            Descargar PDF
-                                                        </Button>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        <div className="hidden md:block">
-                                            <Table>
-                                                <TableHeader>
-                                                    <TableRow>
-                                                        <TableHead>Fecha</TableHead>
-                                                        <TableHead>Evento</TableHead>
-                                                        <TableHead>Cantidad</TableHead>
-                                                        <TableHead>Acciones</TableHead>
-                                                    </TableRow>
-                                                </TableHeader>
-                                                <TableBody>
-                                                    {transactions.map((transaction, i) => (
-                                                        <TableRow key={i}>
-                                                            <TableCell>
+                                        {/* Mobile Cards View */}
+                                        <div className="block md:hidden space-y-4">
+                                            {transactions.map((transaction, i) => (
+                                                <div key={i} className="bg-white/5 rounded-lg p-4 border border-white/10">
+                                                    <div className="grid grid-cols-2 gap-3 mb-3">
+                                                        <div>
+                                                            <p className="text-xs text-gray-400">Fecha:</p>
+                                                            <p className="font-medium text-white text-sm">
                                                                 {transaction.generated_at
                                                                     ? format(new Date(transaction.generated_at), 'dd/MM/yyyy HH:mm')
-                                                                    : 'Fecha no disponible'}
-                                                            </TableCell>
-                                                            <TableCell>{transaction.event_name}</TableCell>
-                                                            <TableCell>{transaction.batch_size} cartones</TableCell>
-                                                            <TableCell>
-                                                                <Button
-                                                                    size="sm"
-                                                                    onClick={() => handleDownloadTransactionCards(transaction.transaction_id)}
-                                                                    disabled={downloadTransactionCardsMutation.isPending}
-                                                                >
-                                                                    Descargar PDF
-                                                                </Button>
-                                                            </TableCell>
+                                                                    : 'No disponible'}
+                                                            </p>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-xs text-gray-400">Cantidad:</p>
+                                                            <p className="font-medium text-white text-sm">{transaction.batch_size} cartones</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="mb-3">
+                                                        <p className="text-xs text-gray-400">Evento:</p>
+                                                        <p className="font-medium text-white text-sm">{transaction.event_name}</p>
+                                                    </div>
+                                                    <Button
+                                                        size="sm"
+                                                        onClick={() => handleDownloadTransactionCards(transaction.transaction_id)}
+                                                        disabled={downloadTransactionCardsMutation.isPending}
+                                                        className="w-full bg-gradient-to-r from-purple-700 to-indigo-700 hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] border border-white/10 text-white"
+                                                    >
+                                                        <FaFileDownload className="mr-2 h-3 w-3" />
+                                                        Descargar PDF
+                                                    </Button>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        {/* Desktop Table View */}
+                                        <div className="hidden md:block">
+                                            <div className="bg-white/5 rounded-lg overflow-hidden border border-white/10">
+                                                <Table>
+                                                    <TableHeader>
+                                                        <TableRow className="border-b border-white/10 hover:bg-white/5">
+                                                            <TableHead className="text-gray-300">Fecha</TableHead>
+                                                            <TableHead className="text-gray-300">Evento</TableHead>
+                                                            <TableHead className="text-gray-300">Cantidad</TableHead>
+                                                            <TableHead className="text-gray-300">Acciones</TableHead>
                                                         </TableRow>
-                                                    ))}
-                                                </TableBody>
-                                            </Table>
+                                                    </TableHeader>
+                                                    <TableBody>
+                                                        {transactions.map((transaction, i) => (
+                                                            <TableRow key={i} className="border-b border-white/5 hover:bg-white/5">
+                                                                <TableCell className="text-white">
+                                                                    {transaction.generated_at
+                                                                        ? format(new Date(transaction.generated_at), 'dd/MM/yyyy HH:mm')
+                                                                        : 'No disponible'}
+                                                                </TableCell>
+                                                                <TableCell className="text-white">{transaction.event_name}</TableCell>
+                                                                <TableCell className="text-white">{transaction.batch_size} cartones</TableCell>
+                                                                <TableCell>
+                                                                    <Button
+                                                                        size="sm"
+                                                                        onClick={() => handleDownloadTransactionCards(transaction.transaction_id)}
+                                                                        disabled={downloadTransactionCardsMutation.isPending}
+                                                                        className="bg-gradient-to-r from-purple-700 to-indigo-700 hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] border border-white/10 text-white"
+                                                                    >
+                                                                        <FaFileDownload className="mr-2 h-3 w-3" />
+                                                                        Descargar
+                                                                    </Button>
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        ))}
+                                                    </TableBody>
+                                                </Table>
+                                            </div>
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="text-center py-4">No hay transacciones disponibles</div>
+                                    <div className="text-center py-12 text-gray-400">
+                                        <FaHistory className="mx-auto mb-4 text-4xl text-gray-600" />
+                                        <p className="text-lg mb-2">No hay transacciones disponibles</p>
+                                        <p className="text-sm">Las transacciones aparecerán aquí cuando generes cartones</p>
+                                    </div>
                                 )}
-                            </CardContent>
-                        </Card>
+                            </div>
+                        </div>
                     </TabsContent>
                 </Tabs>
             )}
