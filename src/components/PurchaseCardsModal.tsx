@@ -149,23 +149,6 @@ export const PurchaseCardsModal: React.FC<PurchaseCardsModalProps> = ({
                 <p className="text-red-400 text-sm">
                   💸 ¡Ups! Recarga para poder adquirir {quantity} cartón{quantity !== 1 ? 'es' : ''}.
                 </p>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Link
-                    href="/deposits"
-                    className={cn(
-                      "py-2 px-4 flex items-center justify-center gap-2",
-                      "rounded-full bg-gradient-to-r from-purple-600 to-indigo-600",
-                      "hover:from-purple-700 hover:to-indigo-700 text-white",
-                      "border-none shadow-md hover:shadow-lg transition-all duration-200"
-                    )}
-                  >
-                    <span>Recargar</span>
-                    <FaCoins className="ml-1" />
-                  </Link>
-                </motion.div>
               </div>
             )}
           </div>

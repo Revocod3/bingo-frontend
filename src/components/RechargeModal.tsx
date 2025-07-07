@@ -255,7 +255,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
                         type="button"
                         onClick={handleSubmitAmount}
                         disabled={isLoading || !amountStr}
-                        className="w-full h-14 bg-gradient-to-r from-purple-700 to-indigo-700 hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] border border-white/10 text-white transition-all cursor-pointer relative z-50"
+                        className="w-full h-10 bg-gradient-to-r from-purple-700 to-indigo-700 hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] border border-white/10 text-white transition-all cursor-pointer relative z-50"
                     >
                         {isLoading ? 'Procesando...' : 'Continuar'}
                     </Button>
@@ -266,9 +266,9 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
 
     return (
         <Dialog open={isOpen} onOpenChange={handleClose}>
-            <ResponsiveDialogContent className="rounded-xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] text-white">
+            <ResponsiveDialogContent className="rounded-xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] text-white max-h-[95vh] overflow-y-auto">
                 {/* Decorative elements for glassmorphism effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
+                {/* <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div> */}
 
                 <ResponsiveDialogHeader className="relative z-10">
                     <DialogTitle className="flex items-center justify-center gap-2 text-xl xs:text-lg font-medium text-white">
@@ -277,7 +277,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
                         {currentStep === 3 && "Solicitud de Recarga Exitosa"}
                         <FaCoins className="text-yellow-500" />
                     </DialogTitle>
-                    <DialogDescription className="xs:text-xs text-gray-300">
+                    <DialogDescription className="text-gray-300 text-center text-xs">
                         {currentStep === 1 && "Ingresa el monto que deseas recargar en tu cuenta."}
                         {currentStep === 2 && "Completa tu pago usando esta información."}
                         {currentStep === 3 && "¡Tu recarga ha sido procesada exitosamente!"}
@@ -297,11 +297,11 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
                 )}
 
                 {currentStep === 2 && (
-                    <div className="grid gap-3 relative z-10">
-                        <div className="rounded-xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] p-4 relative">
+                    <div className="grid gap-2 relative z-10">
+                        <div className="rounded-xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] p-3 relative">
                             <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
                             {/* Unique Code Section */}
-                            <div className="mb-4 relative z-10">
+                            <div className="mb-2 relative z-10">
                                 <div className="relative">
                                     <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-lg p-3 relative">
                                         <label className="absolute text-xs font-medium text-gray-300 left-3 -top-2 bg-black/70 px-2 py-0.5 rounded border border-white/10">
@@ -326,189 +326,195 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, initialA
                             </div>
 
                             {/* Payment Methods */}
-                            <div className="space-y-3 relative z-10">
+                            <div className="space-y-2 relative z-10">
                                 <h4 className="font-medium text-gray-200">Métodos de Pago</h4>
 
                                 <Tabs defaultValue="bank" value={activePaymentMethod} onValueChange={setActivePaymentMethod}>
                                     <TabsList className="w-full bg-black/30 backdrop-blur-md border border-white/10 rounded-xl p-1 shadow-[0_0_15px_rgba(123,58,237,0.15)]">
-                                        {paymentMethods.map(method => (
-                                            <TabsTrigger
-                                                key={method.id}
-                                                value={method.id ?? ''}
-                                                className="flex items-center gap-2 text-sm py-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-700 data-[state=active]:to-indigo-700 data-[state=active]:border-purple-500/50 data-[state=active]:shadow-[0_0_10px_rgba(139,92,246,0.3)] text-white cursor-pointer hover:bg-white/10 transition-all"
-                                            >
-                                                {method.icon}
-                                                <span>{method.name}</span>
-                                            </TabsTrigger>
-                                        ))}
+                                        <div className="flex justify-start items-center">
+                                            {paymentMethods.map(method => (
+                                                <TabsTrigger
+                                                    key={method.id}
+                                                    value={method.id ?? ''}
+                                                    className="flex items-center gap-1 xs:gap-1 text-xs xs:text-[10px] py-2 xs:py-1 px-1.5 xs:px-1 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-700 data-[state=active]:to-indigo-700 data-[state=active]:border-purple-500/50 data-[state=active]:shadow-[0_0_10px_rgba(139,92,246,0.3)] text-white cursor-pointer hover:bg-white/10 transition-all whitespace-nowrap flex-shrink-0"
+                                                >
+                                                    <span className="xs:text-xs">{method.icon}</span>
+                                                    <span className="hidden sm:inline">{method.name}</span>
+                                                    <span className="sm:hidden text-[10px] leading-tight">{method.name}</span>
+                                                </TabsTrigger>
+                                            ))}
+                                        </div>
                                     </TabsList>
 
-                                    {paymentMethods.map(method => (
-                                        <TabsContent key={method.id} value={method.id ?? ''} className="relative">
-                                            <p className="text-sm text-gray-300 mb-3">{method.instructions}</p>
-                                            <div className="font-mono backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] p-4 rounded-xl space-y-3 relative">
-                                                <div className="relative z-10">
-                                                    {Object.entries(method.details).map(([key, value]) => (
-                                                        <div key={key} className="flex items-center justify-between">
-                                                            <span className="font-medium text-gray-300">{key}:</span>
-                                                            <div className="flex items-center">
-                                                                {key === 'link' ? (
-                                                                    <a
-                                                                        href={`https://${value}`}
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
-                                                                        className="text-purple-400 hover:underline"
+                                    {
+                                        paymentMethods.map(method => (
+                                            <TabsContent key={method.id} value={method.id ?? ''} className="relative">
+                                                <p className="text-sm text-gray-300 mb-3">{method.instructions}</p>
+                                                <div className="font-mono backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] p-3 xs:p-2 rounded-xl space-y-2 xs:space-y-1 relative">
+                                                    <div className="relative z-10">
+                                                        {Object.entries(method.details).map(([key, value]) => (
+                                                            <div key={key} className="flex items-center justify-between xs:mb-1">
+                                                                <span className="font-medium text-gray-300 text-sm xs:text-xs">{key}:</span>
+                                                                <div className="flex items-center">
+                                                                    {key === 'link' ? (
+                                                                        <a
+                                                                            href={`https://${value}`}
+                                                                            target="_blank"
+                                                                            rel="noopener noreferrer"
+                                                                            className="text-purple-400 hover:underline text-sm xs:text-xs"
+                                                                        >
+                                                                            WhatsApp
+                                                                        </a>
+                                                                    ) : (
+                                                                        <span className="text-white text-sm xs:text-xs break-all">{value}</span>
+                                                                    )}
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="sm"
+                                                                        className="ml-2 h-6 w-6 xs:h-5 xs:w-5 rounded-full hover:bg-white/20 p-1 cursor-pointer"
+                                                                        onClick={() => copyToClipboard(value)}
+                                                                        title={`Copiar ${key}`}
                                                                     >
-                                                                        WhatsApp
-                                                                    </a>
-                                                                ) : (
-                                                                    <span className="text-white">{value}</span>
-                                                                )}
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="sm"
-                                                                    className="ml-2 h-6 w-6 rounded-full hover:bg-white/20 p-1 cursor-pointer"
-                                                                    onClick={() => copyToClipboard(value)}
-                                                                    title={`Copiar ${key}`}
-                                                                >
-                                                                    <FaClipboard className="h-3 w-3 text-gray-300 cursor-pointer" />
-                                                                </Button>
+                                                                        <FaClipboard className="h-3 w-3 xs:h-2 xs:w-2 text-gray-300 cursor-pointer" />
+                                                                    </Button>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                            <div className="mt-3 text-sm">
-                                                <div className="bg-black/40 backdrop-blur-md p-3 rounded-lg border border-white/10 mt-3">
-                                                    <div className="relative mb-3">
-                                                        <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-lg p-3 shadow-sm relative group">
-                                                            <label className="absolute text-xs font-medium text-gray-300 left-3 -top-2 bg-black/70 px-2 py-0.5 rounded border border-white/10">
-                                                                Monto a pagar:
-                                                            </label>
-                                                            <div className="flex items-center justify-between">
-                                                                <span className="text-lg font-bold text-purple-400">
-                                                                    {localAmount(Number(amountStr), method.name as string)}
-                                                                    {
-                                                                        method.name === 'Nequi'
-                                                                            ? ' COP'
-                                                                            : ' VEF'
-                                                                    }
-                                                                </span>
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="sm"
-                                                                    className="ml-2 p-1 h-8 rounded-md bg-white/10 hover:bg-white/20 text-white cursor-pointer"
-                                                                    onClick={() => copyToClipboard(String(localAmount(Number(amountStr), method.name as string)))}
-                                                                    title="Copiar monto"
-                                                                >
-                                                                    <FaClipboard className="mr-1 h-3 w-3" /> Copiar
-                                                                </Button>
-                                                            </div>
-                                                            <p className="text-xs text-gray-400 mb-2 font-thin">Monto de la recarga: <span className="font-semibold">${amountStr} USD</span></p>
-                                                        </div>
+                                                        ))}
                                                     </div>
-                                                    <p className="text-gray-300 text-xs rounded-lg p-2 bg-gradient-to-r from-yellow-900/30 to-yellow-800/30 border border-yellow-700/30">
-                                                        <FaInfoCircle className="inline-block mr-1" />
-                                                        No olvides incluir el código único <span className="font-semibold">{uniqueCode}</span> en el concepto de la transacción.
-                                                    </p>
                                                 </div>
-                                            </div>
-                                        </TabsContent>
-                                    ))}
-                                </Tabs>
-                            </div>
-                        </div>
-
-                        {/* Reference Input - also update to match MUI style */}
-                        <div className="mt-2 relative z-10">
-                            <div className="relative">
-                                <div className="rounded-xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] p-1 relative">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
-                                    <div className="relative z-10 p-2">
-                                        <Input
-                                            id="reference"
-                                            className="w-full h-14 px-4 pt-2 rounded-lg bg-black/40 backdrop-blur-md border-white/10 text-white focus:border-purple-500/50 focus:ring-purple-500/30"
-                                            value={reference}
-                                            onChange={(e) => setReference(e.target.value)}
-                                            placeholder=" "
-                                        />
-                                        <label
-                                            htmlFor="reference"
-                                            className="absolute text-xs font-medium text-gray-300 left-5 top-0 px-2 py-0.5 transition-all pointer-events-none"
-                                        >
-                                            Referencia de tu pago
-                                        </label>
+                                                <div className="mt-2 text-sm">
+                                                    <div className="bg-black/40 backdrop-blur-md p-3 xs:p-2 rounded-lg border border-white/10 mt-3">
+                                                        <div className="relative mb-3 xs:mb-2">
+                                                            <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-lg p-3 xs:p-2 shadow-sm relative group">
+                                                                <label className="absolute text-xs xs:text-[10px] font-medium text-gray-300 left-3 -top-2 bg-black/70 px-2 py-0.5 rounded border border-white/10">
+                                                                    Monto a pagar:
+                                                                </label>
+                                                                <div className="flex items-center justify-between">
+                                                                    <span className="text-lg xs:text-base font-bold text-purple-400">
+                                                                        {localAmount(Number(amountStr), method.name as string)}
+                                                                        {
+                                                                            method.name === 'Nequi'
+                                                                                ? ' COP'
+                                                                                : ' VEF'
+                                                                        }
+                                                                    </span>
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="sm"
+                                                                        className="ml-2 p-1 h-8 xs:h-6 rounded-md bg-white/10 hover:bg-white/20 text-white cursor-pointer"
+                                                                        onClick={() => copyToClipboard(String(localAmount(Number(amountStr), method.name as string)))}
+                                                                        title="Copiar monto"
+                                                                    >
+                                                                        <FaClipboard className="mr-1 h-3 w-3 xs:h-2 xs:w-2" />
+                                                                        <span className="text-xs xs:text-[10px]">Copiar</span>
+                                                                    </Button>
+                                                                </div>
+                                                                <p className="text-xs xs:text-[10px] text-gray-400 mt-2 font-thin">Monto de la recarga: <span className="font-semibold">${amountStr} USD</span></p>
+                                                            </div>
+                                                        </div>
+                                                        <p className="text-gray-300 text-xs xs:text-[10px] rounded-lg p-2 xs:p-1 bg-gradient-to-r from-yellow-900/30 to-yellow-800/30 border border-yellow-700/30">
+                                                            <FaInfoCircle className="inline-block mr-1 xs:h-2 xs:w-2" />
+                                                            No olvides incluir el código único <span className="font-semibold">{uniqueCode}</span> en el concepto de la transacción.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </TabsContent>
+                                        ))
+                                    }
+                                </Tabs >
+                            </div >
+                            <div className="mt-2 relative z-10">
+                                <div className="relative">
+                                    <div className="rounded-xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] p-1 relative">
+                                        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
+                                        <div className="relative z-10 p-2">
+                                            <Input
+                                                id="reference"
+                                                className="w-full h-10 px-4 pt-2 rounded-lg bg-black/40 backdrop-blur-md border-white/10 text-white focus:border-purple-500/50 focus:ring-purple-500/30"
+                                                value={reference}
+                                                onChange={(e) => setReference(e.target.value)}
+                                                placeholder=" "
+                                            />
+                                            <label
+                                                htmlFor="reference"
+                                                className="absolute text-xs font-medium text-gray-300 left-5 top-0 px-2 py-0.5 transition-all pointer-events-none"
+                                            >
+                                                Referencia de tu pago
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="flex flex-col gap-3 mt-4">
-                            <Button
-                                onClick={handleSubmitReference}
-                                disabled={isLoading}
-                                className="w-full h-14 bg-gradient-to-r from-purple-700 to-indigo-700 hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] border border-white/10 text-white cursor-pointer transition-all"
-                            >
-                                {isLoading ? 'Procesando...' : 'Confirmar Pago'}
-                            </Button>
-                            <Button
-                                variant="outline"
-                                onClick={() => setCurrentStep(1)}
-                                className="w-full bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 cursor-pointer transition-all"
-                                disabled={isLoading}
-                            >
-                                Atrás
-                            </Button>
-                        </div>
-                    </div>
+                            <div className="flex flex-col gap-3 mt-4 z-100">
+                                <Button
+                                    onClick={handleSubmitReference}
+                                    disabled={isLoading}
+                                    className="w-full h-10 bg-gradient-to-r from-purple-700 to-indigo-700 hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] border border-white/10 text-white cursor-pointer transition-all z-100"
+                                >
+                                    {isLoading ? 'Procesando...' : 'Confirmar Pago'}
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setCurrentStep(1)}
+                                    className="w-full bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 cursor-pointer transition-all"
+                                    disabled={isLoading}
+                                >
+                                    Atrás
+                                </Button>
+                            </div>
+                        </div >
+                    </div >
                 )}
 
-                {currentStep === 3 && (
-                    <div className="py-4 flex flex-col items-center relative z-10">
-                        <div className="mb-4 bg-white/10 backdrop-blur-md rounded-full p-5 border border-white/20 shadow-[0_0_15px_rgba(139,92,246,0.3)]">
-                            <FaCheck className="h-12 w-12 text-green-400" />
-                        </div>
-                        <h3 className="text-xl font-medium mb-2 text-center text-white">
-                            ¡Solicitud confirmada!
-                        </h3>
-                        <p className="text-gray-300 text-center mb-4">
-                            Tu solicitud de recarga se ha enviado correctamente.
-                            Recibirás los fondos en tu cuenta tan pronto como se verifique el pago.
-                        </p>
-                        <p className="text-gray-400 text-xs text-center mb-4">
-                            Por lo general se verifica en minutos, pero hay casos que puede tardar hasta 24 horas.
-                        </p>
-                        <div className="w-full rounded-xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] p-4 relative">
-                            <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
-                            <div className="relative z-10">
-                                <div className="flex justify-between mb-2">
-                                    <span className="text-gray-300">Monto:</span>
-                                    <span className="font-medium text-white">${amountStr} USD</span>
-                                </div>
-                                <div className="flex justify-between mb-2">
-                                    <span className="text-gray-300">Referencia:</span>
-                                    <span className="font-medium text-white">{reference}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-gray-300">Método de pago:</span>
-                                    <span className="font-medium text-white">
-                                        {paymentMethods.find(m => m.id === activePaymentMethod)?.name || 'Transferencia'}
-                                    </span>
+                {
+                    currentStep === 3 && (
+                        <div className="py-4 flex flex-col items-center relative z-10">
+                            <div className="mb-4 bg-white/10 backdrop-blur-md rounded-full p-5 border border-white/20 shadow-[0_0_15px_rgba(139,92,246,0.3)]">
+                                <FaCheck className="h-12 w-12 text-green-400" />
+                            </div>
+                            <h3 className="text-xl font-medium mb-2 text-center text-white">
+                                ¡Solicitud confirmada!
+                            </h3>
+                            <p className="text-gray-300 text-center mb-4">
+                                Tu solicitud de recarga se ha enviado correctamente.
+                                Recibirás los fondos en tu cuenta tan pronto como se verifique el pago.
+                            </p>
+                            <p className="text-gray-400 text-xs text-center mb-4">
+                                Por lo general se verifica en minutos, pero hay casos que puede tardar hasta 24 horas.
+                            </p>
+                            <div className="w-full rounded-xl overflow-hidden backdrop-blur-md bg-black/30 border border-white/10 shadow-[0_0_15px_rgba(123,58,237,0.2)] p-4 relative">
+                                <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 z-0"></div>
+                                <div className="relative z-10">
+                                    <div className="flex justify-between mb-2">
+                                        <span className="text-gray-300">Monto:</span>
+                                        <span className="font-medium text-white">${amountStr} USD</span>
+                                    </div>
+                                    <div className="flex justify-between mb-2">
+                                        <span className="text-gray-300">Referencia:</span>
+                                        <span className="font-medium text-white">{reference}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-300">Método de pago:</span>
+                                        <span className="font-medium text-white">
+                                            {paymentMethods.find(m => m.id === activePaymentMethod)?.name || 'Transferencia'}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
+                            <ResponsiveDialogFooter>
+                                <Button
+                                    onClick={handleClose}
+                                    className="w-full xs:h-10 sm:h-14 mt-4 bg-gradient-to-r from-purple-700 to-indigo-700 hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] border border-white/10 text-white cursor-pointer transition-all"
+                                >
+                                    Cerrar
+                                </Button>
+                            </ResponsiveDialogFooter>
                         </div>
-                        <ResponsiveDialogFooter>
-                            <Button
-                                onClick={handleClose}
-                                className="w-full xs:h-10 sm:h-14 mt-4 bg-gradient-to-r from-purple-700 to-indigo-700 hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] border border-white/10 text-white cursor-pointer transition-all"
-                            >
-                                Cerrar
-                            </Button>
-                        </ResponsiveDialogFooter>
-                    </div>
-                )}
-            </ResponsiveDialogContent>
-        </Dialog>
+                    )
+                }
+            </ResponsiveDialogContent >
+        </Dialog >
     );
 };
 
